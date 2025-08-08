@@ -1,0 +1,30 @@
+[
+    {
+        "candidate_id": "sample_001",
+        "pincode": "110001",
+        "locality": "Connaught Place",
+        "availability_date": "immediately",
+        "preferred_shift": "morning",
+        "expected_salary": 18000,
+        "languages": ["hindi", "english"],
+        "has_two_wheeler": true,
+        "total_experience_months": 6,
+        "conversation_completed": true,
+        "turn_count": 8,
+        "created_at": "2024-01-15T10:30:00"
+    },
+    {
+        "candidate_id": "sample_002", 
+        "pincode": "110002",
+        "locality": "Darya Ganj",
+        "availability_date": "tomorrow",
+        "preferred_shift": "evening",
+        "expected_salary": 15000,
+        "languages": ["hindi"],
+        "has_two_wheeler": false,
+        "total_experience_months": 24,
+        "conversation_completed": true,
+        "turn_count": 7,
+        "created_at": "2024-01-15T11:15:00"
+    }
+] 

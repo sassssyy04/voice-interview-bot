@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hinglish Voice Bot - Blue Collar Job Screening</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .recording { animation: pulse 1.5s infinite; }
+        .wave-animation { animation: wave 1s ease-in-out infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        @keyframes wave { 0%, 100% { transform: scaleY(1); } 50% { transform: scaleY(1.5); } }
+        .metrics-card { transition: all 0.3s ease; }
+        .metrics-card:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Header -->
+    <header class="bg-blue-600 text-white shadow-lg">
+        <div class="container mx-auto px-4 py-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-3xl font-bold">Voice Bot Interview</h1>
+                    <p class="text-blue-100">Blue-collar job screening in Hinglish</p>
+                </div>
+                <div class="text-right">
+                    <div class="text-sm text-blue-100">Status</div>
+                    <div id="connection-status" class="font-semibold">Ready</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        <!-- Voice Interface Section -->
+        <div class="bg-white rounded-lg shadow-lg p-8 mb-8">
+            <div class="text-center">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">Voice Interview Interface</h2>
+                
+                <!-- Microphone Button -->
+                <div class="mb-8">
+                    <button id="micButton" class="w-32 h-32 rounded-full bg-blue-500 hover:bg-blue-600 text-white shadow-lg transition-all duration-300 mx-auto flex items-center justify-center">
+                        <i class="fas fa-microphone text-4xl"></i>
+                    </button>
+                    <p id="micStatus" class="mt-4 text-gray-600">Click to start conversation</p>
+                </div>
+
+                <!-- Audio Visualizer -->
+                <div id="audioVisualizer" class="hidden mb-6">
+                    <div class="flex justify-center items-end space-x-1 h-16">
+                        <div class="w-2 bg-blue-500 wave-animation" style="height: 20px; animation-delay: 0s;"></div>
+                        <div class="w-2 bg-blue-500 wave-animation" style="height: 30px; animation-delay: 0.1s;"></div>
+                        <div class="w-2 bg-blue-500 wave-animation" style="height: 40px; animation-delay: 0.2s;"></div>
+                        <div class="w-2 bg-blue-500 wave-animation" style="height: 35px; animation-delay: 0.3s;"></div>
+                        <div class="w-2 bg-blue-500 wave-animation" style="height: 45px; animation-delay: 0.4s;"></div>
+                        <div class="w-2 bg-blue-500 wave-animation" style="height: 25px; animation-delay: 0.5s;"></div>
+                    </div>
+                </div>
+
+                <!-- Progress Bar -->
+                <div class="w-full bg-gray-200 rounded-full h-3 mb-6">
+                    <div id="progressBar" class="bg-green-500 h-3 rounded-full transition-all duration-500" style="width: 0%"></div>
+                </div>
+                <p id="progressText" class="text-sm text-gray-600">Interview Progress: 0%</p>
+
+                <!-- Control Buttons -->
+                <div class="flex justify-center space-x-4 mt-6">
+                    <button id="startBtn" class="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-lg transition-colors">
+                        <i class="fas fa-play mr-2"></i>Start Interview
+                    </button>
+                    <button id="demoBtn" class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg transition-colors">
+                        <i class="fas fa-magic mr-2"></i>Demo Job Matching
+                    </button>
+                    <button id="pauseBtn" class="bg-yellow-500 hover:bg-yellow-600 text-white px-6 py-2 rounded-lg transition-colors" disabled>
+                        <i class="fas fa-pause mr-2"></i>Pause
+                    </button>
+                    <button id="stopBtn" class="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-lg transition-colors" disabled>
+                        <i class="fas fa-stop mr-2"></i>Stop
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Conversation Log -->
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+            <h3 class="text-xl font-bold text-gray-800 mb-4">
+                <i class="fas fa-comments mr-2"></i>Conversation Log
+            </h3>
+            <div id="conversationLog" class="max-h-60 overflow-y-auto space-y-3">
+                <div class="text-gray-500 text-center py-4">Conversation will appear here...</div>
+            </div>
+        </div>
+
+        <!-- Real-time Metrics -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="metrics-card bg-white rounded-lg shadow-lg p-6">
+                <div class="flex items-center">
+                    <div class="p-3 rounded-full bg-blue-100 text-blue-600 mr-4">
+                        <i class="fas fa-clock text-xl"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-sm font-medium text-gray-500">Response Time</h4>
+                        <p id="responseTime" class="text-2xl font-bold text-gray-900">-- ms</p>
+                        <p class="text-xs text-gray-400">Target: &lt;2000ms</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="metrics-card bg-white rounded-lg shadow-lg p-6">
+                <div class="flex items-center">
+                    <div class="p-3 rounded-full bg-green-100 text-green-600 mr-4">
+                        <i class="fas fa-microphone text-xl"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-sm font-medium text-gray-500">Voice Confidence</h4>
+                        <p id="voiceConfidence" class="text-2xl font-bold text-gray-900">--%</p>
+                        <p class="text-xs text-gray-400">Minimum: 70%</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="metrics-card bg-white rounded-lg shadow-lg p-6">
+                <div class="flex items-center">
+                    <div class="p-3 rounded-full bg-purple-100 text-purple-600 mr-4">
+                        <i class="fas fa-list-check text-xl"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-sm font-medium text-gray-500">Fields Collected</h4>
+                        <p id="fieldsCollected" class="text-2xl font-bold text-gray-900">0/7</p>
+                        <p class="text-xs text-gray-400">Profile completion</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Candidate Profile (Hidden until conversation starts) -->
+        <div id="candidateProfile" class="bg-white rounded-lg shadow-lg p-6 mb-8 hidden">
+            <h3 class="text-xl font-bold text-gray-800 mb-4">
+                <i class="fas fa-user mr-2"></i>Candidate Profile
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="text-sm font-medium text-gray-500">Pincode</label>
+                    <p id="profilePincode" class="text-gray-900 font-semibold">--</p>
+                </div>
+                <div>
+                    <label class="text-sm font-medium text-gray-500">Expected Salary</label>
+                    <p id="profileSalary" class="text-gray-900 font-semibold">--</p>
+                </div>
+                <div>
+                    <label class="text-sm font-medium text-gray-500">Preferred Shift</label>
+                    <p id="profileShift" class="text-gray-900 font-semibold">--</p>
+                </div>
+                <div>
+                    <label class="text-sm font-medium text-gray-500">Languages</label>
+                    <p id="profileLanguages" class="text-gray-900 font-semibold">--</p>
+                </div>
+                <div>
+                    <label class="text-sm font-medium text-gray-500">Two Wheeler</label>
+                    <p id="profileTwoWheeler" class="text-gray-900 font-semibold">--</p>
+                </div>
+                <div>
+                    <label class="text-sm font-medium text-gray-500">Experience</label>
+                    <p id="profileExperience" class="text-gray-900 font-semibold">--</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Job Matches (Hidden until conversation completes) -->
+        <div id="jobMatches" class="hidden">
+            <h3 class="text-2xl font-bold text-gray-800 mb-6">
+                <i class="fas fa-briefcase mr-2"></i>Top Job Matches
+            </h3>
+            <div id="jobMatchesList" class="space-y-6">
+                <!-- Job matches will be populated here -->
+            </div>
+        </div>
+    </main>
+
+    <!-- Audio Elements -->
+    <audio id="responseAudio" preload="auto"></audio>
+
+    <!-- JavaScript -->
+    <script src="/static/app.js"></script>
+</body>
+</html> 

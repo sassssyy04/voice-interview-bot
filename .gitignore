@@ -1,0 +1,47 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg-info/
+.eggs/
+.build/
+.dist/
+.cache/
+pytest_cache/
+.venv/
+venv/
+.env
+.env.*
+
+# Node / frontend
+node_modules/
+*.log
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Audio/temp
+*.wav
+*.webm
+*.mp3
+*.ogg
+
+# Local creds (keep data JSONs, but ignore known credential patterns)
+*service-account*.json
+*-credentials.json
+*credentials*.json
+gen-lang-client-*.json
+
+# Coverage / reports
+htmlcov/
+.coverage*
+
+# Poetry
+poetry.lock 
