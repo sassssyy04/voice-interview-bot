@@ -54,7 +54,30 @@ async def process_voice_turn(candidate_id: str, audio_file: UploadFile = File(..
     try:
         # Read audio data
         audio_data = await audio_file.read()
-        
+
+        # Ignore too-short audio to prevent premature "didn't understand" replies
+        MIN_AUDIO_BYTES = 4096
+        if len(audio_data) < MIN_AUDIO_BYTES:
+            try:
+                prompt_text = "Kripya button ko dabaye rakhen aur bolein."
+                if orchestrator.tts_service:
+                    tts_audio = await orchestrator.tts_service.synthesize_speech(prompt_text)
+                    response_audio_base64 = base64.b64encode(tts_audio).decode('utf-8')
+                else:
+                    response_audio_base64 = ""
+                metrics = orchestrator.get_conversation_metrics(candidate_id)
+                return {
+                    "candidate_id": candidate_id,
+                    "text": prompt_text,
+                    "audio_data": response_audio_base64,
+                    "audio_format": "wav" if response_audio_base64 else "text",
+                    "conversation_complete": False,
+                    "metrics": metrics
+                }
+            except Exception:
+                # If any issue generating TTS, fall back to normal processing
+                pass
+         
         # Process the turn
         response_text, response_audio, conversation_complete = await orchestrator.process_turn(
             candidate_id, audio_data

@@ -7,6 +7,8 @@ class VoiceBot {
         this.audioChunks = [];
         this.conversationActive = false;
         this.lastTurnStartTime = null;
+        this.minRecordingMs = 600;
+        this.recordingStartTimeMs = null;
         
         this.initializeElements();
         this.setupEventListeners();
@@ -54,12 +56,18 @@ class VoiceBot {
         this.demoBtn.addEventListener('click', () => this.runJobMatchingDemo());
         this.pauseBtn.addEventListener('click', () => this.pauseConversation());
         this.stopBtn.addEventListener('click', () => this.stopConversation());
-        this.micButton.addEventListener('click', () => this.toggleRecording());
+        // this.micButton.addEventListener('click', () => this.toggleRecording());
+        // ... existing code ...
+        this.micButton.addEventListener('mousedown', () => this.onPressStart());
+        this.micButton.addEventListener('touchstart', () => this.onPressStart(), { passive: true });
+        document.addEventListener('mouseup', () => this.onPressEnd());
+        document.addEventListener('touchend', () => this.onPressEnd());
+        document.addEventListener('touchcancel', () => this.onPressEnd());
         
-        // Audio playback ended - start listening again
+        // Audio playback ended - do not auto-start listening in push-to-talk mode
         this.responseAudio.addEventListener('ended', () => {
             if (this.conversationActive && !this.isPaused) {
-                this.startListening();
+                this.micStatus.textContent = 'Press and hold to talk';
             }
         });
     }
@@ -100,19 +108,19 @@ class VoiceBot {
                 throw new Error('Failed to start conversation');
             }
             
-                    const data = await response.json();
-        this.candidateId = data.candidate_id;
-        
-        // Check if we're in demo mode
-        if (data.audio_format === "text" || !data.audio_data) {
-            // Demo mode - show message instead of playing audio
-            this.addToConversationLog('Bot', data.message, false);
-            this.micStatus.textContent = 'Demo Mode: Enable Google Cloud APIs for voice';
-        } else {
-            // Play initial greeting
-            await this.playAudioFromBase64(data.audio_data);
-            this.addToConversationLog('Bot', 'Namaste! Main aapka voice assistant hun job interview ke liye।', true);
-        }
+            const data = await response.json();
+            this.candidateId = data.candidate_id;
+            
+            // Check if we're in demo mode
+            if (data.audio_format === "text" || !data.audio_data) {
+                // Demo mode - show message instead of playing audio
+                this.addToConversationLog('Bot', data.message, false);
+                this.micStatus.textContent = 'Demo Mode: Enable Google Cloud APIs for voice';
+            } else {
+                // Play initial greeting
+                await this.playAudioFromBase64(data.audio_data);
+                this.addToConversationLog('Bot', 'Namaste! Main aapka voice assistant hun job interview ke liye।', true);
+            }
             
             // Update UI
             this.conversationActive = true;
@@ -120,9 +128,10 @@ class VoiceBot {
             this.updateConnectionStatus('Connected', 'text-green-500');
             this.addToConversationLog('Bot', 'Namaste! Main aapka voice assistant hun job interview ke liye।', true);
             this.candidateProfile.classList.remove('hidden');
+            this.micStatus.textContent = 'Press and hold to talk';
             
-            // Start listening after greeting
-            setTimeout(() => this.startListening(), 1000);
+            // Start listening after greeting (disabled for push-to-talk)
+            // setTimeout(() => this.startListening(), 1000);
             
         } catch (error) {
             console.error('Error starting conversation:', error);
@@ -142,7 +151,8 @@ class VoiceBot {
         } else {
             this.pauseBtn.innerHTML = '<i class="fas fa-pause mr-2"></i>Pause';
             this.updateConnectionStatus('Connected', 'text-green-500');
-            this.startListening();
+            // In push-to-talk mode, do not auto-start listening
+            this.micStatus.textContent = 'Press and hold to talk';
         }
     }
 
@@ -192,17 +202,17 @@ class VoiceBot {
             };
             
             this.isRecording = true;
-            this.lastTurnStartTime = Date.now();
+            this.recordingStartTimeMs = Date.now();
             this.mediaRecorder.start();
             
             this.updateRecordingUI(true);
             
-            // Auto-stop recording after 10 seconds
-            setTimeout(() => {
-                if (this.isRecording) {
-                    this.stopRecording();
-                }
-            }, 10000);
+            // Auto-stop recording after 10 seconds (disabled for push-to-talk)
+            // setTimeout(() => {
+            //     if (this.isRecording) {
+            //         this.stopRecording();
+            //     }
+            // }, 10000);
             
         } catch (error) {
             console.error('Error starting recording:', error);
@@ -228,15 +238,72 @@ class VoiceBot {
         }
     }
 
+    // Start recording on press, stop on release (press-to-talk)
+    onPressStart() {
+        if (!this.conversationActive) {
+            this.startConversation();
+            return;
+        }
+        if (this.isPaused) return;
+        // Barge-in: stop TTS playback when user starts speaking
+        if (this.responseAudio && !this.responseAudio.paused) {
+            try {
+                this.responseAudio.pause();
+                this.responseAudio.currentTime = 0;
+            } catch (e) {
+                // no-op
+            }
+        }
+        if (!this.isRecording) {
+            this.startListening();
+        }
+    }
+
+    onPressEnd() {
+        if (this.isRecording) {
+            this.stopRecording();
+        }
+    }
+
     async processRecording() {
         if (this.audioChunks.length === 0) return;
         
         try {
+            const durationMs = this.recordingStartTimeMs ? (Date.now() - this.recordingStartTimeMs) : 0;
+            if (durationMs < this.minRecordingMs) {
+                // Too short; ignore and prompt user to hold longer
+                this.audioChunks = [];
+                if (this.conversationActive) {
+                    this.micStatus.textContent = 'Hold longer to record';
+                    setTimeout(() => {
+                        if (this.conversationActive && !this.isRecording) {
+                            this.micStatus.textContent = 'Press and hold to talk';
+                        }
+                    }, 1000);
+                }
+                return;
+            }
+            
             this.micStatus.textContent = 'Processing your voice...';
             
             const audioBlob = new Blob(this.audioChunks, { type: 'audio/webm' });
+            // Skip if blob is suspiciously small (e.g., silence or accidental tap)
+            if (audioBlob.size < 2000) {
+                this.audioChunks = [];
+                if (this.conversationActive) {
+                    this.micStatus.textContent = 'Hold longer to record';
+                    setTimeout(() => {
+                        if (this.conversationActive && !this.isRecording) {
+                            this.micStatus.textContent = 'Press and hold to talk';
+                        }
+                    }, 1000);
+                }
+                return;
+            }
             const formData = new FormData();
             formData.append('audio_file', audioBlob, 'recording.webm');
+            // Start measuring round-trip (upload + server + download)
+            this.lastTurnStartTime = Date.now();
             
             const response = await fetch(`/api/v1/conversation/${this.candidateId}/turn`, {
                 method: 'POST',
@@ -275,13 +342,13 @@ class VoiceBot {
                 this.updateUIForInactiveConversation();
                 await this.loadJobMatches();
             } else {
-                this.micStatus.textContent = 'Listening...';
+                this.micStatus.textContent = 'Press and hold to talk';
             }
             
         } catch (error) {
             console.error('Error processing recording:', error);
             this.showError('Failed to process recording: ' + error.message);
-            this.micStatus.textContent = 'Error - click to try again';
+            this.micStatus.textContent = 'Error - press and hold to try again';
         }
     }
 
@@ -326,13 +393,15 @@ class VoiceBot {
         
         // Response time
         if (this.lastTurnStartTime) {
-            const responseTime = Date.now() - this.lastTurnStartTime;
-            this.responseTimeEl.textContent = `${responseTime} ms`;
+            const roundTripMs = Date.now() - this.lastTurnStartTime;
+            const serverMs = metrics.last_server_latency_ms || roundTripMs;
+            const display = `${roundTripMs} ms` + (serverMs && serverMs !== roundTripMs ? ` (server ${serverMs} ms)` : '');
+            this.responseTimeEl.textContent = display;
             
-            // Color code based on target
-            if (responseTime < 2000) {
+            // Color code based on target (round-trip)
+            if (roundTripMs < 2000) {
                 this.responseTimeEl.className = 'text-2xl font-bold text-green-600';
-            } else if (responseTime < 3000) {
+            } else if (roundTripMs < 3000) {
                 this.responseTimeEl.className = 'text-2xl font-bold text-yellow-600';
             } else {
                 this.responseTimeEl.className = 'text-2xl font-bold text-red-600';
@@ -490,12 +559,15 @@ class VoiceBot {
         if (recording) {
             this.micButton.classList.add('recording', 'bg-red-500');
             this.micButton.classList.remove('bg-blue-500');
-            this.micStatus.textContent = 'Recording... (speak now)';
+            this.micStatus.textContent = 'Listening... release to send';
             this.audioVisualizer.classList.remove('hidden');
         } else {
             this.micButton.classList.remove('recording', 'bg-red-500');
             this.micButton.classList.add('bg-blue-500');
             this.audioVisualizer.classList.add('hidden');
+            if (this.conversationActive) {
+                this.micStatus.textContent = 'Press and hold to talk';
+            }
         }
     }
 

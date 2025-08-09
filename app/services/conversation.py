@@ -515,4 +515,5 @@ class ConversationOrchestrator:
             "completion_rate": completion_rate,
             "current_field": current_field,
             "candidate_profile": candidate.dict() if candidate else None,
+            "last_server_latency_ms": latencies[-1] if latencies else 0.0,
         } 
