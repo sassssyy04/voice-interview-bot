@@ -50,9 +50,15 @@ class JobMatchingService:
         # Load available jobs
         jobs = await self._load_available_jobs()
         
-        # Calculate match scores for all jobs
+        # Calculate match scores for all jobs with 60km distance filtering
         job_scores = []
         for job in jobs:
+            # Apply 60km distance filter before calculating full match score
+            if candidate.pincode and job.pincode:
+                distance_km = self._calculate_distance(candidate.pincode, job.pincode)
+                if distance_km > 60.0:
+                    continue  # Skip jobs beyond 60km
+            
             match = self._calculate_job_match(candidate, job)
             if match.match_score > 0:  # Only include viable matches
                 job_scores.append(match)
@@ -62,6 +68,10 @@ class JobMatchingService:
         
         # Take top 3 matches
         top_matches = job_scores[:3]
+        
+        # If no matches found within distance, log it
+        if len(job_scores) == 0:
+            logger.info(f"No jobs found within 60km for candidate {candidate.candidate_id} at pincode {candidate.pincode}")
         
         result = MatchingResult(
             candidate_id=candidate.candidate_id,
@@ -121,22 +131,34 @@ class JobMatchingService:
         
         system_prompt = (
             "You are a recruitment voice assistant for Indian blue-collar workers. "
-            "Speak Hinglish (simple Hindi + English), short lines, neutral Indian tone. "
+            "Speak Hinglish (simple Hindi and english where required), short lines, neutral Indian tone. "
             "Keep under 100-120 words, no long paragraphs, easy to understand. "
             "Explain top 3 jobs in plain language with why it's a fit (pay, distance/location, shift, language, 2-wheeler, experience). "
             "Be honest about concerns if any. End with a short question asking which job they want to hear more about."
         )
         
-        user_prompt = (
-            "Candidate profile and job matches are below as JSON. "
-            "Return a single Hinglish paragraph (2-3 lines) plus a short bullet list with 1 line per job. "
-            "Avoid technical words. Use rupee symbol. Keep respectful tone.\n\n"
-            f"Candidate: {json.dumps(cand, ensure_ascii=False)}\n"
-            f"TopMatches: {json.dumps(top, ensure_ascii=False)}"
-        )
+        # Handle no matches case for LLM
+        if not result.top_matches:
+            user_prompt = (
+                "No job matches found within 60km radius for the candidate. "
+                "Return a respectful Hinglish message explaining no suitable jobs are available in their area "
+                "and that they will be notified when matching jobs become available."
+            )
+        else:
+            user_prompt = (
+                "Candidate profile and job matches are below as JSON. "
+                "Return a single Hinglish paragraph (2-3 lines) plus a short bullet list with 1 line per job. "
+                "Avoid technical words. Use rupee symbol. Keep respectful tone.\n\n"
+                f"Candidate: {json.dumps(cand, ensure_ascii=False)}\n"
+                f"TopMatches: {json.dumps(top, ensure_ascii=False)}"
+            )
         
         # If OpenAI unavailable, fallback to a compact rule-based summary
         if not (openai and settings.openai_api_key):
+            # Handle no jobs case
+            if not result.top_matches:
+                return "Maaf kijiye, aapke area mein 60km ke radius mein koi suitable job available nahi hai abhi. Hum aapko notify kar denge jab koi matching job mil jayegi."
+            
             parts = ["Aapke details dekhkar ye jobs best lag rahi hain:"]
             bullets = []
             for i, m in enumerate(result.top_matches[:3], 1):
@@ -158,6 +180,9 @@ class JobMatchingService:
         except Exception as e:
             logger.error(f"LLM personalization failed: {e}")
             # Fallback to rule-based summary
+            if not result.top_matches:
+                return "Maaf kijiye, aapke area mein 60km ke radius mein koi suitable job available nahi hai abhi. Hum aapko notify kar denge jab koi matching job mil jayegi."
+            
             parts = ["Aapke details dekhkar ye jobs best lag rahi hain:"]
             bullets = []
             for i, m in enumerate(result.top_matches[:3], 1):
@@ -330,27 +355,32 @@ class JobMatchingService:
         )
     
     def _calculate_distance(self, pincode1: str, pincode2: str) -> float:
-        """Calculate distance between two pincodes in kilometers."""
-        if pincode1 not in self.location_data or pincode2 not in self.location_data:
-            return 25.0  # Default moderate distance
+        """Calculate distance between two pincodes using simple pincode difference.
         
-        loc1 = self.location_data[pincode1]
-        loc2 = self.location_data[pincode2]
-        
-        # Haversine formula for distance calculation
-        lat1, lng1 = math.radians(loc1["lat"]), math.radians(loc1["lng"])
-        lat2, lng2 = math.radians(loc2["lat"]), math.radians(loc2["lng"])
-        
-        dlat = lat2 - lat1
-        dlng = lng2 - lng1
-        
-        a = math.sin(dlat/2)**2 + math.cos(lat1) * math.cos(lat2) * math.sin(dlng/2)**2
-        c = 2 * math.asin(math.sqrt(a))
-        
-        # Earth radius in kilometers
-        r = 6371
-        
-        return c * r
+        Uses direct subtraction of pincode numbers as a proxy for distance.
+        Every 1000 pincode difference ≈ 100km approximately.
+        """
+        try:
+            if not pincode1 or not pincode2:
+                return 100.0  # Default large distance for missing pincodes
+            
+            # Convert pincodes to integers for direct subtraction
+            pin1 = int(pincode1)
+            pin2 = int(pincode2)
+            
+            # Calculate absolute difference
+            pincode_diff = abs(pin1 - pin2)
+            
+            # Convert pincode difference to approximate kilometers
+            # 1000 pincode difference ≈ 100km (rough approximation for India)
+            distance_km = pincode_diff / 10  # Every 10 pincode units = 1km
+            
+            # Cap maximum distance for very different pincodes
+            return min(distance_km, 500.0)
+            
+        except (ValueError, TypeError):
+            logger.error(f"Error calculating pincode distance: {pincode1} vs {pincode2}")
+            return 100.0  # Default large distance for invalid pincodes
     
     def _calculate_salary_fit(self, expected: int, job_min: int, job_max: int) -> float:
         """Calculate how well job salary matches candidate expectation."""

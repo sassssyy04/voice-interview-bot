@@ -22,6 +22,20 @@ class LanguageSkill(str, Enum):
     GUJARATI = "gujarati"
     KANNADA = "kannada"
     PUNJABI = "punjabi"
+    MALAYALAM = "malayalam"
+    ODIA = "odia"
+    ASSAMESE = "assamese"
+    URDU = "urdu"
+    NEPALI = "nepali"
+    KASHMIRI = "kashmiri"
+    SINDHI = "sindhi"
+    KONKANI = "konkani"
+    MANIPURI = "manipuri"
+    MAITHILI = "maithili"
+    SANTALI = "santali"
+    BODO = "bodo"
+    DOGRI = "dogri"
+    BHOJPURI = "bhojpuri"
 
 
 class Candidate(BaseModel):
@@ -44,6 +58,7 @@ class Candidate(BaseModel):
     
     # Skills & Requirements
     languages: List[LanguageSkill] = Field(default_factory=list, description="Known languages")
+    other_languages: List[str] = Field(default_factory=list, description="Other languages not in enum")
     has_two_wheeler: Optional[bool] = Field(None, description="Owns 2-wheeler")
     total_experience_months: Optional[int] = Field(None, description="Total work experience in months")
     
@@ -63,6 +78,8 @@ class ConversationState(BaseModel):
     last_confidence: float = Field(0.0, description="Last ASR confidence score")
     needs_confirmation: bool = Field(False, description="Whether last input needs confirmation")
     pending_confirmation_value: Optional[str] = Field(None, description="Value awaiting confirmation")
+    pending_confirmation_slot: Optional[str] = Field(None, description="Slot awaiting confirmation")
+    in_final_confirmation: bool = Field(False, description="Whether in final entity confirmation step")
     
     @property
     def completion_rate(self) -> float:

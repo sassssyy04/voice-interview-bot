@@ -1,0 +1,31 @@
+{
+  "session_id": "test_session_1754800665",
+  "start_time": "2025-08-10T12:37:45.393209",
+  "end_time": "2025-08-10T12:37:48.490832",
+  "test_results": [
+    {
+      "utterance_id": "pin_001",
+      "audio_path": "test_harness/generated_audio/pin_001_clean.wav",
+      "expected_transcript": "main delhi mein rehta hun mera pincode hai ek lakh das hazar ek",
+      "expected_entities": {
+        "pincode": "110001"
+      },
+      "actual_transcript": "",
+      "actual_entities": {},
+      "bot_response": "ERROR: received 1012 (service restart); then sent 1012 (service restart)",
+      "asr_latency_ms": 0,
+      "nlu_latency_ms": 0,
+      "total_latency_ms": 0,
+      "turn_count": 0,
+      "completion_status": "failed",
+      "transcript_similarity": 0.0,
+      "entity_matches": {},
+      "f1_scores": {}
+    }
+  ],
+  "overall_entity_f1": 0.0,
+  "per_slot_f1": {},
+  "completion_rate": 0.0,
+  "avg_latency_ms": 0.0,
+  "success_rate": 0.0
+}

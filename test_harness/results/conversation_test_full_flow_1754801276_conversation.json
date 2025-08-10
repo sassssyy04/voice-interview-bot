@@ -1,0 +1,31 @@
+{
+  "session_id": "conversation_test_full_flow_1754801276",
+  "candidate_id": "9bf89efe-f663-4787-9ce8-5ea326983fec",
+  "start_time": "2025-08-10T12:47:56.929883",
+  "end_time": "2025-08-10T12:48:45.068820",
+  "turns": [
+    {
+      "turn_id": "turn_1",
+      "step_name": "pincode",
+      "expected_question": "Aap kahan rehte hain? Apna pincode ya area batayiye।",
+      "audio_file": "test_harness/generated_audio/pin_001_clean.wav",
+      "expected_entity": {
+        "pincode": "110001"
+      },
+      "bot_response": "",
+      "asr_text": "",
+      "asr_confidence": 0.0,
+      "latency_ms": 0.0,
+      "success": false,
+      "extracted_entity": null
+    }
+  ],
+  "completed_steps": 0,
+  "total_steps": 7,
+  "reached_job_matching": false,
+  "final_bot_response": "",
+  "conversation_completed": false,
+  "total_latency_ms": 0,
+  "avg_turn_latency_ms": 0,
+  "entity_extraction_accuracy": 0.0
+}

@@ -1,7 +1,7 @@
 import base64
 import json
 from typing import Dict, Any, List
-from fastapi import APIRouter, WebSocket, WebSocketDisconnect, HTTPException, File, UploadFile
+from fastapi import APIRouter, WebSocket, WebSocketDisconnect, HTTPException, File, UploadFile, BackgroundTasks
 from fastapi.responses import JSONResponse
 from app.services.conversation import ConversationOrchestrator
 from app.core.logger import logger
@@ -26,6 +26,13 @@ async def start_conversation():
     """Start a new voice conversation session."""
     try:
         candidate_id, audio_data = await orchestrator.start_conversation()
+        
+        # Debug: Check if conversation was stored immediately
+        logger.info(f"DEBUG: After start_conversation, checking state storage...")
+        logger.info(f"DEBUG: Orchestrator instance: {id(orchestrator)}")
+        logger.info(f"DEBUG: Candidates count: {len(orchestrator.candidates)}")
+        logger.info(f"DEBUG: States count: {len(orchestrator.conversation_states)}")
+        logger.info(f"DEBUG: Candidate {candidate_id} in states: {candidate_id in orchestrator.conversation_states}")
         
         # Convert audio to base64 for web transmission
         audio_base64 = base64.b64encode(audio_data).decode('utf-8')
@@ -56,7 +63,7 @@ async def process_voice_turn(candidate_id: str, audio_file: UploadFile = File(..
         audio_data = await audio_file.read()
 
         # Ignore too-short audio to prevent premature "didn't understand" replies
-        MIN_AUDIO_BYTES = 4096
+        MIN_AUDIO_BYTES = 512
         if len(audio_data) < MIN_AUDIO_BYTES:
             try:
                 prompt_text = "Kripya button ko dabaye rakhen aur bolein."
@@ -79,15 +86,49 @@ async def process_voice_turn(candidate_id: str, audio_file: UploadFile = File(..
                 pass
          
         # Process the turn
-        response_text, response_audio, conversation_complete = await orchestrator.process_turn(
+        response_text, response_audio, conversation_complete, asr_text, asr_conf = await orchestrator.process_turn(
             candidate_id, audio_data
         )
+        
+        # If conversation is complete, compute matches inline
+        inline_matches = None
+        total_jobs_considered = None
+        if conversation_complete:
+            try:
+                candidate = orchestrator.candidates.get(candidate_id)
+                if candidate:
+                    matches_result = await orchestrator.job_matching_service.find_job_matches(candidate)
+                    inline_matches = [
+                        {
+                            "job": m.job.dict(),
+                            "match_score": m.match_score,
+                            "rationale": m.rationale,
+                            "strengths": m.strengths,
+                            "concerns": m.concerns,
+                            "score_breakdown": {
+                                "location": m.location_score,
+                                "salary": m.salary_score,
+                                "shift": m.shift_score,
+                                "language": m.language_score,
+                                "vehicle": m.vehicle_score,
+                                "experience": m.experience_score,
+                            },
+                        }
+                        for m in matches_result.top_matches
+                    ]
+                    total_jobs_considered = matches_result.total_jobs_considered
+            except Exception as me:
+                logger.error(f"Inline match generation failed: {me}")
+                inline_matches = []
         
         # Convert response audio to base64
         response_audio_base64 = base64.b64encode(response_audio).decode('utf-8')
         
         # Get conversation metrics
         metrics = orchestrator.get_conversation_metrics(candidate_id)
+        # Use ASR from this turn directly
+        last_asr_text = asr_text
+        last_asr_conf = asr_conf
         
         return {
             "candidate_id": candidate_id,
@@ -95,7 +136,10 @@ async def process_voice_turn(candidate_id: str, audio_file: UploadFile = File(..
             "audio_data": response_audio_base64,
             "audio_format": "wav",
             "conversation_complete": conversation_complete,
-            "metrics": metrics
+            "metrics": metrics,
+            "asr": {"text": last_asr_text or "", "confidence": last_asr_conf or 0.0},
+            "matches": inline_matches,
+            "total_jobs_considered": total_jobs_considered,
         }
     
     except Exception as e:
@@ -103,11 +147,92 @@ async def process_voice_turn(candidate_id: str, audio_file: UploadFile = File(..
         raise HTTPException(status_code=500, detail="Failed to process voice turn")
 
 
+@router.post("/conversation/{candidate_id}/turn-fast")
+async def process_voice_turn_fast(candidate_id: str, background_tasks: BackgroundTasks, audio_file: UploadFile = File(...)):
+    """Process a voice turn quickly: return text immediately; TTS audio ready via fetch."""
+    try:
+        audio_data = await audio_file.read()
+        response_text, conversation_complete, asr_text, asr_conf, turn_id = await orchestrator.process_turn_text_only(
+            candidate_id, audio_data
+        )
+        # Kick off background TTS synthesis
+        background_tasks.add_task(orchestrator.synthesize_and_store_audio, candidate_id, turn_id, response_text)
+        metrics = orchestrator.get_conversation_metrics(candidate_id)
+
+        # If conversation complete, compute matches inline (so UI can render without extra fetch)
+        inline_matches = None
+        total_jobs_considered = None
+        if conversation_complete:
+            try:
+                candidate = orchestrator.candidates.get(candidate_id)
+                if candidate:
+                    matches_result = await orchestrator.job_matching_service.find_job_matches(candidate)
+                    inline_matches = [
+                        {
+                            "job": m.job.dict(),
+                            "match_score": m.match_score,
+                            "rationale": m.rationale,
+                            "strengths": m.strengths,
+                            "concerns": m.concerns,
+                            "score_breakdown": {
+                                "location": m.location_score,
+                                "salary": m.salary_score,
+                                "shift": m.shift_score,
+                                "language": m.language_score,
+                                "vehicle": m.vehicle_score,
+                                "experience": m.experience_score,
+                            },
+                        }
+                        for m in matches_result.top_matches
+                    ]
+                    total_jobs_considered = matches_result.total_jobs_considered
+            except Exception as me:
+                logger.error(f"Inline match generation failed (fast): {me}")
+                inline_matches = []
+
+        return {
+            "candidate_id": candidate_id,
+            "turn_id": turn_id,
+            "text": response_text,
+            "conversation_complete": conversation_complete,
+            "metrics": metrics,
+            "asr": {"text": asr_text or "", "confidence": asr_conf or 0.0},
+            "matches": inline_matches,
+            "total_jobs_considered": total_jobs_considered,
+        }
+    except Exception as e:
+        import traceback
+        logger.error(f"Failed to process fast turn: {e}")
+        logger.error(f"Traceback: {traceback.format_exc()}")
+        raise HTTPException(status_code=500, detail=f"Failed to process voice turn fast: {str(e)}")
+
+@router.get("/conversation/{candidate_id}/turn-audio/{turn_id}")
+async def fetch_turn_audio(candidate_id: str, turn_id: str):
+    """Fetch background-synthesized TTS audio for a prior turn."""
+    try:
+        audio = orchestrator.pop_pending_audio(candidate_id, turn_id)
+        if not audio:
+            return {"ready": False}
+        audio_base64 = base64.b64encode(audio).decode('utf-8')
+        return {"ready": True, "audio_data": audio_base64, "audio_format": "wav"}
+    except Exception as e:
+        logger.error(f"Failed to fetch turn audio: {e}")
+        raise HTTPException(status_code=500, detail="Failed to fetch turn audio")
+
+
 @router.get("/conversation/{candidate_id}/status")
 async def get_conversation_status(candidate_id: str):
     """Get current conversation status and metrics."""
     try:
+        # Debug: Check orchestrator state  
+        logger.info(f"DEBUG: Status check for {candidate_id}")
+        logger.info(f"DEBUG: Orchestrator instance: {id(orchestrator)}")
+        logger.info(f"DEBUG: Candidates count: {len(orchestrator.candidates)}")
+        logger.info(f"DEBUG: States count: {len(orchestrator.conversation_states)}")
+        logger.info(f"DEBUG: Available candidate IDs: {list(orchestrator.conversation_states.keys())}")
+        
         if candidate_id not in orchestrator.conversation_states:
+            logger.error(f"DEBUG: Candidate {candidate_id} not found in conversation_states")
             raise HTTPException(status_code=404, detail="Conversation not found")
         
         state = orchestrator.conversation_states[candidate_id]
@@ -238,7 +363,7 @@ async def websocket_endpoint(websocket: WebSocket, candidate_id: str):
             data = await websocket.receive_bytes()
             
             # Process the voice turn
-            response_text, response_audio, conversation_complete = await orchestrator.process_turn(
+            response_text, response_audio, conversation_complete, asr_text, asr_conf = await orchestrator.process_turn(
                 candidate_id, data
             )
             
@@ -246,7 +371,8 @@ async def websocket_endpoint(websocket: WebSocket, candidate_id: str):
             response_data = {
                 "text": response_text,
                 "audio_data": base64.b64encode(response_audio).decode('utf-8'),
-                "conversation_complete": conversation_complete
+                "conversation_complete": conversation_complete,
+                "asr": {"text": asr_text or "", "confidence": asr_conf or 0.0}
             }
             
             await websocket.send_text(json.dumps(response_data))

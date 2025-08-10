@@ -10,29 +10,58 @@ except ImportError:
 
 try:
     from pydub import AudioSegment
+    from pydub.utils import which
 except ImportError:
     print("pydub not installed. Install with: pip install pydub")
     AudioSegment = None
 
-try:
-    import azure.cognitiveservices.speech as speechsdk
-except ImportError:
-    print("Azure Speech SDK not installed.")
-    speechsdk = None
+# Azure removed
+speechsdk = None
 
 try:
     from google.cloud import speech
 except ImportError:
     print("Google Cloud Speech not installed.")
     speech = None
+
+
+import httpx
+import json
+import os
+import base64
+
 from app.core.config import settings
 from app.core.logger import logger
+
+# Sarvam SDK (optional)
+try:
+    from sarvamai import AsyncSarvamAI  # type: ignore
+except Exception:  # pragma: no cover
+    AsyncSarvamAI = None  # type: ignore
 
 
 class ASRService:
     """Automatic Speech Recognition service supporting multiple providers."""
     
     def __init__(self):
+        # Configure ffmpeg/ffprobe if provided
+        if AudioSegment is not None:
+            try:
+                if settings.ffmpeg_path and os.path.exists(settings.ffmpeg_path):
+                    AudioSegment.converter = settings.ffmpeg_path
+                if settings.ffprobe_path and os.path.exists(settings.ffprobe_path):
+                    AudioSegment.ffprobe = settings.ffprobe_path
+                # Fallback to auto-detect if not set
+                if not getattr(AudioSegment, 'converter', None):
+                    AudioSegment.converter = which('ffmpeg') or which('avconv')
+                if not getattr(AudioSegment, 'ffprobe', None):
+                    AudioSegment.ffprobe = which('ffprobe') or which('avprobe')
+            except Exception:
+                pass
+        
+        # Still track whether ElevenLabs key exists (used elsewhere), but do not use for ASR
+        self.elevenlabs_enabled = bool(settings.elevenlabs_api_key)
+        
         if sr is not None:
             self.recognizer = sr.Recognizer()
             self.recognizer.energy_threshold = 300
@@ -41,21 +70,37 @@ class ASRService:
         else:
             self.recognizer = None
         
-        # Configure Azure Speech (primary for Hinglish)
-        if speechsdk and settings.azure_speech_key and settings.azure_speech_region:
-            self.azure_config = speechsdk.SpeechConfig(
-                subscription=settings.azure_speech_key,
-                region=settings.azure_speech_region
-            )
-            self.azure_config.speech_recognition_language = "hi-IN"
-        else:
-            self.azure_config = None
-            
-        # Configure Google Speech (fallback)
-        if speech and settings.google_credentials_path:
-            self.google_client = speech.SpeechClient()
+        # Remove Azure
+        self.azure_config = None
+        
+        # Configure Google Speech (primary ASR if Sarvam not available)
+        if speech and (settings.google_credentials_path or settings.google_application_credentials):
+            try:
+                # Ensure env var is set for Google SDK
+                creds_path = settings.google_credentials_path or settings.google_application_credentials
+                if creds_path and os.path.exists(creds_path):
+                    os.environ.setdefault("GOOGLE_APPLICATION_CREDENTIALS", creds_path)
+            except Exception:
+                pass
+            try:
+                self.google_client = speech.SpeechClient()
+            except Exception as e:
+                logger.error(f"Failed to initialize Google Speech client: {e}")
+                self.google_client = None
         else:
             self.google_client = None
+        
+        # Removed HF Whisper pipeline
+        self.hf_asr = None
+
+        # Configure Sarvam client (preferred when available)
+        self.sarvam_client = None
+        if settings.sarvam_api_key and AsyncSarvamAI is not None:
+            try:
+                self.sarvam_client = AsyncSarvamAI(api_subscription_key=settings.sarvam_api_key)
+            except Exception as e:
+                logger.error(f"Failed to initialize Sarvam client: {e}")
+                self.sarvam_client = None
     
     async def transcribe_audio(self, audio_data: bytes) -> Dict[str, Any]:
         """Transcribe audio and return text and confidence.
@@ -77,78 +122,133 @@ class ASRService:
         Returns:
             Tuple[str, float]: (recognized_text, confidence_score)
         """
-        if self.recognizer is None:
+        if self.recognizer is None and self.google_client is None and self.sarvam_client is None:
             return "Voice recognition not available in demo mode", 0.0
             
         start_time = time.time()
         
         try:
-            # Try Azure first (best for Hinglish)
-            text, confidence = await self._recognize_with_azure(audio_data)
-            
-            if confidence < settings.confidence_threshold:
-                logger.warning(f"Low confidence from Azure: {confidence}")
-                # Fallback to Google
-                try:
-                    google_text, google_confidence = await self._recognize_with_google(audio_data)
-                    if google_confidence > confidence:
-                        text, confidence = google_text, google_confidence
-                except Exception as ge:
-                    logger.error(f"Google ASR fallback failed: {ge}")
-                    # Fall through to SpeechRecognition
-                    text, confidence = await self._recognize_with_speechrecognition(audio_data)
-                    
-        except Exception as e:
-            logger.error(f"ASR recognition failed with Azure: {e}")
-            # Try Google next
-            try:
+            # Preferred: Sarvam streaming if configured
+            if self.sarvam_client is not None:
+                text, confidence = await self._recognize_with_sarvam_streaming(audio_data)
+            # Next: Google if configured
+            elif self.google_client is not None:
                 text, confidence = await self._recognize_with_google(audio_data)
-            except Exception as ge:
-                logger.error(f"ASR recognition also failed with Google: {ge}")
-                # Final fallback to speech_recognition library
+            # Final: SpeechRecognition lib
+            else:
                 text, confidence = await self._recognize_with_speechrecognition(audio_data)
+        except Exception as e:
+            logger.error(f"ASR recognition failed: {e}")
+            # Final fallback to speech_recognition library
+            text, confidence = await self._recognize_with_speechrecognition(audio_data)
         
         processing_time = (time.time() - start_time) * 1000
         
         logger.bind(metrics=True).info({
             "event": "asr_completed",
+            "provider": "sarvam" if self.sarvam_client is not None else ("google" if self.google_client is not None else "speech_recognition"),
             "text": text,
             "confidence": confidence,
             "processing_time_ms": processing_time
         })
         
         return text, confidence
-    
-    async def _recognize_with_azure(self, audio_data: bytes) -> Tuple[str, float]:
-        """Recognize speech using Azure Speech Service."""
-        if not hasattr(self, 'azure_config') or self.azure_config is None:
-            raise Exception("Azure Speech not configured")
-            
-        try:
-            # Convert audio to format expected by Azure
-            audio_stream = io.BytesIO(audio_data)
-            audio_config = speechsdk.audio.AudioConfig(stream=speechsdk.audio.PullAudioInputStream(audio_stream))
-            
-            speech_recognizer = speechsdk.SpeechRecognizer(
-                speech_config=self.azure_config,
-                audio_config=audio_config
-            )
-            
-            # Perform recognition
-            result = speech_recognizer.recognize_once()
-            
-            if result.reason == speechsdk.ResultReason.RecognizedSpeech:
-                confidence = self._extract_azure_confidence(result)
-                return result.text, confidence
-            elif result.reason == speechsdk.ResultReason.NoMatch:
-                return "", 0.0
-            else:
-                raise Exception(f"Azure recognition failed: {result.reason}")
-                
-        except Exception as e:
-            logger.error(f"Azure ASR error: {e}")
-            raise
-    
+
+    async def _recognize_with_sarvam_streaming(self, audio_data: bytes) -> Tuple[str, float]:
+        """Recognize speech using Sarvam streaming ASR.
+        
+        Args:
+            audio_data (bytes): Raw audio data to transcribe
+        
+        Returns:
+            Tuple[str, float]: (recognized_text, confidence_score)
+        """
+        if self.sarvam_client is None:
+            raise Exception("Sarvam ASR not configured")
+
+        audio_b64: str = base64.b64encode(audio_data).decode("utf-8")
+        language_code: str = settings.sarvam_language_code or "hi-IN"
+        model: str = settings.sarvam_asr_model or "saarika:v2.5"
+        high_vad: bool = bool(settings.sarvam_high_vad_sensitivity)
+        vad_signals: bool = bool(settings.sarvam_vad_signals)
+
+        async with self.sarvam_client.speech_to_text_streaming.connect(
+            language_code=language_code,
+            model=model,
+            high_vad_sensitivity=high_vad,
+            vad_signals=vad_signals,
+        ) as ws:
+            await ws.transcribe(audio=audio_b64)
+
+            final_text: str = ""
+            # Read messages until final transcript is received
+            for _ in range(50):  # safety cap to avoid infinite loops
+                resp = await ws.recv()
+                try:
+                    if isinstance(resp, (bytes, bytearray)):
+                        payload = json.loads(resp.decode("utf-8"))
+                    elif isinstance(resp, str):
+                        payload = json.loads(resp)
+                    elif isinstance(resp, dict):
+                        payload = resp
+                    else:
+                        payload = {}
+                except Exception:
+                    payload = {}
+                event_type = payload.get("type") or payload.get("event")
+                if event_type == "transcript" or ("transcript" in payload):
+                    final_text = payload.get("transcript", payload.get("text", ""))
+                    break
+            confidence: float = 0.9 if final_text else 0.0
+            return final_text, confidence
+
+    async def _recognize_with_elevenlabs(self, audio_data: bytes) -> Tuple[str, float]:
+        """Recognize speech using ElevenLabs Scribe STT API.
+        Sends audio as WAV if possible; falls back to raw bytes.
+        """
+        if not settings.elevenlabs_api_key:
+            raise Exception("ElevenLabs API key not configured")
+        # Convert to WAV for best compatibility
+        payload_bytes = audio_data
+        filename = "audio.wav"
+        content_type = "audio/wav"
+        if AudioSegment is not None:
+            try:
+                segment = AudioSegment.from_file(io.BytesIO(audio_data))
+                wav_buf = io.BytesIO()
+                segment.export(wav_buf, format="wav")
+                wav_buf.seek(0)
+                payload_bytes = wav_buf.read()
+            except Exception as conv_e:
+                logger.warning(f"ElevenLabs ASR: could not convert to WAV, using raw bytes: {conv_e}")
+                filename = "audio.bin"
+                content_type = "application/octet-stream"
+        else:
+            filename = "audio.bin"
+            content_type = "application/octet-stream"
+
+        url = "https://api.elevenlabs.io/v1/speech-to-text"
+        headers = {"xi-api-key": settings.elevenlabs_api_key}
+        form = {
+            "model_id": (None, settings.elevenlabs_asr_model_id or "scribe_v1"),
+        }
+        if settings.elevenlabs_asr_language_code:
+            form["language_code"] = (None, settings.elevenlabs_asr_language_code)
+
+        files = {
+            "audio": (filename, payload_bytes, content_type)
+        }
+
+        async with httpx.AsyncClient(timeout=30.0) as client:
+            resp = await client.post(url, headers=headers, data=form, files=files)
+            if resp.status_code != 200:
+                raise Exception(f"ElevenLabs STT error: {resp.status_code} {resp.text[:200]}")
+            data = resp.json()
+            text = data.get("text", "")
+            # If they provide probability, map to confidence, else default
+            confidence = float(data.get("language_probability", 0.9)) if text else 0.0
+            return text, confidence
+
     async def _recognize_with_google(self, audio_data: bytes) -> Tuple[str, float]:
         """Recognize speech using Google Speech-to-Text."""
         if not hasattr(self, 'google_client') or self.google_client is None:
@@ -172,7 +272,6 @@ class ASRService:
                 if result.alternatives:
                     alternative = result.alternatives[0]
                     return alternative.transcript, alternative.confidence
-                    
             return "", 0.0
             
         except Exception as e:
@@ -201,18 +300,6 @@ class ASRService:
             logger.error(f"Fallback ASR error: {e}")
             return "", 0.0
     
-    def _extract_azure_confidence(self, result) -> float:
-        """Extract confidence score from Azure result."""
-        try:
-            # Azure provides confidence in JSON details
-            import json
-            details = json.loads(result.json)
-            if 'NBest' in details and details['NBest']:
-                return details['NBest'][0].get('Confidence', 0.0)
-        except:
-            pass
-        return 0.8  # Default confidence if not available
-    
     async def normalize_hinglish_text(self, text: str) -> str:
         """Normalize Hinglish text for better entity extraction.
         
@@ -224,7 +311,7 @@ class ASRService:
         """
         if not text:
             return text
-            
+        
         # Common Hinglish normalizations
         normalizations = {
             # Time expressions
@@ -252,5 +339,5 @@ class ASRService:
         normalized = text.lower()
         for hindi, english in normalizations.items():
             normalized = normalized.replace(hindi, english)
-            
+        
         return normalized 

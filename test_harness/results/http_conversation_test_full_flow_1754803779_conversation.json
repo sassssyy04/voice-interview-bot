@@ -1,0 +1,125 @@
+{
+  "session_id": "http_conversation_test_full_flow_1754803779",
+  "candidate_id": "8aee28ae-b648-4750-aaf5-fb86636e070f",
+  "start_time": "2025-08-10T13:29:39.270974",
+  "end_time": "2025-08-10T13:30:11.964319",
+  "turns": [
+    {
+      "turn_id": "eed7d0ce-fafb-46e3-a525-20f6774e2643",
+      "step_name": "pincode",
+      "expected_question": "Aap kahan rehte hain? Apna pincode ya area batayiye।",
+      "audio_file": "test_harness/generated_audio/pin_001_clean.wav",
+      "expected_entity": {
+        "pincode": "110001"
+      },
+      "bot_response": "Aap kab se kaam shuru kar sakte hain? Aaj, kal ya koi aur din?",
+      "asr_text": "मैं इन दिल्ली में रहता हूं। मेरा पिन कोड है गांव से रोहतक।",
+      "asr_confidence": 1.0,
+      "latency_ms": 2876.558780670166,
+      "success": true,
+      "extracted_entity": null
+    },
+    {
+      "turn_id": "23e45543-487c-407e-8cc2-6252e45cede9",
+      "step_name": "expected_salary",
+      "expected_question": "Aapko kitni salary chahiye har mahine? Rupees mein batayiye।",
+      "audio_file": "test_harness/generated_audio/sal_001_clean.wav",
+      "expected_entity": {
+        "expected_salary": 15000
+      },
+      "bot_response": "Aap kaunse time pe kaam karna chahte hain? Morning, evening ya night?",
+      "asr_text": "भाई, मैं फिफ्टीन थाउजेंड पर मंथ एक्सपेक्ट करता हूं।",
+      "asr_confidence": 1.0,
+      "latency_ms": 2298.841953277588,
+      "success": true,
+      "extracted_entity": null
+    },
+    {
+      "turn_id": "91cb7e62-ef17-455f-aa14-d1a687a2326d",
+      "step_name": "has_two_wheeler",
+      "expected_question": "Kya aapke paas bike ya scooter hai?",
+      "audio_file": "test_harness/generated_audio/vehicle_001_clean.wav",
+      "expected_entity": {
+        "has_two_wheeler": true
+      },
+      "bot_response": "Aapko kitni salary chahiye har mahine? Rupees mein batayiye।",
+      "asr_text": "हां भाई, मेरे पास बाइक है बजाज पुलसर।",
+      "asr_confidence": 1.0,
+      "latency_ms": 1995.2325820922852,
+      "success": true,
+      "extracted_entity": null
+    },
+    {
+      "turn_id": "1a82fc57-7c55-4efd-9f3b-dcfa5432a137",
+      "step_name": "languages",
+      "expected_question": "Aap kaunsi languages bol sakte hain? Hindi, English ya koi aur?",
+      "audio_file": "test_harness/generated_audio/lang_001_clean.wav",
+      "expected_entity": {
+        "languages": [
+          "hindi",
+          "english"
+        ]
+      },
+      "bot_response": "Aap kaunsi languages bol sakte hain? Hindi, English ya koi aur?",
+      "asr_text": "मैं हिंदी इंग्लिश दोनों बोल सकता हूं और थोड़ा मराठी भी।",
+      "asr_confidence": 1.0,
+      "latency_ms": 2596.5795516967773,
+      "success": true,
+      "extracted_entity": null
+    },
+    {
+      "turn_id": "e77211f0-116b-44c9-8f9a-a159b58f47b5",
+      "step_name": "availability_date",
+      "expected_question": "Aap kab se kaam shuru kar sakte hain? Aaj, kal ya koi aur din?",
+      "audio_file": "test_harness/generated_audio/avail_001_clean.wav",
+      "expected_entity": {
+        "availability_date": "tomorrow"
+      },
+      "bot_response": "Aap kaunsi languages bol sakte hain? Hindi, English ya koi aur?",
+      "asr_text": "मैं इमीडिएटली स्टार्ट कर सकता हूं आज से भी।",
+      "asr_confidence": 1.0,
+      "latency_ms": 2406.3730239868164,
+      "success": true,
+      "extracted_entity": null
+    },
+    {
+      "turn_id": "91704dc0-d5af-4011-8e6f-b5384145aec4",
+      "step_name": "preferred_shift",
+      "expected_question": "Aap kaunse time pe kaam karna chahte hain? Morning, evening ya night?",
+      "audio_file": "test_harness/generated_audio/shift_001_clean.wav",
+      "expected_entity": {
+        "preferred_shift": "morning"
+      },
+      "bot_response": "Aap kaunsi languages bol sakte hain? Hindi, English ya koi aur?",
+      "asr_text": "मैं मॉर्निंग शिफ्ट प्रेफर करता। सुबह का टाइम अच्छा लगता।",
+      "asr_confidence": 1.0,
+      "latency_ms": 3090.2974605560303,
+      "success": true,
+      "extracted_entity": null
+    },
+    {
+      "turn_id": "3aa94ba9-0a8c-4176-8541-b0f1bb005273",
+      "step_name": "total_experience_months",
+      "expected_question": "Aapko kitna kaam ka experience hai? Kitne saal ya mahine?",
+      "audio_file": "test_harness/generated_audio/exp_001_clean.wav",
+      "expected_entity": {
+        "total_experience_months": 24
+      },
+      "bot_response": "Aap दो bol sakte hain, confirm hai?",
+      "asr_text": "मैं दो साल से वेयरहाउस में काम कर रहा हूँ।",
+      "asr_confidence": 1.0,
+      "latency_ms": 2347.1617698669434,
+      "success": true,
+      "extracted_entity": null
+    }
+  ],
+  "completed_steps": 7,
+  "total_steps": 7,
+  "reached_job_matching": false,
+  "final_bot_response": "Aap दो bol sakte hain, confirm hai?",
+  "conversation_completed": false,
+  "total_latency_ms": 17611.045122146606,
+  "avg_turn_latency_ms": 2515.863588878087,
+  "entity_extraction_accuracy": 0.0,
+  "job_matches": []
+}

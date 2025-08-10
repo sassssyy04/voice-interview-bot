@@ -1,0 +1,327 @@
+# Hinglish Voice Bot Test Utterances
+# Each utterance includes transcription, entities, and audio generation parameters
+
+utterances:
+  # Pincode extraction
+  - id: "pin_001"
+    text: "Main Delhi mein rehta hun, mera pincode hai 110001"
+    transcript: "main delhi mein rehta hun mera pincode hai ek lakh das hazar ek"
+    entities:
+      pincode: "110001"
+    accent: "delhi"
+    noise_level: "clean"
+    duration_range: [6, 8]
+    
+  - id: "pin_002" 
+    text: "Mumbai South mein hun, zip code 400001 hai"
+    transcript: "mumbai south mein hun zip code char lakh ek hai"
+    entities:
+      pincode: "400001"
+    accent: "mumbai"
+    noise_level: "low"
+    duration_range: [7, 9]
+    
+  - id: "pin_003"
+    text: "Bangalore mein rehti hun bhai, postal code five six zero zero three four"
+    transcript: "bangalore mein rehti hun bhai postal code paanch che zero zero teen char"
+    entities:
+      pincode: "560034"
+    accent: "south"
+    noise_level: "medium"
+    duration_range: [8, 10]
+
+  # Salary expectations  
+  - id: "sal_001"
+    text: "Bhai main fifteen thousand per month expect karta hun"
+    transcript: "bhai main fifteen thousand per month expect karta hun"
+    entities:
+      expected_salary: 15000
+    accent: "delhi"
+    noise_level: "clean"
+    duration_range: [6, 8]
+    
+  - id: "sal_002"
+    text: "Salary kitna chahiye? Arey twenty five hazar rupaye monthly"
+    transcript: "salary kitna chahiye arey twenty five hazar rupaye monthly"
+    entities:
+      expected_salary: 25000
+    accent: "mumbai"
+    noise_level: "high"
+    duration_range: [7, 9]
+    
+  - id: "sal_003"
+    text: "Main zyada nahi maangta, bas dus hazar enough hai"
+    transcript: "main zyada nahi maangta bas dus hazar enough hai"
+    entities:
+      expected_salary: 10000
+    accent: "punjabi"
+    noise_level: "medium"
+    duration_range: [6, 8]
+
+  # Availability date
+  - id: "avail_001"
+    text: "Main immediately start kar sakta hun, aaj se bhi"
+    transcript: "main immediately start kar sakta hun aaj se bhi"
+    entities:
+      availability_date: "immediately"
+    accent: "delhi"
+    noise_level: "low"
+    duration_range: [6, 8]
+    
+  - id: "avail_002"
+    text: "Next month se free hun bhai, January se join kar sakta"
+    transcript: "next month se free hun bhai january se join kar sakta"
+    entities:
+      availability_date: "next month"
+    accent: "south"
+    noise_level: "medium"
+    duration_range: [7, 9]
+
+  # Shift preferences
+  - id: "shift_001"
+    text: "Main morning shift prefer karta, subah ka time acha lagta"
+    transcript: "main morning shift prefer karta subah ka time acha lagta"
+    entities:
+      preferred_shift: "morning"
+    accent: "mumbai"
+    noise_level: "clean"
+    duration_range: [7, 9]
+    
+  - id: "shift_002"
+    text: "Night shift mein kaam kar sakta hun, raat ko free rehta hun"
+    transcript: "night shift mein kaam kar sakta hun raat ko free rehta hun"
+    entities:
+      preferred_shift: "night"
+    accent: "punjabi"
+    noise_level: "high"
+    duration_range: [8, 10]
+
+  # Languages
+  - id: "lang_001"
+    text: "Main Hindi English dono bol sakta hun, aur thoda Marathi bhi"
+    transcript: "main hindi english dono bol sakta hun aur thoda marathi bhi"
+    entities:
+      languages: ["hindi", "english", "marathi"]
+    accent: "mumbai"
+    noise_level: "low"
+    duration_range: [8, 10]
+    
+  - id: "lang_002"
+    text: "Tamil Telugu Malayalam sab aata hai bhai"
+    transcript: "tamil telugu malayalam sab aata hai bhai"
+    entities:
+      languages: ["tamil", "telugu", "malayalam"]
+    accent: "south"
+    noise_level: "medium"
+    duration_range: [6, 8]
+
+  # Vehicle ownership
+  - id: "vehicle_001"
+    text: "Haan bhai, mere paas bike hai, Bajaj Pulsar"
+    transcript: "haan bhai mere paas bike hai bajaj pulsar"
+    entities:
+      has_two_wheeler: true
+    accent: "delhi"
+    noise_level: "clean"
+    duration_range: [6, 8]
+    
+  - id: "vehicle_002"
+    text: "Nahi yaar, abhi tak two wheeler nahi liya"
+    transcript: "nahi yaar abhi tak two wheeler nahi liya"
+    entities:
+      has_two_wheeler: false
+    accent: "punjabi"
+    noise_level: "high"
+    duration_range: [6, 8]
+
+  # Experience
+  - id: "exp_001"
+    text: "Main do saal se warehouse mein kaam kar raha hun"
+    transcript: "main do saal se warehouse mein kaam kar raha hun"
+    entities:
+      total_experience_months: 24
+    accent: "delhi"
+    noise_level: "medium"
+    duration_range: [7, 9]
+    
+  - id: "exp_002"
+    text: "Six months ka experience hai delivery boy ka"
+    transcript: "six months ka experience hai delivery boy ka"
+    entities:
+      total_experience_months: 6
+    accent: "mumbai"
+    noise_level: "low"
+    duration_range: [6, 8]
+
+  # Confirmation responses
+  - id: "conf_yes_001"
+    text: "Haan bhai, saari details bilkul sahi hai"
+    transcript: "haan bhai saari details bilkul sahi hai"
+    entities:
+      confirmation: "accept"
+    accent: "delhi"
+    noise_level: "clean"
+    duration_range: [4, 6]
+    
+  - id: "conf_yes_002"
+    text: "Yes correct hai sab kuch"
+    transcript: "yes correct hai sab kuch"
+    entities:
+      confirmation: "accept"
+    accent: "mumbai"
+    noise_level: "low"
+    duration_range: [3, 5]
+    
+  - id: "conf_no_001" 
+    text: "Nahi bhai, salary galat hai, mujhe twenty thousand chahiye"
+    transcript: "nahi bhai salary galat hai mujhe twenty thousand chahiye"
+    entities:
+      confirmation: "modify"
+      expected_salary: 20000
+    accent: "delhi"
+    noise_level: "clean"
+    duration_range: [6, 8]
+    
+  - id: "conf_no_002"
+    text: "Area change karna hai, main Pune mein hun"
+    transcript: "area change karna hai main pune mein hun"
+    entities:
+      confirmation: "modify"
+      locality: "Pune"
+    accent: "mumbai"
+    noise_level: "medium"
+    duration_range: [5, 7]
+
+  # Multi-entity responses
+  - id: "multi_001"
+    text: "Bhai main Pune mein 411001 pincode pe rehta hun, salary fifteen thousand expect karta, bike bhi hai"
+    transcript: "bhai main pune mein char lakh gyarah hazar ek pincode pe rehta hun salary fifteen thousand expect karta bike bhi hai"
+    entities:
+      pincode: "411001"
+      expected_salary: 15000
+      has_two_wheeler: true
+    accent: "mumbai"
+    noise_level: "medium"
+    duration_range: [10, 12]
+
+  - id: "multi_002"
+    text: "Morning shift achha hai mere liye, Hindi English both languages main fluent hun"
+    transcript: "morning shift achha hai mere liye hindi english both languages main fluent hun"
+    entities:
+      preferred_shift: "morning"
+      languages: ["hindi", "english"]
+    accent: "south"
+    noise_level: "high"
+    duration_range: [8, 10]
+
+  # Edge cases - unclear/ambiguous
+  - id: "edge_001"
+    text: "Arey bhai salary ke bare mein... hmm... kya bolu... achha paisa chahiye na"
+    transcript: "arey bhai salary ke bare mein hmm kya bolu achha paisa chahiye na"
+    entities: {}
+    accent: "delhi"
+    noise_level: "high"
+    duration_range: [8, 10]
+    
+  - id: "edge_002"
+    text: "Shift timing... main dekhunga... flexible hun main"
+    transcript: "shift timing main dekhunga flexible hun main"
+    entities:
+      preferred_shift: "flexible"
+    accent: "punjabi"
+    noise_level: "medium"
+    duration_range: [6, 8]
+
+  # Off-topic but relevant contextual responses
+  - id: "context_001"
+    text: "Aapka company kahan hai? Main travel kar sakta hun"
+    transcript: "aapka company kahan hai main travel kar sakta hun"
+    entities: {}
+    accent: "mumbai"
+    noise_level: "low"
+    duration_range: [6, 8]
+    
+  - id: "context_002"
+    text: "Interview kab hoga? Main ready hun anytime"
+    transcript: "interview kab hoga main ready hun anytime"
+    entities: {}
+    accent: "south"
+    noise_level: "clean"
+    duration_range: [6, 8]
+
+# Audio generation configuration
+audio_config:
+  sample_rate: 16000
+  format: "wav"
+  
+  # Eleven Labs voice IDs for different accents
+  voices:
+    delhi: "90ipbRoKi4CpHXvKVtl0"      # Custom voice (good for Hinglish)
+    mumbai: "90ipbRoKi4CpHXvKVtl0"     # Custom voice (good for Hinglish)
+    south: "90ipbRoKi4CpHXvKVtl0"      # Custom voice (good for Hinglish)
+    punjabi: "90ipbRoKi4CpHXvKVtl0"    # Custom voice (good for Hinglish)
+    
+  # Background noise types and levels
+  noise:
+    clean: 
+      type: null
+      snr_db: null
+    low:
+      type: "traffic"
+      snr_db: 25
+    medium:
+      type: "office"
+      snr_db: 15
+    high:
+      type: "construction"
+      snr_db: 10
+
+# Job ranking test cases (for NDCG evaluation)
+job_ranking:
+  candidates:
+    - id: "cand_001"
+      profile:
+        pincode: "110001"
+        expected_salary: 15000
+        preferred_shift: "morning"
+        languages: ["hindi", "english"]
+        has_two_wheeler: true
+        total_experience_months: 12
+      
+    - id: "cand_002" 
+      profile:
+        pincode: "400001"
+        expected_salary: 25000
+        preferred_shift: "night"
+        languages: ["hindi", "marathi", "english"]
+        has_two_wheeler: false
+        total_experience_months: 36
+        
+  jobs:
+    - id: "job_001"
+      title: "Delivery Executive"
+      location_pincode: "110001"
+      salary_range: [12000, 18000]
+      required_shift: "morning"
+      required_languages: ["hindi"]
+      requires_two_wheeler: true
+      min_experience_months: 6
+      relevance_score: 0.95  # Ground truth for cand_001
+      
+    - id: "job_002"
+      title: "Warehouse Assistant"
+      location_pincode: "400005"
+      salary_range: [20000, 30000]
+      required_shift: "any"
+      required_languages: ["hindi", "marathi"]
+      requires_two_wheeler: false
+      min_experience_months: 24
+      relevance_score: 0.85  # Ground truth for cand_002
+
+# Test execution parameters
+test_config:
+  max_turns: 10
+  timeout_seconds: 30
+  required_entity_f1: 0.80
+  required_completion_rate: 0.80
+  cold_start: true  # Test with no prior conversation context 

@@ -1,0 +1,288 @@
+{
+  "session_id": "http_conversation_test_full_flow_1754805784",
+  "candidate_id": "ba3925e7-5c5b-4e17-a296-3f4f3e38257a",
+  "start_time": "2025-08-10T14:03:04.558137",
+  "end_time": "2025-08-10T14:03:37.895794",
+  "turns": [
+    {
+      "turn_id": "5b6f9e65-1752-434d-a648-02a3af97f3bd",
+      "step_name": "pincode",
+      "expected_question": "Aap kahan rehte hain? Apna pincode ya area batayiye।",
+      "audio_file": "test_harness/generated_audio/pin_001_clean.wav",
+      "expected_entity": {
+        "pincode": "110001"
+      },
+      "bot_response": "Aapko kitni salary chahiye har mahine? Rupees mein batayiye।",
+      "asr_text": "मैं दिल्ली में रहता हूं। मेरा पिनकोड है 16 और",
+      "asr_confidence": 1.0,
+      "latency_ms": 3220.583438873291,
+      "success": true,
+      "extracted_entity": null
+    },
+    {
+      "turn_id": "a30f0697-74c8-4f6e-8f94-99a240048b2b",
+      "step_name": "expected_salary",
+      "expected_question": "Aapko kitni salary chahiye har mahine? Rupees mein batayiye।",
+      "audio_file": "test_harness/generated_audio/sal_001_clean.wav",
+      "expected_entity": {
+        "expected_salary": 15000
+      },
+      "bot_response": "Kya aapke paas bike ya scooter hai?",
+      "asr_text": "भाई मैं फिफ्टीन थाउजेंड पर मंथ एक्सपेक्ट करता हूं।",
+      "asr_confidence": 1.0,
+      "latency_ms": 1891.2873268127441,
+      "success": true,
+      "extracted_entity": null
+    },
+    {
+      "turn_id": "826f0f5d-b41a-4471-b818-e7f44766bee9",
+      "step_name": "has_two_wheeler",
+      "expected_question": "Kya aapke paas bike ya scooter hai?",
+      "audio_file": "test_harness/generated_audio/vehicle_001_clean.wav",
+      "expected_entity": {
+        "has_two_wheeler": true
+      },
+      "bot_response": "Aap kaunsi languages bol sakte hain? Hindi, English ya koi aur?",
+      "asr_text": "हां भाई, मेरे पास बाइक है। बजाज पुलसर।",
+      "asr_confidence": 1.0,
+      "latency_ms": 1560.5311393737793,
+      "success": true,
+      "extracted_entity": null
+    },
+    {
+      "turn_id": "27a8f1fe-97c5-45f4-b250-dc6c5ccdb27e",
+      "step_name": "languages",
+      "expected_question": "Aap kaunsi languages bol sakte hain? Hindi, English ya koi aur?",
+      "audio_file": "test_harness/generated_audio/lang_001_clean.wav",
+      "expected_entity": {
+        "languages": [
+          "hindi",
+          "english"
+        ]
+      },
+      "bot_response": "Aap kab se kaam shuru kar sakte hain? Aaj, kal ya koi aur din?",
+      "asr_text": "मैं हिंदी, इंग्लिश दोनों बोल सकता हूं और थोड़ा मराठी भी।",
+      "asr_confidence": 1.0,
+      "latency_ms": 2502.9900074005127,
+      "success": true,
+      "extracted_entity": null
+    },
+    {
+      "turn_id": "00c1dc28-7ab1-4d03-b06d-8fba9e91dd41",
+      "step_name": "availability_date",
+      "expected_question": "Aap kab se kaam shuru kar sakte hain? Aaj, kal ya koi aur din?",
+      "audio_file": "test_harness/generated_audio/avail_001_clean.wav",
+      "expected_entity": {
+        "availability_date": "tomorrow"
+      },
+      "bot_response": "Aap kaunse time pe kaam karna chahte hain? Morning, evening ya night?",
+      "asr_text": "मैं इमीडिएटली स्टार्ट कर सकता हूं। आज से भी।",
+      "asr_confidence": 1.0,
+      "latency_ms": 1677.7350902557373,
+      "success": true,
+      "extracted_entity": null
+    },
+    {
+      "turn_id": "76e46c92-dcfc-44fc-bf14-2e27c58cb207",
+      "step_name": "preferred_shift",
+      "expected_question": "Aap kaunse time pe kaam karna chahte hain? Morning, evening ya night?",
+      "audio_file": "test_harness/generated_audio/shift_001_clean.wav",
+      "expected_entity": {
+        "preferred_shift": "morning"
+      },
+      "bot_response": "Aapko kitna kaam ka experience hai? Kitne saal ya mahine?",
+      "asr_text": "मैं मॉर्निंग शिफ्ट प्रेफर करता। सुबह का टाइम अच्छा लगता।",
+      "asr_confidence": 1.0,
+      "latency_ms": 1674.1816997528076,
+      "success": true,
+      "extracted_entity": null
+    },
+    {
+      "turn_id": "da114662-f44c-45aa-b64d-fcd6dceaf1d0",
+      "step_name": "total_experience_months",
+      "expected_question": "Aapko kitna kaam ka experience hai? Kitne saal ya mahine?",
+      "audio_file": "test_harness/generated_audio/exp_001_clean.wav",
+      "expected_entity": {
+        "total_experience_months": 24
+      },
+      "bot_response": "Dhanyawad! Main aapki details repeat karta hun:\nArea: Pincode,\nAvailability: today,\naapka Preferred shift: Morning hai,\nExpected salary: ₹15,000 per month,\naap Hindi, English, Marathi bol sakte hain,\naapke paas Two wheeler: Hai. \nExperience: 2 years\n\nKya yeh saari information jo humne collect ki hai, sahi hai? Agar kuch galat hai toh please bataiye.",
+      "asr_text": "मैं दो साल से वेयरहाउस में काम कर रहा हूं।",
+      "asr_confidence": 1.0,
+      "latency_ms": 2185.680866241455,
+      "success": true,
+      "extracted_entity": null
+    },
+    {
+      "turn_id": "c2d69452-0412-464c-9ce6-d0276dd88e3e",
+      "step_name": "confirmation",
+      "expected_question": "Kya yeh saari information jo humne collect ki hai, sahi hai?",
+      "audio_file": "test_harness/generated_audio/conf_yes_001_clean.wav",
+      "expected_entity": {
+        "confirmation": "accept"
+      },
+      "bot_response": "Tumhare liye top 3 jobs hain: Delivery Executive, Construction Helper, aur Shop Assistant. Delivery Executive ke liye ₹15,000-₹22,000 salary, morning shift, aur hindi, english languages match hain. Construction Helper mein bhi ₹16,000-₹24,000 salary, morning shift, aur hindi language match hain. Shop Assistant mein ₹14,000-₹20,000 salary, morning shift, aur hindi, english languages match hain. Kaunsa job sunna pasand karoge?",
+      "asr_text": "हां भाई सारी डिटेल्स बिल्कुल सही है।",
+      "asr_confidence": 1.0,
+      "latency_ms": 3328.131675720215,
+      "success": true,
+      "extracted_entity": null
+    }
+  ],
+  "completed_steps": 8,
+  "total_steps": 8,
+  "reached_job_matching": true,
+  "final_bot_response": "Tumhare liye top 3 jobs hain: Delivery Executive, Construction Helper, aur Shop Assistant. Delivery Executive ke liye ₹15,000-₹22,000 salary, morning shift, aur hindi, english languages match hain. Construction Helper mein bhi ₹16,000-₹24,000 salary, morning shift, aur hindi language match hain. Shop Assistant mein ₹14,000-₹20,000 salary, morning shift, aur hindi, english languages match hain. Kaunsa job sunna pasand karoge?",
+  "conversation_completed": true,
+  "total_latency_ms": 18041.121244430542,
+  "avg_turn_latency_ms": 2255.1401555538177,
+  "entity_extraction_accuracy": 0.0,
+  "job_matches": [
+    {
+      "job": {
+        "job_id": "DEL001",
+        "title": "Delivery Executive",
+        "company": "QuickDeliver",
+        "category": "delivery",
+        "pincode": "110001",
+        "locality": "Connaught Place",
+        "required_shifts": [
+          "morning",
+          "evening"
+        ],
+        "salary_min": 15000,
+        "salary_max": 22000,
+        "required_languages": [
+          "hindi",
+          "english"
+        ],
+        "requires_two_wheeler": true,
+        "min_experience_months": 0,
+        "max_experience_months": 24,
+        "description": "Food delivery executive for busy Delhi area",
+        "benefits": [
+          "Fuel allowance",
+          "Mobile phone",
+          "Incentives"
+        ],
+        "contact_number": "+91-9876543210",
+        "is_active": true
+      },
+      "match_score": 0.8200000000000002,
+      "rationale": "Excellent match for Delivery Executive at QuickDeliver! Key strengths: Salary range (₹15,000-₹22,000) matches your expectations; Morning shift is available; You speak the required languages (hindi, english, marathi) Consider: Pincode missing; using locality approximation Contact: +91-9876543210",
+      "strengths": [
+        "Salary range (₹15,000-₹22,000) matches your expectations",
+        "Morning shift is available",
+        "You speak the required languages (hindi, english, marathi)",
+        "You have the required two-wheeler",
+        "Your 24 months experience fits perfectly"
+      ],
+      "concerns": [
+        "Pincode missing; using locality approximation"
+      ],
+      "score_breakdown": {
+        "location": 0.4,
+        "salary": 1.0,
+        "shift": 1.0,
+        "language": 1.0,
+        "vehicle": 1.0,
+        "experience": 1.0
+      }
+    },
+    {
+      "job": {
+        "job_id": "CON004",
+        "title": "Construction Helper",
+        "company": "BuildRight",
+        "category": "construction",
+        "pincode": "110001",
+        "locality": "Connaught Place",
+        "required_shifts": [
+          "morning"
+        ],
+        "salary_min": 16000,
+        "salary_max": 24000,
+        "required_languages": [
+          "hindi"
+        ],
+        "requires_two_wheeler": false,
+        "min_experience_months": 0,
+        "max_experience_months": 24,
+        "description": "Construction site assistance work",
+        "benefits": [
+          "Safety equipment",
+          "Overtime pay"
+        ],
+        "contact_number": "+91-9876543213",
+        "is_active": true
+      },
+      "match_score": 0.8200000000000002,
+      "rationale": "Excellent match for Construction Helper at BuildRight! Key strengths: Salary range (₹16,000-₹24,000) matches your expectations; Morning shift is available; You speak the required languages (hindi, english, marathi) Consider: Pincode missing; using locality approximation Contact: +91-9876543213",
+      "strengths": [
+        "Salary range (₹16,000-₹24,000) matches your expectations",
+        "Morning shift is available",
+        "You speak the required languages (hindi, english, marathi)",
+        "Your 24 months experience fits perfectly"
+      ],
+      "concerns": [
+        "Pincode missing; using locality approximation"
+      ],
+      "score_breakdown": {
+        "location": 0.4,
+        "salary": 1.0,
+        "shift": 1.0,
+        "language": 1.0,
+        "vehicle": 1.0,
+        "experience": 1.0
+      }
+    },
+    {
+      "job": {
+        "job_id": "RET005",
+        "title": "Shop Assistant",
+        "company": "RetailMart",
+        "category": "retail",
+        "pincode": "110002",
+        "locality": "Darya Ganj",
+        "required_shifts": [
+          "morning",
+          "evening"
+        ],
+        "salary_min": 14000,
+        "salary_max": 20000,
+        "required_languages": [
+          "hindi",
+          "english"
+        ],
+        "requires_two_wheeler": false,
+        "min_experience_months": 3,
+        "max_experience_months": 48,
+        "description": "Customer service and inventory management",
+        "benefits": [
+          "Staff discount",
+          "Training provided"
+        ],
+        "contact_number": "+91-9876543214",
+        "is_active": true
+      },
+      "match_score": 0.8075000000000001,
+      "rationale": "Excellent match for Shop Assistant at RetailMart! Key strengths: Salary range (₹14,000-₹20,000) matches your expectations; Morning shift is available; You speak the required languages (hindi, english, marathi) Consider: Pincode missing; using locality approximation Contact: +91-9876543214",
+      "strengths": [
+        "Salary range (₹14,000-₹20,000) matches your expectations",
+        "Morning shift is available",
+        "You speak the required languages (hindi, english, marathi)",
+        "Your 24 months experience fits perfectly"
+      ],
+      "concerns": [
+        "Pincode missing; using locality approximation"
+      ],
+      "score_breakdown": {
+        "location": 0.4,
+        "salary": 0.95,
+        "shift": 1.0,
+        "language": 1.0,
+        "vehicle": 1.0,
+        "experience": 1.0
+      }
+    }
+  ]
+}

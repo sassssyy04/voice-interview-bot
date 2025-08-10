@@ -1,0 +1,28 @@
+intents:
+  consent_yes:
+    - "Haan theek hai, start kijiye"
+    - "Yes, chalega, shuru karein"
+  pincode:
+    - "Mera pincode 110092 hai"
+    - "Area Lajpat Nagar, pincode shayad 110024"
+    - "Pincode five six zero zero three seven"
+  availability:
+    - "Kal se available hoon"
+    - "Parso join kar sakta hoon"
+    - "Agli somvaar"
+  shift:
+    - "Mujhe day shift chahiye"
+    - "Night shift theek rahegi"
+  salary:
+    - "Expectation eighteen thousand"
+    - "Beez hazaar chahiye"
+    - "Around 22k"
+  languages:
+    - "Hindi English dono aati hai"
+    - "Sirf Hindi comfortable hoon"
+  twowheeler:
+    - "Haan 2 wheeler hai"
+    - "Nahi, scooty nahi hai"
+  experience:
+    - "Do saal ka experience hai"
+    - "Chaudah mahine ka kaam kiya hai"

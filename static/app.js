@@ -7,7 +7,7 @@ class VoiceBot {
         this.audioChunks = [];
         this.conversationActive = false;
         this.lastTurnStartTime = null;
-        this.minRecordingMs = 600;
+        this.minRecordingMs = 300;
         this.recordingStartTimeMs = null;
         
         this.initializeElements();
@@ -45,6 +45,11 @@ class VoiceBot {
             twoWheeler: document.getElementById('profileTwoWheeler'),
             experience: document.getElementById('profileExperience')
         };
+        
+        // Roles Preview (disabled)
+        this.rolesPreview = document.getElementById('rolesPreview');
+        this.rolesPreviewList = document.getElementById('rolesPreviewList');
+        if (this.rolesPreview) { this.rolesPreview.classList.add('hidden'); }
         
         // Job matches
         this.jobMatches = document.getElementById('jobMatches');
@@ -167,10 +172,7 @@ class VoiceBot {
         this.micStatus.textContent = 'Click to start conversation';
         this.audioVisualizer.classList.add('hidden');
         
-        // Show final results if conversation was completed
-        if (this.candidateId) {
-            this.loadJobMatches();
-        }
+        // Roles preview disabled; no job matches fetch
     }
 
     async startListening() {
@@ -288,7 +290,7 @@ class VoiceBot {
             
             const audioBlob = new Blob(this.audioChunks, { type: 'audio/webm' });
             // Skip if blob is suspiciously small (e.g., silence or accidental tap)
-            if (audioBlob.size < 2000) {
+            if (audioBlob.size < 500) {
                 this.audioChunks = [];
                 if (this.conversationActive) {
                     this.micStatus.textContent = 'Hold longer to record';
@@ -305,7 +307,8 @@ class VoiceBot {
             // Start measuring round-trip (upload + server + download)
             this.lastTurnStartTime = Date.now();
             
-            const response = await fetch(`/api/v1/conversation/${this.candidateId}/turn`, {
+            // Use low-latency fast path
+            const response = await fetch(`/api/v1/conversation/${this.candidateId}/turn-fast`, {
                 method: 'POST',
                 body: formData
             });
@@ -316,33 +319,70 @@ class VoiceBot {
             
             const data = await response.json();
             
+            // Show ASR debug (recognized text + confidence)
+            if (data.asr && (data.asr.text || data.asr.text === '')) {
+                console.log(`ASR: "${data.asr.text}" (conf ${Math.round((data.asr.confidence || 0)*100)}%)`);
+                this.addToConversationLog('ASR', `${data.asr.text || ''} (${Math.round((data.asr.confidence || 0)*100)}%)`, false);
+            }
+            
             // Update metrics
             this.updateMetrics(data.metrics);
             
-            // Play response audio
-            await this.playAudioFromBase64(data.audio_data);
+            // Update candidate profile early
+            if (data.metrics && data.metrics.candidate_profile) {
+                this.updateCandidateProfile(data.metrics.candidate_profile);
+            }
+            
+            // Roles preview disabled
+            
+            // Play audio via background fetch (turn-fast returns no audio inline)
+            const turnId = data.turn_id;
             
             // Update conversation log
             this.addToConversationLog('User', '[Voice input]', false);
             if (data.text) {
                 this.addToConversationLog('Bot', data.text, true);
             } else {
-                this.addToConversationLog('Bot', 'Audio response played', true);
+                this.addToConversationLog('Bot', 'Audio response pending...', true);
             }
             
-            // Update candidate profile
-            if (data.metrics && data.metrics.candidate_profile) {
-                this.updateCandidateProfile(data.metrics.candidate_profile);
-            }
+            // Debug logging
+            console.log('API Response data:', data);
+            console.log('Metrics:', data.metrics);
             
             // Check if conversation is complete
             if (data.conversation_complete) {
                 this.conversationActive = false;
                 this.micStatus.textContent = 'Interview completed!';
                 this.updateUIForInactiveConversation();
-                await this.loadJobMatches();
+                if (data.matches && Array.isArray(data.matches) && data.matches.length > 0) {
+                    this.displayJobMatches(data.matches);
+                } else {
+                    // Fallback: fetch matches via API
+                    try {
+                        const mresp = await fetch(`/api/v1/conversation/${this.candidateId}/matches`);
+                        if (mresp.ok) {
+                            const mdata = await mresp.json();
+                            if (mdata && Array.isArray(mdata.matches)) {
+                                this.displayJobMatches(mdata.matches);
+                            }
+                        } else {
+                            console.warn('Matches API returned non-OK status');
+                        }
+                    } catch (e) {
+                        console.warn('Failed to fetch matches:', e);
+                    }
+                }
+                // After matches are visible, play the final TTS
+                if (turnId) {
+                    await this.pollAndPlayTurnAudio(turnId);
+                }
             } else {
                 this.micStatus.textContent = 'Press and hold to talk';
+                // For intermediate turns, play audio after UI updates
+                if (turnId) {
+                    await this.pollAndPlayTurnAudio(turnId);
+                }
             }
             
         } catch (error) {
@@ -434,9 +474,32 @@ class VoiceBot {
         }
     }
 
+    renderLanguageTags(langs = [], otherLangs = []) {
+        const container = this.profileElements.languages;
+        if (!container) return;
+        container.innerHTML = '';
+        const cap = (s) => (typeof s === 'string' && s.length > 0) ? (s[0].toUpperCase() + s.slice(1)) : s;
+        const makeTag = (label, cls) => {
+            const span = document.createElement('span');
+            span.className = `inline-block ${cls} text-xs px-2 py-1 rounded-full mr-2 mb-2`;
+            span.textContent = label;
+            return span;
+        };
+        if ((!langs || langs.length === 0) && (!otherLangs || otherLangs.length === 0)) {
+            container.textContent = '--';
+            return;
+        }
+        (langs || []).forEach(l => container.appendChild(makeTag(cap(l), 'bg-blue-100 text-blue-800')));
+        (otherLangs || []).forEach(l => container.appendChild(makeTag(`Other: ${cap(l)}`, 'bg-gray-100 text-gray-800')));
+    }
+
     updateCandidateProfile(profile) {
+        console.log('Updating candidate profile:', profile);
+        
         if (profile.pincode) {
             this.profileElements.pincode.textContent = profile.pincode;
+        } else if (profile.locality) {
+            this.profileElements.pincode.textContent = profile.locality;
         }
         if (profile.expected_salary) {
             this.profileElements.salary.textContent = `₹${profile.expected_salary.toLocaleString()}/month`;
@@ -444,48 +507,49 @@ class VoiceBot {
         if (profile.preferred_shift) {
             this.profileElements.shift.textContent = profile.preferred_shift.replace('_', ' ').toUpperCase();
         }
-        if (profile.languages && profile.languages.length > 0) {
-            this.profileElements.languages.textContent = profile.languages.join(', ').toUpperCase();
-        }
+        this.renderLanguageTags(profile.languages || [], profile.other_languages || []);
         if (profile.has_two_wheeler !== undefined) {
             this.profileElements.twoWheeler.textContent = profile.has_two_wheeler ? 'Yes' : 'No';
         }
         if (profile.total_experience_months !== undefined) {
-            const years = Math.floor(profile.total_experience_months / 12);
-            const months = profile.total_experience_months % 12;
+            console.log('Experience value:', profile.total_experience_months);
+            const totalMonths = parseInt(profile.total_experience_months) || 0;
+            const years = Math.floor(totalMonths / 12);
+            const months = totalMonths % 12;
+            console.log('Parsed experience - Total months:', totalMonths, 'Years:', years, 'Months:', months);
+            
             if (years > 0) {
-                this.profileElements.experience.textContent = `${years} year${years > 1 ? 's' : ''} ${months} month${months > 1 ? 's' : ''}`;
+                if (months > 0) {
+                    this.profileElements.experience.textContent = `${years} year${years > 1 ? 's' : ''} ${months} month${months !== 1 ? 's' : ''}`;
+                } else {
+                    this.profileElements.experience.textContent = `${years} year${years > 1 ? 's' : ''}`;
+                }
+            } else if (months > 0) {
+                this.profileElements.experience.textContent = `${months} month${months !== 1 ? 's' : ''}`;
             } else {
-                this.profileElements.experience.textContent = `${months} month${months > 1 ? 's' : ''}`;
+                // Handle 0 months case (fresher)
+                this.profileElements.experience.textContent = '0 months (Fresher)';
             }
         }
     }
 
-    async loadJobMatches() {
-        try {
-            const response = await fetch(`/api/v1/conversation/${this.candidateId}/matches`);
-            
-            if (!response.ok) {
-                throw new Error('Failed to load job matches');
-            }
-            
-            const data = await response.json();
-            this.displayJobMatches(data.matches);
-            
-        } catch (error) {
-            console.error('Error loading job matches:', error);
-            this.showError('Failed to load job matches: ' + error.message);
-        }
-    }
-
+    // Roles preview removed: no-op methods for compatibility
+    async loadJobMatches() { return; }
     displayJobMatches(matches) {
+        if (!this.jobMatches || !this.jobMatchesList) return;
         this.jobMatchesList.innerHTML = '';
-        
-        matches.forEach((match, index) => {
-            const matchElement = this.createJobMatchElement(match, index + 1);
-            this.jobMatchesList.appendChild(matchElement);
-        });
-        
+        const list = Array.isArray(matches) ? matches : [];
+        if (list.length === 0) {
+            const empty = document.createElement('div');
+            empty.className = 'text-gray-600 bg-gray-50 border border-dashed border-gray-300 rounded-lg p-6 text-center';
+            empty.textContent = 'No matching jobs found right now. We will notify you when a suitable role is available.';
+            this.jobMatchesList.appendChild(empty);
+        } else {
+            list.forEach((match, index) => {
+                const matchElement = this.createJobMatchElement(match, index + 1);
+                this.jobMatchesList.appendChild(matchElement);
+            });
+        }
         this.jobMatches.classList.remove('hidden');
     }
 
@@ -634,14 +698,11 @@ class VoiceBot {
             this.profileElements.pincode.textContent = data.candidate.pincode;
             this.profileElements.salary.textContent = `₹${data.candidate.expected_salary.toLocaleString()}/month`;
             this.profileElements.shift.textContent = data.candidate.preferred_shift.toUpperCase();
-            this.profileElements.languages.textContent = data.candidate.languages.join(', ').toUpperCase();
+            this.renderLanguageTags(data.candidate.languages || [], data.candidate.other_languages || []);
             this.profileElements.twoWheeler.textContent = data.candidate.has_two_wheeler ? 'Yes' : 'No';
             this.profileElements.experience.textContent = `${data.candidate.experience_months} months`;
             
-            // Show job matches
-            this.displayJobMatches(data.matches);
-            
-            this.addToConversationLog('System', `Found ${data.matches.length} job matches from ${data.total_jobs_considered} total jobs`, false);
+            // Roles preview disabled
             
         } catch (error) {
             console.error('Demo error:', error);
@@ -673,6 +734,38 @@ class VoiceBot {
                 errorDiv.remove();
             }
         }, 10000);
+    }
+
+    renderRolesPreview() {
+        if (!this.rolesPreviewList) return;
+        this.rolesPreviewList.innerHTML = '';
+        this.availableRoles.forEach(role => {
+            const li = document.createElement('li');
+            li.textContent = role;
+            this.rolesPreviewList.appendChild(li);
+        });
+    }
+
+    async pollAndPlayTurnAudio(turnId) {
+        // Poll for background audio; play when ready
+        const maxAttempts = 20; // ~10s at 500ms interval
+        const delay = (ms) => new Promise(res => setTimeout(res, ms));
+        for (let i = 0; i < maxAttempts; i++) {
+            try {
+                const resp = await fetch(`/api/v1/conversation/${this.candidateId}/turn-audio/${turnId}`);
+                if (resp.ok) {
+                    const payload = await resp.json();
+                    if (payload.ready && payload.audio_data) {
+                        await this.playAudioFromBase64(payload.audio_data);
+                        return;
+                    }
+                }
+            } catch (e) {
+                console.warn('Audio fetch attempt failed:', e);
+            }
+            await delay(500);
+        }
+        console.warn('Audio not ready in time; skipping playback for this turn.');
     }
 }
 
