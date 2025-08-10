@@ -440,6 +440,14 @@ class ASRService:
                 b1, b2 = payload[0], payload[1]
                 return (b1 == 0xFF) and ((b2 & 0xE0) == 0xE0)
 
+            # Helper: heuristic WEBM and OGG detectors
+            def _looks_like_webm(payload: bytes) -> bool:
+                # EBML header 1A 45 DF A3
+                return bool(payload and len(payload) >= 4 and payload[0:4] == b"\x1A\x45\xDF\xA3")
+            def _looks_like_ogg(payload: bytes) -> bool:
+                # OggS magic
+                return bool(payload and len(payload) >= 4 and payload[0:4] == b"OggS")
+
             def _recognize_with_cfg(payload: bytes, cfg: Any) -> Tuple[str, float]:
                 rec_audio = speech.RecognitionAudio(content=payload)
                 resp = self.google_client.recognize(config=cfg, audio=rec_audio)
@@ -449,9 +457,15 @@ class ASRService:
                 return "", 0.0
 
             original_bytes = audio_data
-            try_order = []
+            try_order: list[Any] = []
+            # Prefer container-specific encodings first
+            if _looks_like_webm(original_bytes):
+                try_order.append(speech.RecognitionConfig.AudioEncoding.WEBM_OPUS)
+            if _looks_like_ogg(original_bytes):
+                try_order.append(speech.RecognitionConfig.AudioEncoding.OGG_OPUS)
             if _looks_like_mp3(original_bytes):
                 try_order.append(speech.RecognitionConfig.AudioEncoding.MP3)
+            # Always include unspecified as a general fallback
             try_order.append(speech.RecognitionConfig.AudioEncoding.ENCODING_UNSPECIFIED)
 
             # Try MP3 (if likely) then unspecified

@@ -303,7 +303,17 @@ class VoiceBot {
                 return;
             }
             const formData = new FormData();
-            formData.append('audio_file', audioBlob, 'recording.webm');
+            try {
+                const wavBlob = await this.convertWebmToWav16kMono(audioBlob);
+                if (wavBlob && wavBlob.size > 0) {
+                    formData.append('audio_file', wavBlob, 'recording.wav');
+                } else {
+                    formData.append('audio_file', audioBlob, 'recording.webm');
+                }
+            } catch (e) {
+                console.warn('WAV conversion failed, sending WEBM:', e);
+                formData.append('audio_file', audioBlob, 'recording.webm');
+            }
             // Start measuring round-trip (upload + server + download)
             this.lastTurnStartTime = Date.now();
             
@@ -766,6 +776,83 @@ class VoiceBot {
             await delay(500);
         }
         console.warn('Audio not ready in time; skipping playback for this turn.');
+    }
+
+    async convertWebmToWav16kMono(webmBlob) {
+        const arrayBuffer = await webmBlob.arrayBuffer();
+        const ac = new (window.AudioContext || window.webkitAudioContext)();
+        try {
+            const audioBuffer = await ac.decodeAudioData(arrayBuffer.slice(0));
+            const duration = audioBuffer.duration;
+            const offline = new (window.OfflineAudioContext || window.webkitOfflineAudioContext)(1, Math.ceil(16000 * duration), 16000);
+            // Mix to mono
+            const monoBuffer = offline.createBuffer(1, audioBuffer.length, audioBuffer.sampleRate);
+            const channelData = monoBuffer.getChannelData(0);
+            const numChannels = audioBuffer.numberOfChannels;
+            for (let ch = 0; ch < numChannels; ch++) {
+                const data = audioBuffer.getChannelData(ch);
+                for (let i = 0; i < data.length; i++) {
+                    channelData[i] += data[i] / numChannels;
+                }
+            }
+            const src = offline.createBufferSource();
+            src.buffer = monoBuffer;
+            src.connect(offline.destination);
+            src.start(0);
+            const rendered = await offline.startRendering();
+            const wavBuffer = this.audioBufferToWav(rendered);
+            return new Blob([wavBuffer], { type: 'audio/wav' });
+        } finally {
+            try { ac.close(); } catch (_) {}
+        }
+    }
+
+    audioBufferToWav(buffer) {
+        const numOfChannels = buffer.numberOfChannels;
+        const sampleRate = buffer.sampleRate;
+        const format = 1; // PCM
+        const bitDepth = 16;
+        const numFrames = buffer.length;
+        const bytesPerSample = bitDepth / 8;
+        const blockAlign = numOfChannels * bytesPerSample;
+        const byteRate = sampleRate * blockAlign;
+        const dataLength = numFrames * blockAlign;
+        const bufferLength = 44 + dataLength;
+        const arrayBuffer = new ArrayBuffer(bufferLength);
+        const view = new DataView(arrayBuffer);
+
+        let offset = 0;
+        const writeString = (s) => { for (let i = 0; i < s.length; i++) view.setUint8(offset + i, s.charCodeAt(i)); offset += s.length; };
+        const writeUint32 = (d) => { view.setUint32(offset, d, true); offset += 4; };
+        const writeUint16 = (d) => { view.setUint16(offset, d, true); offset += 2; };
+
+        writeString('RIFF');
+        writeUint32(36 + dataLength);
+        writeString('WAVE');
+        writeString('fmt ');
+        writeUint32(16);
+        writeUint16(format);
+        writeUint16(numOfChannels);
+        writeUint32(sampleRate);
+        writeUint32(byteRate);
+        writeUint16(blockAlign);
+        writeUint16(bitDepth);
+        writeString('data');
+        writeUint32(dataLength);
+
+        const channelData = [];
+        for (let ch = 0; ch < numOfChannels; ch++) {
+            channelData.push(buffer.getChannelData(ch));
+        }
+        let idx = 0;
+        for (let i = 0; i < numFrames; i++) {
+            for (let ch = 0; ch < numOfChannels; ch++) {
+                let sample = Math.max(-1, Math.min(1, channelData[ch][i]));
+                view.setInt16(44 + idx, sample < 0 ? sample * 0x8000 : sample * 0x7FFF, true);
+                idx += 2;
+            }
+        }
+        return arrayBuffer;
     }
 }
 

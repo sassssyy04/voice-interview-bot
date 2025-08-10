@@ -5,6 +5,7 @@ from fastapi import APIRouter, WebSocket, WebSocketDisconnect, HTTPException, Fi
 from fastapi.responses import JSONResponse
 from app.services.conversation import ConversationOrchestrator
 from app.core.logger import logger
+import asyncio
 
 router = APIRouter()
 
@@ -391,6 +392,68 @@ async def websocket_endpoint(websocket: WebSocket, candidate_id: str):
     finally:
         if candidate_id in active_connections:
             del active_connections[candidate_id]
+
+
+@router.websocket("/ws/stream/{candidate_id}")
+async def websocket_stream_endpoint(websocket: WebSocket, candidate_id: str):
+    """Streaming WebSocket for near real-time ASR with partial results.
+    Client sends small audio chunks (WEBM/Opus or WAV). We buffer them, emit partial ASR
+    periodically, and on 'end' finalize the turn using text-only fast path.
+    """
+    await websocket.accept()
+    buffer = bytearray()
+    last_partial_ms = 0
+    partial_interval_ms = 800
+    try:
+        while True:
+            message = await websocket.receive()
+            if 'bytes' in message and message['bytes']:
+                chunk: bytes = message['bytes']
+                buffer.extend(chunk)
+                now_ms = int(asyncio.get_event_loop().time() * 1000)
+                if now_ms - last_partial_ms >= partial_interval_ms and len(buffer) > 2000:
+                    try:
+                        asr = await orchestrator.asr_service.transcribe_audio(bytes(buffer))
+                        await websocket.send_text(json.dumps({
+                            "type": "partial",
+                            "text": asr.get("text", ""),
+                            "confidence": asr.get("confidence", 0.0)
+                        }))
+                    except Exception as pe:
+                        logger.error(f"Partial ASR failed: {pe}")
+                    last_partial_ms = now_ms
+            elif 'text' in message and message['text']:
+                try:
+                    payload = json.loads(message['text'])
+                except Exception:
+                    payload = {"type": "unknown"}
+                if payload.get("type") == "end":
+                    # Finalize turn using fast path (no TTS inline)
+                    try:
+                        response_text, conversation_complete, asr_text, asr_conf, raw_asr, turn_id = await orchestrator.process_turn_text_only(
+                            candidate_id, bytes(buffer)
+                        )
+                        await websocket.send_text(json.dumps({
+                            "type": "final",
+                            "text": response_text,
+                            "conversation_complete": conversation_complete,
+                            "asr": {"text": asr_text or "", "confidence": asr_conf or 0.0},
+                            "turn_id": turn_id
+                        }))
+                    except Exception as fe:
+                        logger.error(f"Finalize failed: {fe}")
+                        await websocket.send_text(json.dumps({"type": "error", "message": "finalize_failed"}))
+                    break
+                else:
+                    # Ignore unknown control messages
+                    pass
+            else:
+                # Ignore empty frames
+                pass
+    except WebSocketDisconnect:
+        logger.info(f"Streaming WebSocket disconnected for candidate {candidate_id}")
+    except Exception as e:
+        logger.error(f"Streaming WebSocket error: {e}")
 
 
 @router.get("/test/noise")
