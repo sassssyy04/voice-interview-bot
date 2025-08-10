@@ -22,9 +22,9 @@ async def test_elevenlabs_asr_direct():
     
     # Test files to try
     test_files = [
-        "test_harness/generated_audio/pin_001_clean.wav",
-        "test_harness/generated_audio/sal_001_clean.wav",
-        "test_harness/generated_audio/vehicle_001_clean.wav"
+        "test_harness/generated_audio/pin_diverse_001_clean.wav",
+        "test_harness/generated_audio/sal_diverse_001_noisy_gpt.wav",
+        "test_harness/generated_audio/vehicle_diverse_001_clean.wav"
     ]
     
     url = "https://api.elevenlabs.io/v1/speech-to-text"

@@ -1,0 +1,275 @@
+{
+  "persona_name": "Energetic Hindi Speaker",
+  "voice_id": "IvLWq57RKibBrqZGpQrC",
+  "noise_levels": [
+    "medium",
+    "low"
+  ],
+  "candidate_id": "426accf0-c413-474f-b65d-75d76d2d55ed",
+  "start_time": "2025-08-10T21:41:43.925549",
+  "end_time": "2025-08-10T21:42:18.893249",
+  "turns": [
+    {
+      "turn_number": 0,
+      "step_name": "pincode",
+      "audio_file": "pin_diverse_003",
+      "asr_text": "",
+      "asr_confidence": 0.0,
+      "bot_response": "Pincode samajh nahi aaya। 6 digit number boliye jaise 110001।",
+      "latency_ms": 1180.375576019287,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "pincode": "110001"
+      },
+      "current_field": "pincode",
+      "candidate_profile": {
+        "candidate_id": "426accf0-c413-474f-b65d-75d76d2d55ed",
+        "created_at": "2025-08-10T21:41:44.339328",
+        "pincode": null,
+        "locality": null,
+        "availability_date": null,
+        "preferred_shift": null,
+        "expected_salary": null,
+        "languages": [],
+        "other_languages": [],
+        "has_two_wheeler": null,
+        "total_experience_months": null,
+        "conversation_completed": false,
+        "turn_count": 3
+      },
+      "audio_variant": "noisy"
+    },
+    {
+      "turn_number": 0,
+      "step_name": "expected_salary",
+      "audio_file": "sal_diverse_003",
+      "asr_text": "",
+      "asr_confidence": 0.0,
+      "bot_response": "Pincode samajh nahi aaya। 6 digit number boliye jaise 110001।",
+      "latency_ms": 1665.2183532714844,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "expected_salary": 25000
+      },
+      "current_field": "pincode",
+      "candidate_profile": {
+        "candidate_id": "426accf0-c413-474f-b65d-75d76d2d55ed",
+        "created_at": "2025-08-10T21:41:44.339328",
+        "pincode": null,
+        "locality": null,
+        "availability_date": null,
+        "preferred_shift": null,
+        "expected_salary": null,
+        "languages": [],
+        "other_languages": [],
+        "has_two_wheeler": null,
+        "total_experience_months": null,
+        "conversation_completed": false,
+        "turn_count": 4
+      },
+      "audio_variant": "noisy"
+    },
+    {
+      "turn_number": 0,
+      "step_name": "has_two_wheeler",
+      "audio_file": "vehicle_diverse_003",
+      "asr_text": "",
+      "asr_confidence": 0.0,
+      "bot_response": "Pincode samajh nahi aaya। 6 digit number boliye jaise 110001।",
+      "latency_ms": 1361.112356185913,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "has_two_wheeler": true
+      },
+      "current_field": "pincode",
+      "candidate_profile": {
+        "candidate_id": "426accf0-c413-474f-b65d-75d76d2d55ed",
+        "created_at": "2025-08-10T21:41:44.339328",
+        "pincode": null,
+        "locality": null,
+        "availability_date": null,
+        "preferred_shift": null,
+        "expected_salary": null,
+        "languages": [],
+        "other_languages": [],
+        "has_two_wheeler": null,
+        "total_experience_months": null,
+        "conversation_completed": false,
+        "turn_count": 5
+      },
+      "audio_variant": "noisy"
+    },
+    {
+      "turn_number": 0,
+      "step_name": "languages",
+      "audio_file": "lang_diverse_003",
+      "asr_text": "",
+      "asr_confidence": 0.0,
+      "bot_response": "Pincode samajh nahi aaya। 6 digit number boliye jaise 110001।",
+      "latency_ms": 1260.9398365020752,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "languages": [
+          "hindi"
+        ]
+      },
+      "current_field": "pincode",
+      "candidate_profile": {
+        "candidate_id": "426accf0-c413-474f-b65d-75d76d2d55ed",
+        "created_at": "2025-08-10T21:41:44.339328",
+        "pincode": null,
+        "locality": null,
+        "availability_date": null,
+        "preferred_shift": null,
+        "expected_salary": null,
+        "languages": [],
+        "other_languages": [],
+        "has_two_wheeler": null,
+        "total_experience_months": null,
+        "conversation_completed": false,
+        "turn_count": 6
+      },
+      "audio_variant": "noisy"
+    },
+    {
+      "turn_number": 0,
+      "step_name": "availability_date",
+      "audio_file": "avail_diverse_003",
+      "asr_text": "",
+      "asr_confidence": 0.0,
+      "bot_response": "Pincode samajh nahi aaya। 6 digit number boliye jaise 110001।",
+      "latency_ms": 1388.4921073913574,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "availability_date": "next week"
+      },
+      "current_field": "pincode",
+      "candidate_profile": {
+        "candidate_id": "426accf0-c413-474f-b65d-75d76d2d55ed",
+        "created_at": "2025-08-10T21:41:44.339328",
+        "pincode": null,
+        "locality": null,
+        "availability_date": null,
+        "preferred_shift": null,
+        "expected_salary": null,
+        "languages": [],
+        "other_languages": [],
+        "has_two_wheeler": null,
+        "total_experience_months": null,
+        "conversation_completed": false,
+        "turn_count": 7
+      },
+      "audio_variant": "noisy"
+    },
+    {
+      "turn_number": 0,
+      "step_name": "preferred_shift",
+      "audio_file": "shift_diverse_003",
+      "asr_text": "",
+      "asr_confidence": 0.0,
+      "bot_response": "Pincode samajh nahi aaya। 6 digit number boliye jaise 110001।",
+      "latency_ms": 1260.957956314087,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "preferred_shift": "flexible"
+      },
+      "current_field": "pincode",
+      "candidate_profile": {
+        "candidate_id": "426accf0-c413-474f-b65d-75d76d2d55ed",
+        "created_at": "2025-08-10T21:41:44.339328",
+        "pincode": null,
+        "locality": null,
+        "availability_date": null,
+        "preferred_shift": null,
+        "expected_salary": null,
+        "languages": [],
+        "other_languages": [],
+        "has_two_wheeler": null,
+        "total_experience_months": null,
+        "conversation_completed": false,
+        "turn_count": 8
+      },
+      "audio_variant": "noisy"
+    },
+    {
+      "turn_number": 0,
+      "step_name": "total_experience_months",
+      "audio_file": "exp_diverse_003",
+      "asr_text": "",
+      "asr_confidence": 0.0,
+      "bot_response": "Pincode samajh nahi aaya। 6 digit number boliye jaise 110001।",
+      "latency_ms": 1939.2516613006592,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "total_experience_months": 36
+      },
+      "current_field": "pincode",
+      "candidate_profile": {
+        "candidate_id": "426accf0-c413-474f-b65d-75d76d2d55ed",
+        "created_at": "2025-08-10T21:41:44.339328",
+        "pincode": null,
+        "locality": null,
+        "availability_date": null,
+        "preferred_shift": null,
+        "expected_salary": null,
+        "languages": [],
+        "other_languages": [],
+        "has_two_wheeler": null,
+        "total_experience_months": null,
+        "conversation_completed": false,
+        "turn_count": 9
+      },
+      "audio_variant": "noisy"
+    },
+    {
+      "turn_number": 0,
+      "step_name": "confirmation",
+      "audio_file": "conf_diverse_003",
+      "asr_text": "",
+      "asr_confidence": 0.0,
+      "bot_response": "Pincode samajh nahi aaya। 6 digit number boliye jaise 110001।",
+      "latency_ms": 1292.8400039672852,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "confirmation": "accept"
+      },
+      "current_field": "pincode",
+      "candidate_profile": {
+        "candidate_id": "426accf0-c413-474f-b65d-75d76d2d55ed",
+        "created_at": "2025-08-10T21:41:44.339328",
+        "pincode": null,
+        "locality": null,
+        "availability_date": null,
+        "preferred_shift": null,
+        "expected_salary": null,
+        "languages": [],
+        "other_languages": [],
+        "has_two_wheeler": null,
+        "total_experience_months": null,
+        "conversation_completed": false,
+        "turn_count": 10
+      },
+      "audio_variant": "noisy"
+    }
+  ],
+  "completed_steps": 8,
+  "total_steps": 8,
+  "reached_job_matching": false,
+  "final_bot_response": "Pincode samajh nahi aaya। 6 digit number boliye jaise 110001।",
+  "conversation_completed": false,
+  "total_latency_ms": 11349.187850952148,
+  "avg_turn_latency_ms": 1418.6484813690186,
+  "avg_confidence": 0.0,
+  "confidence_range": [
+    0.0,
+    0.0
+  ]
+}

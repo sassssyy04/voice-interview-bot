@@ -1,0 +1,141 @@
+{
+  "persona_name": "Calm Hindi Speaker",
+  "voice_id": "1Z7Y8o9cvUeWq8oLKgMY",
+  "noise_levels": [
+    "low",
+    "medium"
+  ],
+  "candidate_id": "52ae1d24-0af0-497d-b4eb-ccb93cc8885c",
+  "start_time": "2025-08-10T14:43:40.610957",
+  "end_time": "2025-08-10T14:44:10.533941",
+  "turns": [
+    {
+      "turn_number": 0,
+      "step_name": "pincode",
+      "audio_file": "pin_diverse_002",
+      "asr_text": "मैं दिल्ली में रहता हूं। मेरा पिनकोड है 11001।",
+      "asr_confidence": 0.73,
+      "bot_response": "Aapko kitni salary chahiye har mahine? Rupees mein batayiye।",
+      "latency_ms": 1817.406177520752,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "pincode": "110001"
+      }
+    },
+    {
+      "turn_number": 0,
+      "step_name": "expected_salary",
+      "audio_file": "sal_diverse_002",
+      "asr_text": "भाई, मैं फिफ्टीन थाउजेंड पर मंथ एक्सपेक्ट करता हूं।",
+      "asr_confidence": 0.73,
+      "bot_response": "Kya aapke paas bike ya scooter hai?",
+      "latency_ms": 1090.0154113769531,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "expected_salary": 15000
+      }
+    },
+    {
+      "turn_number": 0,
+      "step_name": "has_two_wheeler",
+      "audio_file": "vehicle_diverse_002",
+      "asr_text": "नहीं यार, बाइक नहीं है मेरे पास।",
+      "asr_confidence": 0.73,
+      "bot_response": "Aap kaunsi languages bol sakte hain? Hindi, English ya koi aur?",
+      "latency_ms": 1295.5892086029053,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "has_two_wheeler": false
+      }
+    },
+    {
+      "turn_number": 0,
+      "step_name": "languages",
+      "audio_file": "lang_diverse_002",
+      "asr_text": "हिंदी, इंग्लिश, मराठी तीनों लैंग्वेजेस आती हैं मुझे।",
+      "asr_confidence": 0.73,
+      "bot_response": "Aap kab se kaam shuru kar sakte hain? Aaj, kal ya koi aur din?",
+      "latency_ms": 1955.939769744873,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "languages": [
+          "hindi",
+          "english",
+          "marathi"
+        ]
+      }
+    },
+    {
+      "turn_number": 0,
+      "step_name": "availability_date",
+      "audio_file": "avail_diverse_002",
+      "asr_text": "कल से शुरू कर सकता हूं। टुमारो अवेलेबल हूं।",
+      "asr_confidence": 0.73,
+      "bot_response": "Aap kaunse time pe kaam karna chahte hain? Morning, evening ya night?",
+      "latency_ms": 1303.6761283874512,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "availability_date": "tomorrow"
+      }
+    },
+    {
+      "turn_number": 0,
+      "step_name": "preferred_shift",
+      "audio_file": "shift_diverse_002",
+      "asr_text": "इवनिंग शिफ्ट ठीक है यार। नाइट में काम कर सकता हूं।",
+      "asr_confidence": 0.73,
+      "bot_response": "Aapko kitna kaam ka experience hai? Kitne saal ya mahine?",
+      "latency_ms": 1031.65864944458,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "preferred_shift": "evening"
+      }
+    },
+    {
+      "turn_number": 0,
+      "step_name": "total_experience_months",
+      "audio_file": "exp_diverse_002",
+      "asr_text": "सिक्स मंथ्स का एक्सपीरियंस है डिलीवरी बॉय का।",
+      "asr_confidence": 0.73,
+      "bot_response": "Dhanyawad! Main aapki details repeat karta hun:\nArea: Pincode,\nAvailability: tomorrow,\naapka Preferred shift: Evening hai,\nExpected salary: ₹15,000 per month,\naap Hindi, English, Marathi bol sakte hain,\naapke paas Two wheeler: Hai. \nExperience: 6 months\n\nKya yeh saari information jo humne collect ki hai, sahi hai? Agar kuch galat hai toh please bataiye.",
+      "latency_ms": 2285.74275970459,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "total_experience_months": 6
+      }
+    },
+    {
+      "turn_number": 0,
+      "step_name": "confirmation",
+      "audio_file": "conf_diverse_002",
+      "asr_text": "यस, करेक्ट है सब कुछ।",
+      "asr_confidence": 0.65,
+      "bot_response": "Samajh nahi aaya. Kya saari information sahi hai? Ya kuch change karna hai?",
+      "latency_ms": 1795.7208156585693,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "confirmation": "accept"
+      }
+    }
+  ],
+  "completed_steps": 8,
+  "total_steps": 8,
+  "reached_job_matching": false,
+  "final_bot_response": "Samajh nahi aaya. Kya saari information sahi hai? Ya kuch change karna hai?",
+  "conversation_completed": false,
+  "total_latency_ms": 12575.748920440674,
+  "avg_turn_latency_ms": 1571.9686150550842,
+  "avg_confidence": 0.72,
+  "confidence_range": [
+    0.65,
+    0.73
+  ]
+}

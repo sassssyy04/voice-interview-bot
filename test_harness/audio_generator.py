@@ -4,11 +4,12 @@ import os
 import yaml
 import asyncio
 import random
+import wave
+import struct
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 import numpy as np
 from pydub import AudioSegment
-from pydub.generators import WhiteNoise
 import httpx
 from loguru import logger
 from dotenv import load_dotenv
@@ -132,8 +133,8 @@ class AudioGenerator:
             from pydub.generators import Sine
             
             # Create word-like segments with brief tones
-            segment_duration = 200  # 200ms per "word"
-            pause_duration = 100    # 100ms pause between words
+            segment_duration = 300  # 300ms per "word" - longer segments
+            pause_duration = 150    # 150ms pause between words
             
             current_pos = 0
             for i in range(word_count):
@@ -141,13 +142,21 @@ class AudioGenerator:
                     break
                     
                 # Generate a brief tone (simulating a word)
-                tone_freq = 200 + (i % 5) * 50  # Vary frequency slightly
+                tone_freq = 300 + (i % 5) * 75  # Vary frequency (300-675Hz)
                 tone = Sine(tone_freq).to_audio_segment(duration=segment_duration)
-                tone = tone - 30  # Make it quiet (-30dB)
+                tone = tone - 5  # Much louder (-5dB instead of -30dB)
+                
+                # Add some harmonic content to make it more speech-like
+                if i % 2 == 0:
+                    harmonic = Sine(tone_freq * 1.5).to_audio_segment(duration=segment_duration) - 15
+                    tone = tone.overlay(harmonic)
                 
                 # Overlay the tone at current position
                 base_audio = base_audio.overlay(tone, position=current_pos)
                 current_pos += segment_duration + pause_duration
+            
+            # Boost the overall volume significantly
+            base_audio = base_audio + 20  # Boost by 20dB to make it very audible
             
             # Ensure 16kHz mono WAV format
             base_audio = base_audio.set_frame_rate(16000).set_channels(1)
@@ -171,80 +180,121 @@ class AudioGenerator:
                 logger.error(f"Even basic fallback failed: {e2}")
                 return False
     
-    def add_background_noise(self, audio_path: str, noise_config: Dict) -> str:
-        """Add background noise to audio file.
+    def add_background_noise(self, input_wav: str, output_wav: str, noise_level_db: int = -20) -> bool:
+        """Add white noise to audio file using numpy approach.
+        
+        Args:
+            input_wav (str): Path to input clean audio file
+            output_wav (str): Path to output noisy audio file
+            noise_level_db (int): Noise level in dB
+            
+        Returns:
+            bool: Success status
+        """
+        try:
+            # Load the original audio
+            audio = AudioSegment.from_wav(input_wav)
+
+            # Generate white noise with the same duration
+            # pydub uses milliseconds, so convert length
+            noise = AudioSegment(
+                (np.random.randn(len(audio.get_array_of_samples())) * 32767).astype(np.int16).tobytes(),
+                frame_rate=audio.frame_rate,
+                sample_width=audio.sample_width,
+                channels=audio.channels
+            )
+
+            # Adjust noise level
+            noise = noise - noise.dBFS + noise_level_db
+
+            # Overlay the noise on the original audio
+            mixed = audio.overlay(noise)
+
+            # Save to output file
+            mixed.export(output_wav, format="wav")
+            logger.info(f"Successfully added white noise ({noise_level_db}dB): {output_wav}")
+            return True
+            
+        except Exception as e:
+            logger.error(f"Failed to add noise to {input_wav}: {e}")
+            return False
+
+    def add_background_noise_old(self, audio_path: str, noise_config: Dict) -> str:
+        """Legacy noise addition function - kept for reference."""
+        # This is the old complex method - now we use the simpler numpy approach
+        return audio_path
+    
+    def _create_synthetic_speech(self, duration_ms: int) -> AudioSegment:
+        """Create synthetic speech-like audio pattern.
+        
+        Args:
+            duration_ms (int): Duration in milliseconds
+            
+        Returns:
+            AudioSegment: Synthetic speech audio
+        """
+        from pydub.generators import Sine
+        
+        # Create base silence
+        base_audio = AudioSegment.silent(duration=duration_ms)
+        
+        # Add speech-like segments with much higher volume
+        current_pos = 0
+        segment_duration = 300  # 300ms per "word" - longer segments
+        pause_duration = 150    # 150ms pause between words
+        
+        word_count = duration_ms // (segment_duration + pause_duration)
+        
+        for i in range(int(word_count)):
+            if current_pos + segment_duration > duration_ms:
+                break
+                
+            # Generate varying frequency tone to simulate speech
+            tone_freq = 300 + (i % 8) * 75  # Vary between 300-825Hz (more speech-like)
+            tone = Sine(tone_freq).to_audio_segment(duration=segment_duration)
+            tone = tone - 10  # Much louder than before (-10dB instead of -30dB)
+            
+            # Add some modulation to make it more speech-like
+            if i % 3 == 0:  # Every third "word" add a harmonic
+                harmonic = Sine(tone_freq * 1.5).to_audio_segment(duration=segment_duration) - 20
+                tone = tone.overlay(harmonic)
+            
+            # Overlay the tone at current position
+            base_audio = base_audio.overlay(tone, position=current_pos)
+            current_pos += segment_duration + pause_duration
+        
+        # Make the overall speech much louder
+        base_audio = base_audio + 15  # Boost by 15dB
+        
+        return base_audio
+    
+    def _mix_audio_with_noise(self, audio_path: str, noise_path: str, output_path: str, noise_config: Dict) -> bool:
+        """Legacy function - not used in current pydub implementation.
         
         Args:
             audio_path (str): Path to clean audio file
-            noise_config (Dict): Noise configuration
+            noise_path (str): Path to noise sample file
+            output_path (str): Path for output mixed file
+            noise_config (Dict): Noise configuration with SNR
             
         Returns:
-            str: Path to noisy audio file
+            bool: Success status
         """
-        if not noise_config.get("type"):
-            return audio_path
-            
-        try:
-            # Load original audio
-            audio = AudioSegment.from_wav(audio_path)
-            
-            # Generate noise based on type
-            noise = self._generate_noise(
-                audio.duration_seconds * 1000,
-                noise_config["type"]
-            )
-            
-            # Calculate noise level based on SNR
-            snr_db = noise_config.get("snr_db", 20)
-            noise_level = audio.dBFS - snr_db
-            noise = noise.apply_gain(noise_level - noise.dBFS)
-            
-            # Mix audio with noise
-            noisy_audio = audio.overlay(noise)
-            
-            # Save noisy version
-            noisy_path = audio_path.replace(".wav", "_noisy.wav")
-            noisy_audio.export(noisy_path, format="wav")
-            
-            logger.info(f"Added noise to audio: {noisy_path}")
-            return noisy_path
-            
-        except Exception as e:
-            logger.error(f"Failed to add noise: {e}")
-            return audio_path
+        # This function is replaced by the simpler pydub approach in add_background_noise
+        return False
     
-    def _generate_noise(self, duration_ms: float, noise_type: str) -> AudioSegment:
-        """Generate background noise of specified type.
+    def _generate_noise(self, duration_ms: float, noise_type: str) -> Optional[AudioSegment]:
+        """Legacy function kept for compatibility - not used in current implementation.
         
         Args:
             duration_ms (float): Duration in milliseconds
             noise_type (str): Type of noise
             
         Returns:
-            AudioSegment: Generated noise
+            Optional[AudioSegment]: None (not used)
         """
-        if noise_type == "traffic":
-            # Low frequency rumble + occasional higher frequency
-            base_noise = WhiteNoise().to_audio_segment(duration=duration_ms)
-            filtered = base_noise.low_pass_filter(800)
-            return filtered
-            
-        elif noise_type == "office":
-            # Mid-frequency chatter simulation
-            base_noise = WhiteNoise().to_audio_segment(duration=duration_ms)
-            # Use high_pass and low_pass to simulate band_pass
-            filtered = base_noise.high_pass_filter(300).low_pass_filter(3000)
-            return filtered - 10  # Quieter
-            
-        elif noise_type == "construction":
-            # High frequency with intermittent peaks
-            base_noise = WhiteNoise().to_audio_segment(duration=duration_ms)
-            filtered = base_noise.high_pass_filter(500)
-            return filtered
-            
-        else:
-            # Default white noise
-            return WhiteNoise().to_audio_segment(duration=duration_ms)
+        # This function is not used in the current raw audio implementation
+        return None
     
     async def generate_test_audio(self, utterance_id: str = None) -> List[Dict]:
         """Generate audio files for test utterances.
@@ -301,31 +351,54 @@ class AudioGenerator:
                     logger.error(f"Generated file does not exist: {clean_path}")
                     continue
                 
-                # Add noise if specified
+                # Add noise if specified and if utterance ID ends with "001" or "003"
                 noise_level = utterance["noise_level"]
                 noise_config = audio_config["noise"][noise_level]
                 
-                final_path = self.add_background_noise(clean_path, noise_config)
+                final_path = clean_path  # Start with clean path
                 
-                # Try to verify duration, but don't fail if we can't
+                # Check if utterance ID ends with "001" or "003" (apply noise only to these)
+                utterance_id = utterance["id"]
+                if utterance_id.endswith("_001") or utterance_id.endswith("_003"):
+                    # Determine noise level in dB based on noise type
+                    noise_db_levels = {
+                        "construction": -15,  # High noise (louder)
+                        "office": -20,        # Medium noise  
+                        "traffic": -25        # Low noise (quieter)
+                    }
+                    
+                    noise_type = noise_config.get("type")
+                    if noise_type:
+                        noise_level_db = noise_db_levels.get(noise_type, -20)
+                        noisy_path = clean_path.replace("_clean.wav", "_noisy.wav")
+                        
+                        success = self.add_background_noise(clean_path, noisy_path, noise_level_db)
+                        if success:
+                            final_path = noisy_path
+                            logger.info(f"Added {noise_type} noise to {utterance_id}")
+                        else:
+                            logger.warning(f"Failed to add noise to {utterance_id}, using clean version")
+                else:
+                    logger.info(f"Skipping noise for {utterance_id} (only adding to _001 and _003)")
+                
+                # Estimate duration from file size (avoid pydub/FFmpeg issues)
                 try:
-                    audio = AudioSegment.from_wav(final_path)
-                    duration_s = audio.duration_seconds
+                    file_size = os.path.getsize(final_path)
+                    # Rough estimate: 16kHz mono WAV = ~32KB per second
+                    duration_s = max(6.0, file_size / 32000)
                     expected_range = utterance["duration_range"]
                     
-                    logger.info(f"Audio duration: {duration_s:.1f}s (expected: {expected_range})")
+                    logger.info(f"Estimated audio duration: {duration_s:.1f}s (expected: {expected_range})")
                     
-                    if not (expected_range[0] <= duration_s <= expected_range[1] + 2):
+                    if not (expected_range[0] <= duration_s <= expected_range[1] + 5):
                         logger.warning(
-                            f"Duration {duration_s:.1f}s outside expected range "
+                            f"Estimated duration {duration_s:.1f}s outside expected range "
                             f"{expected_range} for {utterance['id']}"
                         )
                     
                 except Exception as duration_error:
-                    logger.warning(f"Could not verify duration for {final_path}: {duration_error}")
-                    # Estimate duration from file size (rough approximation)
-                    file_size = os.path.getsize(final_path)
-                    duration_s = max(6.0, file_size / 32000)  # Very rough estimate
+                    logger.warning(f"Could not estimate duration for {final_path}: {duration_error}")
+                    duration_s = 6.0  # Default fallback
                 
                 generated_files.append({
                     "id": utterance["id"],

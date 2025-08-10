@@ -6,7 +6,7 @@ from datetime import datetime
 
 from app.models.candidate import Candidate, ConversationState, VoiceTurn, ShiftPreference, LanguageSkill
 from app.services.speech_recognition import ASRService
-from app.services.elevenlabs_asr import ElevenLabsASRService
+
 from app.services.text_to_speech import TTSService
 from app.services.nlu import NLUService
 from app.services.job_matching import JobMatchingService
@@ -22,18 +22,12 @@ class ConversationOrchestrator:
     def __init__(self):
         # Initialize services individually to catch specific errors
         try:
-            # Try ElevenLabs ASR first (preferred for Hinglish)
-            self.asr_service = ElevenLabsASRService()
-            logger.info("ElevenLabs ASR service initialized successfully")
+            # Use Google Speech API for real confidence scores
+            self.asr_service = ASRService()
+            logger.info("Google Speech API ASR service initialized successfully")
         except Exception as e:
-            logger.error(f"ElevenLabs ASR service initialization failed: {e}")
-            # Fallback to original ASR service
-            try:
-                self.asr_service = ASRService()
-                logger.info("Fallback ASR service initialized successfully")
-            except Exception as e2:
-                logger.error(f"Fallback ASR service initialization failed: {e2}")
-                self.asr_service = None
+            logger.error(f"Google Speech API ASR service initialization failed: {e}")
+            self.asr_service = None
         
         try:
             self.tts_service = TTSService()
@@ -182,7 +176,7 @@ class ConversationOrchestrator:
         
         return candidate_id, audio_data
     
-    async def process_turn_text_only(self, candidate_id: str, audio_data: bytes) -> Tuple[str, bool, str, float, str]:
+    async def process_turn_text_only(self, candidate_id: str, audio_data: bytes) -> Tuple[str, bool, str, float, Dict[str, Any], str]:
         """Process a turn up to response_text (no TTS), return turn_id for later audio fetch."""
         if self.asr_service is None or self.nlu_service is None:
             raise Exception("Voice services not available - Google Cloud APIs need to be enabled")
@@ -194,7 +188,12 @@ class ConversationOrchestrator:
         asr_result = await self.asr_service.transcribe_audio(audio_data)
         transcribed_text = asr_result.get("text", "")
         confidence = asr_result.get("confidence", 0.0)
+        raw_confidence_data = asr_result.get("raw_confidence_data", {})
+        
+        # Log detailed ASR information
         logger.info(f"ASR heard: '{transcribed_text}' (conf {confidence:.2f})")
+        logger.info(f"ASR provider: {raw_confidence_data.get('asr_provider', 'unknown')}")
+        logger.info(f"Confidence source: {raw_confidence_data.get('confidence_source', 'unknown')}")
         history_pairs = []
         for t in self.conversation_turns.get(candidate_id, [])[-8:]:
             if t.asr_text:
@@ -261,7 +260,7 @@ class ConversationOrchestrator:
         turn_id = str(uuid.uuid4())
         status = "completed" if is_completed else ("intelligent" if target_slot else "contextual")
         self._log_turn(candidate_id, transcribed_text, confidence, response_text, start_time, status, turn_id=turn_id)
-        return response_text, is_completed, transcribed_text, confidence, turn_id
+        return response_text, is_completed, transcribed_text, confidence, raw_confidence_data, turn_id
 
     async def process_turn(self, candidate_id: str, audio_data: bytes) -> Tuple[str, bytes, bool, str, float]:
         """Process a voice turn from the candidate.

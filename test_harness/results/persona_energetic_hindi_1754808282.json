@@ -1,0 +1,139 @@
+{
+  "persona_name": "Energetic Hindi Speaker",
+  "voice_id": "IvLWq57RKibBrqZGpQrC",
+  "noise_levels": [
+    "medium",
+    "low"
+  ],
+  "candidate_id": "c194c670-a5dc-4957-8618-9d9a2368773a",
+  "start_time": "2025-08-10T14:44:10.535154",
+  "end_time": "2025-08-10T14:44:42.036848",
+  "turns": [
+    {
+      "turn_number": 0,
+      "step_name": "pincode",
+      "audio_file": "pin_diverse_003",
+      "asr_text": "ਮੈਂ ਦਿਲ ਹੀ ਮੇਰੇ ਰਹਿਤਾ ਹੂੰ। ਮੇਰਾ ਪਿੰਨਕੋਡ ਹੈ ਗਿਆਰਾ ਠਾਬੂ ਸਾਨ ਏਕ।",
+      "asr_confidence": 0.73,
+      "bot_response": "Aapko kitni salary chahiye har mahine? Rupees mein batayiye।",
+      "latency_ms": 3067.807674407959,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "pincode": "110001"
+      }
+    },
+    {
+      "turn_number": 0,
+      "step_name": "expected_salary",
+      "audio_file": "sal_diverse_003",
+      "asr_text": "सैलरी कितना चाहिए? अरे ट्वेंटी फाइव हज़ार रुपये मंथली।",
+      "asr_confidence": 0.73,
+      "bot_response": "Kya aapke paas bike ya scooter hai?",
+      "latency_ms": 2113.0974292755127,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "expected_salary": 25000
+      }
+    },
+    {
+      "turn_number": 0,
+      "step_name": "has_two_wheeler",
+      "audio_file": "vehicle_diverse_003",
+      "asr_text": "हां, हां होंडा एक्टिवा है मेरे पास।",
+      "asr_confidence": 0.73,
+      "bot_response": "Aap kaunsi languages bol sakte hain? Hindi, English ya koi aur?",
+      "latency_ms": 1043.7753200531006,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "has_two_wheeler": true
+      }
+    },
+    {
+      "turn_number": 0,
+      "step_name": "languages",
+      "audio_file": "lang_diverse_003",
+      "asr_text": "सिर्फ हिंदी बोल सकता हूं भाई। इंग्लिश थोड़ा-थोड़ा।",
+      "asr_confidence": 0.73,
+      "bot_response": "Aap kab se kaam shuru kar sakte hain? Aaj, kal ya koi aur din?",
+      "latency_ms": 1899.0354537963867,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "languages": [
+          "hindi"
+        ]
+      }
+    },
+    {
+      "turn_number": 0,
+      "step_name": "availability_date",
+      "audio_file": "avail_diverse_003",
+      "asr_text": "एक वीक बाद स्टार्ट करूंगा। नेक्स्ट मंडे से।",
+      "asr_confidence": 0.73,
+      "bot_response": "Aap kaunse time pe kaam karna chahte hain? Morning, evening ya night?",
+      "latency_ms": 1749.3181228637695,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "availability_date": "next week"
+      }
+    },
+    {
+      "turn_number": 0,
+      "step_name": "preferred_shift",
+      "audio_file": "shift_diverse_003",
+      "asr_text": "कोई भी शिफ्ट चलेगा भाई, फ्लेक्सिबल हन में।",
+      "asr_confidence": 0.73,
+      "bot_response": "Aapko kitna kaam ka experience hai? Kitne saal ya mahine?",
+      "latency_ms": 1786.3712310791016,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "preferred_shift": "flexible"
+      }
+    },
+    {
+      "turn_number": 0,
+      "step_name": "total_experience_months",
+      "audio_file": "exp_diverse_003",
+      "asr_text": "तीन साल का एक्सपीरियंस है भाई। फैक्ट्री में काम किया।",
+      "asr_confidence": 0.73,
+      "bot_response": "Dhanyawad! Main aapki details repeat karta hun:\nPincode: 110001,\nAvailability: 1 वीक बाद,\naapka Preferred shift: Flexible hai,\nExpected salary: ₹25,000 per month,\naap Hindi, English bol sakte hain,\naapke paas Two wheeler: Hai. \nExperience: 3 years\n\nKya yeh saari information jo humne collect ki hai, sahi hai? Agar kuch galat hai toh please bataiye.",
+      "latency_ms": 1115.992784500122,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "total_experience_months": 36
+      }
+    },
+    {
+      "turn_number": 0,
+      "step_name": "confirmation",
+      "audio_file": "conf_diverse_003",
+      "asr_text": "बिल्कुल ठीक है भाई।",
+      "asr_confidence": 0.65,
+      "bot_response": "Tumhara top 3 matches hai: \n- Security Guard @ SecureTech (₹18,000-₹25,000): Night shift, Darya Ganj, 0.1km doori, flexible shift\n- Construction Helper @ BuildRight (₹16,000-₹24,000): Morning shift, Connaught Place, 0.0km doori, flexible shift\n- Housekeeping Staff @ CleanCorp (₹12,000-₹18,000): Subah aur dopahar shift, Civil Lines, 0.2km doori, hindi bhasha. Kaunsa job sunna pasand karoge?",
+      "latency_ms": 3361.9799613952637,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "confirmation": "accept"
+      }
+    }
+  ],
+  "completed_steps": 8,
+  "total_steps": 8,
+  "reached_job_matching": true,
+  "final_bot_response": "Tumhara top 3 matches hai: \n- Security Guard @ SecureTech (₹18,000-₹25,000): Night shift, Darya Ganj, 0.1km doori, flexible shift\n- Construction Helper @ BuildRight (₹16,000-₹24,000): Morning shift, Connaught Place, 0.0km doori, flexible shift\n- Housekeeping Staff @ CleanCorp (₹12,000-₹18,000): Subah aur dopahar shift, Civil Lines, 0.2km doori, hindi bhasha. Kaunsa job sunna pasand karoge?",
+  "conversation_completed": true,
+  "total_latency_ms": 16137.377977371216,
+  "avg_turn_latency_ms": 2017.172247171402,
+  "avg_confidence": 0.72,
+  "confidence_range": [
+    0.65,
+    0.73
+  ]
+}

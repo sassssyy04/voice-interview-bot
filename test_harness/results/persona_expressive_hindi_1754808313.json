@@ -1,0 +1,142 @@
+{
+  "persona_name": "Expressive Hindi Speaker",
+  "voice_id": "ni6cdqyS9wBvic5LPA7M",
+  "noise_levels": [
+    "high",
+    "medium"
+  ],
+  "candidate_id": "5328d78d-3055-4a71-9084-6552e634f967",
+  "start_time": "2025-08-10T14:44:42.037961",
+  "end_time": "2025-08-10T14:45:13.397128",
+  "turns": [
+    {
+      "turn_number": 0,
+      "step_name": "pincode",
+      "audio_file": "pin_diverse_004",
+      "asr_text": "मैं दिल्ली में रहता हूं। मेरा पिनकोड है 11001।",
+      "asr_confidence": 0.73,
+      "bot_response": "Aapko kitni salary chahiye har mahine? Rupees mein batayiye।",
+      "latency_ms": 1837.3112678527832,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "pincode": "110001"
+      }
+    },
+    {
+      "turn_number": 0,
+      "step_name": "expected_salary",
+      "audio_file": "sal_diverse_004",
+      "asr_text": "मैं फिफ्टी थाउजेंड एक्सपेक्ट करता हूं पर मंथ।",
+      "asr_confidence": 0.73,
+      "bot_response": "Kya aapke paas bike ya scooter hai?",
+      "latency_ms": 1008.2986354827881,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "expected_salary": 50000
+      }
+    },
+    {
+      "turn_number": 0,
+      "step_name": "has_two_wheeler",
+      "audio_file": "vehicle_diverse_004",
+      "asr_text": "बाइक? हाँ यार। रॉयल एनफील्ड है।",
+      "asr_confidence": 0.73,
+      "bot_response": "Aap kaunsi languages bol sakte hain? Hindi, English ya koi aur?",
+      "latency_ms": 983.4904670715332,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "has_two_wheeler": true
+      }
+    },
+    {
+      "turn_number": 0,
+      "step_name": "languages",
+      "audio_file": "lang_diverse_004",
+      "asr_text": "हिंदी, तमिल, इंग्लिश सबको बोलता हूं परफेक्टली।",
+      "asr_confidence": 0.73,
+      "bot_response": "Aap kab se kaam shuru kar sakte hain? Aaj, kal ya koi aur din?",
+      "latency_ms": 3385.3378295898438,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "languages": [
+          "hindi",
+          "tamil",
+          "english"
+        ]
+      }
+    },
+    {
+      "turn_number": 0,
+      "step_name": "availability_date",
+      "audio_file": "avail_diverse_004",
+      "asr_text": "अभी तुरंत ज्वाइन कर सकता हूं। रेडी हन बिल्कुल।",
+      "asr_confidence": 0.73,
+      "bot_response": "Aap kaunse time pe kaam karna chahte hain? Morning, evening ya night?",
+      "latency_ms": 1144.8478698730469,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "availability_date": "immediately"
+      }
+    },
+    {
+      "turn_number": 0,
+      "step_name": "preferred_shift",
+      "audio_file": "shift_diverse_004",
+      "asr_text": "नाइट शिफ्ट पसंद है? रात में काम करना अच्छा लगता?",
+      "asr_confidence": 0.73,
+      "bot_response": "Aapko kitna kaam ka experience hai? Kitne saal ya mahine?",
+      "latency_ms": 1294.6996688842773,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "preferred_shift": "night"
+      }
+    },
+    {
+      "turn_number": 0,
+      "step_name": "total_experience_months",
+      "audio_file": "exp_diverse_004",
+      "asr_text": "फ्रेशर हूं मैं, पहली बार जॉब कर रहा हूं।",
+      "asr_confidence": 0.73,
+      "bot_response": "Dhanyawad! Main aapki details repeat karta hun:\nArea: Pincode,\nAvailability: immediately,\naapka Preferred shift: Night hai,\nExpected salary: ₹50,000 per month,\naap Hindi, Tamil, English bol sakte hain,\naapke paas Two wheeler: Hai. \nExperience: Fresher (0 months)\n\nKya yeh saari information jo humne collect ki hai, sahi hai? Agar kuch galat hai toh please bataiye.",
+      "latency_ms": 2363.581895828247,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "total_experience_months": 0
+      }
+    },
+    {
+      "turn_number": 0,
+      "step_name": "confirmation",
+      "audio_file": "conf_diverse_004",
+      "asr_text": "नहीं भाई, सैलरी गलत है, मुझे ट्वेंटी थाउजेंड चाहिए।",
+      "asr_confidence": 0.73,
+      "bot_response": "Dhanyawad! Main aapki saari details repeat karta hun:\n• Area: Pincode\n• Expected salary: ₹20,000 per month\n• Experience: Fresher (0 experience)\n• Languages: Hindi, Tamil aur English\n• Availability: immediately\n• Preferred shift: Night\n• Two wheeler: Haan\n\nKya yeh saari information sahi hai? Agar kuch galat hai ya change karna hai toh bataiye. Agar sab theek hai toh 'haan' ya 'correct' boliye.",
+      "latency_ms": 2192.920684814453,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "confirmation": "modify",
+        "expected_salary": 20000
+      }
+    }
+  ],
+  "completed_steps": 8,
+  "total_steps": 8,
+  "reached_job_matching": false,
+  "final_bot_response": "Dhanyawad! Main aapki saari details repeat karta hun:\n• Area: Pincode\n• Expected salary: ₹20,000 per month\n• Experience: Fresher (0 experience)\n• Languages: Hindi, Tamil aur English\n• Availability: immediately\n• Preferred shift: Night\n• Two wheeler: Haan\n\nKya yeh saari information sahi hai? Agar kuch galat hai ya change karna hai toh bataiye. Agar sab theek hai toh 'haan' ya 'correct' boliye.",
+  "conversation_completed": false,
+  "total_latency_ms": 14210.488319396973,
+  "avg_turn_latency_ms": 1776.3110399246216,
+  "avg_confidence": 0.73,
+  "confidence_range": [
+    0.73,
+    0.73
+  ]
+}

@@ -1,0 +1,260 @@
+{
+  "persona_name": "Energetic Hindi Speaker",
+  "voice_id": "IvLWq57RKibBrqZGpQrC",
+  "noise_levels": [
+    "medium",
+    "low"
+  ],
+  "candidate_id": "3034f553-7a5f-475e-b072-ed296bc575f8",
+  "start_time": "2025-08-10T22:20:07.518512",
+  "end_time": "2025-08-10T22:20:39.217313",
+  "turns": [
+    {
+      "turn_number": 0,
+      "step_name": "pincode",
+      "audio_file": "pin_diverse_003",
+      "asr_text": "मैं डेली में रहता हूं मेरा पिन कोड है 1100001।",
+      "asr_confidence": 0.7480844855308533,
+      "bot_response": "Aapko kitni salary chahiye har mahine? Rupees mein batayiye।",
+      "latency_ms": 1829.2582035064697,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "pincode": "110001"
+      },
+      "current_field": "expected_salary",
+      "candidate_profile": {
+        "candidate_id": "3034f553-7a5f-475e-b072-ed296bc575f8",
+        "created_at": "2025-08-10T22:20:07.934797",
+        "pincode": "110001",
+        "locality": "डेली",
+        "availability_date": null,
+        "preferred_shift": null,
+        "expected_salary": null,
+        "languages": [],
+        "other_languages": [],
+        "has_two_wheeler": null,
+        "total_experience_months": null,
+        "conversation_completed": false,
+        "turn_count": 1
+      },
+      "audio_variant": "noisy"
+    },
+    {
+      "turn_number": 0,
+      "step_name": "expected_salary",
+      "audio_file": "sal_diverse_003",
+      "asr_text": "सैलरी कितना चाहिए आर ए 25000 मंथली?",
+      "asr_confidence": 0.5459729433059692,
+      "bot_response": "Aapke paas two wheeler True hai, right?",
+      "latency_ms": 947.3915100097656,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "expected_salary": 25000
+      },
+      "current_field": "has_two_wheeler",
+      "candidate_profile": {
+        "candidate_id": "3034f553-7a5f-475e-b072-ed296bc575f8",
+        "created_at": "2025-08-10T22:20:07.934797",
+        "pincode": "110001",
+        "locality": "डेली",
+        "availability_date": null,
+        "preferred_shift": null,
+        "expected_salary": 25000,
+        "languages": [],
+        "other_languages": [],
+        "has_two_wheeler": null,
+        "total_experience_months": null,
+        "conversation_completed": false,
+        "turn_count": 3
+      },
+      "audio_variant": "noisy"
+    },
+    {
+      "turn_number": 0,
+      "step_name": "has_two_wheeler",
+      "audio_file": "vehicle_diverse_003",
+      "asr_text": "हां हां होंडा एक्टिवा है मेरे पास।",
+      "asr_confidence": 0.6260576844215393,
+      "bot_response": "Aap  bol sakte hain, confirm hai?",
+      "latency_ms": 2921.1912155151367,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "has_two_wheeler": true
+      },
+      "current_field": "languages",
+      "candidate_profile": {
+        "candidate_id": "3034f553-7a5f-475e-b072-ed296bc575f8",
+        "created_at": "2025-08-10T22:20:07.934797",
+        "pincode": "110001",
+        "locality": "डेली",
+        "availability_date": null,
+        "preferred_shift": null,
+        "expected_salary": 25000,
+        "languages": [],
+        "other_languages": [],
+        "has_two_wheeler": true,
+        "total_experience_months": null,
+        "conversation_completed": false,
+        "turn_count": 4
+      },
+      "audio_variant": "noisy"
+    },
+    {
+      "turn_number": 0,
+      "step_name": "languages",
+      "audio_file": "lang_diverse_003",
+      "asr_text": "सिर्फ हिंदी बोल सकता हूं भाई इंग्लिश थोड़ा-थोड़ा!",
+      "asr_confidence": 0.7890822887420654,
+      "bot_response": "Aap kaunse time pe kaam karna chahte hain? Morning, evening ya night?",
+      "latency_ms": 2489.454746246338,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "languages": [
+          "hindi"
+        ]
+      },
+      "current_field": "preferred_shift",
+      "candidate_profile": {
+        "candidate_id": "3034f553-7a5f-475e-b072-ed296bc575f8",
+        "created_at": "2025-08-10T22:20:07.934797",
+        "pincode": "110001",
+        "locality": "डेली",
+        "availability_date": "soon",
+        "preferred_shift": null,
+        "expected_salary": 25000,
+        "languages": [
+          "hindi"
+        ],
+        "other_languages": [
+          "English"
+        ],
+        "has_two_wheeler": true,
+        "total_experience_months": null,
+        "conversation_completed": false,
+        "turn_count": 5
+      },
+      "audio_variant": "noisy"
+    },
+    {
+      "turn_number": 0,
+      "step_name": "availability_date",
+      "audio_file": "avail_diverse_003",
+      "asr_text": "एक वीक बात स्टार्ट करूंगा नेक्स्ट मंडे से!",
+      "asr_confidence": 0.8478288054466248,
+      "bot_response": "Aapko kitna kaam ka experience hai? Kitne saal ya mahine?",
+      "latency_ms": 1287.2035503387451,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "availability_date": "next week"
+      },
+      "current_field": "total_experience_months",
+      "candidate_profile": {
+        "candidate_id": "3034f553-7a5f-475e-b072-ed296bc575f8",
+        "created_at": "2025-08-10T22:20:07.934797",
+        "pincode": "110001",
+        "locality": "डेली",
+        "availability_date": "soon",
+        "preferred_shift": "morning",
+        "expected_salary": 25000,
+        "languages": [
+          "hindi"
+        ],
+        "other_languages": [
+          "English"
+        ],
+        "has_two_wheeler": true,
+        "total_experience_months": null,
+        "conversation_completed": false,
+        "turn_count": 6
+      },
+      "audio_variant": "noisy"
+    },
+    {
+      "turn_number": 0,
+      "step_name": "preferred_shift",
+      "audio_file": "shift_diverse_003",
+      "asr_text": "कोई भी शिफ्ट चलेगा भाई फ्लैक्सिबल हूं मैं।",
+      "asr_confidence": 0.5626708269119263,
+      "bot_response": "Aapka total experience 0 hai, correct?",
+      "latency_ms": 1655.8499336242676,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "preferred_shift": "flexible"
+      },
+      "current_field": "total_experience_months",
+      "candidate_profile": {
+        "candidate_id": "3034f553-7a5f-475e-b072-ed296bc575f8",
+        "created_at": "2025-08-10T22:20:07.934797",
+        "pincode": "110001",
+        "locality": "डेली",
+        "availability_date": "soon",
+        "preferred_shift": "morning",
+        "expected_salary": 25000,
+        "languages": [
+          "hindi"
+        ],
+        "other_languages": [
+          "English"
+        ],
+        "has_two_wheeler": true,
+        "total_experience_months": null,
+        "conversation_completed": false,
+        "turn_count": 7
+      },
+      "audio_variant": "noisy"
+    },
+    {
+      "turn_number": 0,
+      "step_name": "total_experience_months",
+      "audio_file": "exp_diverse_003",
+      "asr_text": "3 साल का एक्सपीरियंस है भाई फैक्ट्री में काम किया।",
+      "asr_confidence": 0.7381568551063538,
+      "bot_response": "Tumhara sabse achha match hai Construction Helper, Housekeeping Staff aur Delivery Executive mein se koi ek. Construction Helper ki salary ₹16,000-₹24,000 hai aur Connaught Place mein hai. Housekeeping Staff ki salary ₹12,000-₹18,000 hai, lekin ₹25,000 se kam hai. Delivery Executive ki salary ₹15,000-₹22,000 hai aur english ki zarurat hai. Kaunsa job sunna pasand karoge?",
+      "latency_ms": 4157.283306121826,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "total_experience_months": 36
+      },
+      "current_field": "total_experience_months",
+      "candidate_profile": {
+        "candidate_id": "3034f553-7a5f-475e-b072-ed296bc575f8",
+        "created_at": "2025-08-10T22:20:07.934797",
+        "pincode": "110001",
+        "locality": "डेली",
+        "availability_date": "soon",
+        "preferred_shift": "morning",
+        "expected_salary": 25000,
+        "languages": [
+          "hindi"
+        ],
+        "other_languages": [
+          "English"
+        ],
+        "has_two_wheeler": true,
+        "total_experience_months": 36,
+        "conversation_completed": true,
+        "turn_count": 8
+      },
+      "audio_variant": "noisy"
+    }
+  ],
+  "completed_steps": 7,
+  "total_steps": 8,
+  "reached_job_matching": true,
+  "final_bot_response": "Tumhara sabse achha match hai Construction Helper, Housekeeping Staff aur Delivery Executive mein se koi ek. Construction Helper ki salary ₹16,000-₹24,000 hai aur Connaught Place mein hai. Housekeeping Staff ki salary ₹12,000-₹18,000 hai, lekin ₹25,000 se kam hai. Delivery Executive ki salary ₹15,000-₹22,000 hai aur english ki zarurat hai. Kaunsa job sunna pasand karoge?",
+  "conversation_completed": true,
+  "total_latency_ms": 15287.632465362549,
+  "avg_turn_latency_ms": 2183.947495051793,
+  "avg_confidence": 0.693979127066476,
+  "confidence_range": [
+    0.5459729433059692,
+    0.8478288054466248
+  ]
+}

@@ -1,38 +1,39 @@
-"""HTTP-based conversation flow tester using the same endpoint as the web interface."""
+#!/usr/bin/env python3
+"""HTTP Conversation Tester with Isolated Persona Flows."""
 
 import asyncio
+import httpx
 import json
 import time
-from pathlib import Path
-from typing import Dict, List, Any, Optional
-import httpx
-from loguru import logger
-from dataclasses import dataclass, asdict
 from datetime import datetime
-
+from pathlib import Path
+from typing import Dict, List, Optional, Tuple
+from dataclasses import dataclass, asdict
+from loguru import logger
 
 @dataclass
 class ConversationTurn:
-    """Single conversation turn."""
-    turn_id: str
+    """Single turn in conversation."""
+    turn_number: int
     step_name: str
-    expected_question: str
     audio_file: str
-    expected_entity: Dict[str, Any]
-    
-    # Response data
-    bot_response: str = ""
-    asr_text: str = ""
-    asr_confidence: float = 0.0
-    latency_ms: float = 0.0
-    success: bool = False
-    extracted_entity: Dict[str, Any] = None
+    asr_text: str
+    asr_confidence: float
+    bot_response: str
+    latency_ms: float
+    success: bool
+    expected_question: str = ""
+    extracted_entities: Dict = None
+    current_field: str = ""
+    candidate_profile: Dict = None
+    audio_variant: str = ""
 
-
-@dataclass
-class ConversationTestResult:
-    """Complete conversation test result."""
-    session_id: str
+@dataclass 
+class PersonaTestResult:
+    """Test result for a single persona's complete conversation."""
+    persona_name: str
+    voice_id: str
+    noise_levels: List[str]
     candidate_id: str
     start_time: datetime
     end_time: datetime
@@ -50,8 +51,8 @@ class ConversationTestResult:
     # Performance metrics
     total_latency_ms: float
     avg_turn_latency_ms: float
-    entity_extraction_accuracy: float
-    job_matches: Optional[List[Dict]] = None
+    avg_confidence: float
+    confidence_range: Tuple[float, float]
     
     def to_dict(self) -> Dict:
         """Convert to dictionary for serialization."""
@@ -61,371 +62,521 @@ class ConversationTestResult:
         return result
 
 
-class HTTPConversationTester:
-    """Tests the complete conversation flow using HTTP endpoints like the web interface."""
+class HTTPPersonaConversationTester:
+    """Tests complete conversation flows with isolated personas."""
     
     def __init__(self, bot_base_url: str = "http://localhost:8000"):
-        """Initialize the HTTP conversation tester.
-        
-        Args:
-            bot_base_url (str): Base URL for bot (HTTP)
-        """
+        """Initialize the persona conversation tester."""
         self.bot_base_url = bot_base_url
         self.results_dir = Path("test_harness/results")
         self.results_dir.mkdir(parents=True, exist_ok=True)
+        # Debug flag (set to False to use normal noisy/clean selection)
+        self.use_clean_audio_only = False
         
-        # Define the conversation flow mapping audio files to steps
-        # Based on the actual generated audio files we have
-        self.conversation_mapping = [
-            {
-                "step": "pincode", 
-                "question": "Aap kahan rehte hain? Apna pincode ya area batayiye।",
-                "audio_files": ["pin_001", "pin_002", "pin_003"],  # Delhi, Mumbai, Bangalore
-                "expected_entity": {"pincode": "110001"}
+        # Define 4 isolated persona conversation flows
+        self.personas = {
+            "english_man": {
+                "name": "English Man (Professional)",
+                "voice_id": "LruHrtVF6PSyGItzMNHS",
+                "noise_levels": ["clean", "low"],
+                "conversation_flow": [
+                    {
+                        "step": "pincode",
+                        "audio_file": "pin_diverse_001",  # english_man + clean
+                        "expected_entity": {"pincode": "110001"}
+                    },
+                    {
+                        "step": "expected_salary", 
+                        "audio_file": "sal_diverse_001",  # english_man + clean
+                        "expected_entity": {"expected_salary": 15000}
+                    },
+                    {
+                        "step": "has_two_wheeler",
+                        "audio_file": "vehicle_diverse_001",  # english_man + low
+                        "expected_entity": {"has_two_wheeler": True}
+                    },
+                    {
+                        "step": "languages",
+                        "audio_file": "lang_diverse_001",  # english_man + clean
+                        "expected_entity": {"languages": ["hindi", "english"]}
+                    },
+                    {
+                        "step": "availability_date",
+                        "audio_file": "avail_diverse_001",  # english_man + clean
+                        "expected_entity": {"availability_date": "immediately"}
+                    },
+                    {
+                        "step": "preferred_shift",
+                        "audio_file": "shift_diverse_001",  # english_man + clean
+                        "expected_entity": {"preferred_shift": "morning"}
+                    },
+                    {
+                        "step": "total_experience_months",
+                        "audio_file": "exp_diverse_001",  # english_man + clean
+                        "expected_entity": {"total_experience_months": 24}
+                    },
+                    {
+                        "step": "confirmation",
+                        "audio_file": "conf_diverse_001",  # english_man + clean
+                        "expected_entity": {"confirmation": "accept"}
+                    }
+                ]
             },
-            {
-                "step": "expected_salary",
-                "question": "Aapko kitni salary chahiye har mahine? Rupees mein batayiye।", 
-                "audio_files": ["sal_001", "sal_002", "sal_003"],  # 15000, 25000, etc
-                "expected_entity": {"expected_salary": 15000}
+            
+            "calm_hindi": {
+                "name": "Calm Hindi Speaker",
+                "voice_id": "1Z7Y8o9cvUeWq8oLKgMY", 
+                "noise_levels": ["low", "medium"],
+                "conversation_flow": [
+                    {
+                        "step": "pincode",
+                        "audio_file": "pin_diverse_002",  # calm_hindi + low
+                        "expected_entity": {"pincode": "110001"}
+                    },
+                    {
+                        "step": "expected_salary",
+                        "audio_file": "sal_diverse_002",  # calm_hindi + medium
+                        "expected_entity": {"expected_salary": 15000}
+                    },
+                    {
+                        "step": "has_two_wheeler", 
+                        "audio_file": "vehicle_diverse_002",  # calm_hindi + clean
+                        "expected_entity": {"has_two_wheeler": False}
+                    },
+                    {
+                        "step": "languages",
+                        "audio_file": "lang_diverse_002",  # calm_hindi + low
+                        "expected_entity": {"languages": ["hindi", "english", "marathi"]}
+                    },
+                    {
+                        "step": "availability_date",
+                        "audio_file": "avail_diverse_002",  # calm_hindi + low
+                        "expected_entity": {"availability_date": "tomorrow"}
+                    },
+                    {
+                        "step": "preferred_shift",
+                        "audio_file": "shift_diverse_002",  # calm_hindi + low
+                        "expected_entity": {"preferred_shift": "evening"}
+                    },
+                    {
+                        "step": "total_experience_months",
+                        "audio_file": "exp_diverse_002",  # calm_hindi + low
+                        "expected_entity": {"total_experience_months": 6}
+                    },
+                    {
+                        "step": "confirmation", 
+                        "audio_file": "conf_diverse_002",  # calm_hindi + low
+                        "expected_entity": {"confirmation": "accept"}
+                    }
+                ]
             },
-            {
-                "step": "has_two_wheeler",
-                "question": "Kya aapke paas bike ya scooter hai?",
-                "audio_files": ["vehicle_001", "vehicle_002"],  # "haan hai", "nahi hai"
-                "expected_entity": {"has_two_wheeler": True}
+            
+            "energetic_hindi": {
+                "name": "Energetic Hindi Speaker",
+                "voice_id": "IvLWq57RKibBrqZGpQrC",
+                "noise_levels": ["medium", "low"],
+                "conversation_flow": [
+                    {
+                        "step": "pincode",
+                        "audio_file": "pin_diverse_003",  # energetic_hindi + medium
+                        "expected_entity": {"pincode": "110001"}
+                    },
+                    {
+                        "step": "expected_salary",
+                        "audio_file": "sal_diverse_003",  # energetic_hindi + low
+                        "expected_entity": {"expected_salary": 25000}
+                    },
+                    {
+                        "step": "has_two_wheeler",
+                        "audio_file": "vehicle_diverse_003",  # energetic_hindi + high
+                        "expected_entity": {"has_two_wheeler": True}
+                    },
+                    {
+                        "step": "languages",
+                        "audio_file": "lang_diverse_003",  # energetic_hindi + medium
+                        "expected_entity": {"languages": ["hindi"]}
+                    },
+                    {
+                        "step": "availability_date",
+                        "audio_file": "avail_diverse_003",  # energetic_hindi + medium
+                        "expected_entity": {"availability_date": "next week"}
+                    },
+                    {
+                        "step": "preferred_shift",
+                        "audio_file": "shift_diverse_003",  # energetic_hindi + medium
+                        "expected_entity": {"preferred_shift": "flexible"}
+                    },
+                    {
+                        "step": "total_experience_months",
+                        "audio_file": "exp_diverse_003",  # energetic_hindi + medium
+                        "expected_entity": {"total_experience_months": 36}
+                    },
+                    {
+                        "step": "confirmation",
+                        "audio_file": "conf_diverse_003",  # energetic_hindi + medium
+                        "expected_entity": {"confirmation": "accept"}
+                    }
+                ]
             },
-            {
-                "step": "languages",
-                "question": "Aap kaunsi languages bol sakte hain? Hindi, English ya koi aur?",
-                "audio_files": ["lang_001", "lang_002"],  # Hindi English, Hindi Tamil
-                "expected_entity": {"languages": ["hindi", "english"]}
-            },
-            {
-                "step": "availability_date", 
-                "question": "Aap kab se kaam shuru kar sakte hain? Aaj, kal ya koi aur din?",
-                "audio_files": ["avail_001", "avail_002"],  # "kal se", "next week"
-                "expected_entity": {"availability_date": "tomorrow"}
-            },
-            {
-                "step": "preferred_shift",
-                "question": "Aap kaunse time pe kaam karna chahte hain? Morning, evening ya night?",
-                "audio_files": ["shift_001", "shift_002"],  # "morning", "any shift"
-                "expected_entity": {"preferred_shift": "morning"}
-            },
-            {
-                "step": "total_experience_months",
-                "question": "Aapko kitna kaam ka experience hai? Kitne saal ya mahine?",
-                "audio_files": ["exp_001", "exp_002"],  # "2 saal", "6 months"
-                "expected_entity": {"total_experience_months": 24}
-            },
-            {
-                "step": "confirmation",
-                "question": "Kya yeh saari information jo humne collect ki hai, sahi hai?",
-                "audio_files": ["conf_yes_001", "conf_yes_002"],  # "haan sahi hai", "yes correct"
-                "expected_entity": {"confirmation": "accept"}
+            
+            "expressive_hindi": {
+                "name": "Expressive Hindi Speaker",
+                "voice_id": "ni6cdqyS9wBvic5LPA7M",
+                "noise_levels": ["high", "medium"],
+                "conversation_flow": [
+                    {
+                        "step": "pincode",
+                        "audio_file": "pin_diverse_004",  # expressive_hindi + high
+                        "expected_entity": {"pincode": "110001"}
+                    },
+                    {
+                        "step": "expected_salary",
+                        "audio_file": "sal_diverse_004",  # expressive_hindi + high  
+                        "expected_entity": {"expected_salary": 50000}
+                    },
+                    {
+                        "step": "has_two_wheeler",
+                        "audio_file": "vehicle_diverse_004",  # expressive_hindi + medium
+                        "expected_entity": {"has_two_wheeler": True}
+                    },
+                    {
+                        "step": "languages",
+                        "audio_file": "lang_diverse_004",  # expressive_hindi + high
+                        "expected_entity": {"languages": ["hindi", "tamil", "english"]}
+                    },
+                    {
+                        "step": "availability_date",
+                        "audio_file": "avail_diverse_004",  # expressive_hindi + high
+                        "expected_entity": {"availability_date": "immediately"}
+                    },
+                    {
+                        "step": "preferred_shift",
+                        "audio_file": "shift_diverse_004",  # expressive_hindi + high
+                        "expected_entity": {"preferred_shift": "night"}
+                    },
+                    {
+                        "step": "total_experience_months",
+                        "audio_file": "exp_diverse_004",  # expressive_hindi + high
+                        "expected_entity": {"total_experience_months": 0}
+                    },
+                    {
+                        "step": "confirmation",
+                        "audio_file": "conf_diverse_004",  # expressive_hindi + high (correction)
+                        "expected_entity": {"confirmation": "modify", "expected_salary": 20000}
+                    }
+                ]
             }
-        ]
+        }
     
-    async def start_conversation_session(self) -> str:
-        """Start a new conversation session and get candidate_id.
-        
-        Returns:
-            str: Candidate ID for the session
-        """
+    async def start_conversation_session(self, client: httpx.AsyncClient) -> Optional[str]:
+        """Start a new conversation session."""
         try:
-            async with httpx.AsyncClient() as client:
-                response = await client.post(f"{self.bot_base_url}/api/v1/conversation/start")
-                if response.status_code == 200:
-                    data = response.json()
-                    candidate_id = data.get("candidate_id")
-                    logger.info(f"Started conversation session: {candidate_id}")
-                    return candidate_id
-                else:
-                    logger.error(f"Failed to start conversation: {response.status_code}")
-                    return f"test_session_{int(time.time())}"
+            response = await client.post(f"{self.bot_base_url}/api/v1/conversation/start")
+            if response.status_code == 200:
+                data = response.json()
+                candidate_id = data.get("candidate_id")
+                # Poll status to ensure state is ready (avoids race with server init/reload)
+                if candidate_id:
+                    status_url = f"{self.bot_base_url}/api/v1/conversation/{candidate_id}/status"
+                    for attempt in range(5):
+                        try:
+                            st = await client.get(status_url)
+                            if st.status_code == 200:
+                                break
+                            await asyncio.sleep(0.4)
+                        except Exception:
+                            await asyncio.sleep(0.4)
+                return candidate_id
+            else:
+                logger.error(f"Failed to start conversation: {response.status_code}")
+                return None
         except Exception as e:
             logger.error(f"Error starting conversation: {e}")
-            return f"test_session_{int(time.time())}"
+            return None
     
-    async def send_audio_turn(self, audio_path: str, candidate_id: str) -> Dict[str, Any]:
-        """Send a single audio turn using HTTP like the web interface.
+    async def send_audio_turn(self, client: httpx.AsyncClient, candidate_id: str, 
+                            audio_file: str, step_name: str, expected_entity: Dict,
+                            force_clean: bool = False) -> ConversationTurn:
+        """Send audio file and get response."""
+        # Determine which audio file to use
+        if getattr(self, "use_clean_audio_only", False) or force_clean:
+            audio_path = f"test_harness/generated_audio/{audio_file}_clean.wav"
+            logger.info(f"Using CLEAN audio for {audio_file}: {audio_path}")
+            audio_variant = "clean"
+        else:
+            if audio_file.endswith("_001") or audio_file.endswith("_003"):
+                audio_path = f"test_harness/generated_audio/{audio_file}_noisy_gpt.wav"
+                logger.info(f"Using noisy audio for {audio_file}: {audio_path}")
+                audio_variant = "noisy"
+            else:
+                audio_path = f"test_harness/generated_audio/{audio_file}_clean.wav"
+                logger.info(f"Using clean audio for {audio_file}: {audio_path}")
+                audio_variant = "clean"
         
-        Args:
-            audio_path (str): Path to audio file
-            candidate_id (str): Candidate identifier
-            
-        Returns:
-            Dict[str, Any]: Bot response with timing information
-        """
-        start_time = time.time()
+        if not Path(audio_path).exists():
+            logger.warning(f"Audio file not found: {audio_path}")
+            return ConversationTurn(
+                turn_number=0, step_name=step_name, audio_file=audio_file,
+                asr_text="", asr_confidence=0.0, bot_response="", 
+                latency_ms=0, success=False, current_field="", candidate_profile={}, audio_variant=audio_variant
+            )
         
         try:
-            # Read audio file
             with open(audio_path, 'rb') as f:
                 audio_data = f.read()
             
             logger.info(f"Sending turn: {audio_path} ({len(audio_data)} bytes)")
             
-            # Create form data like the web interface does
-            files = {
-                'audio_file': ('recording.wav', audio_data, 'audio/wav')
-            }
-            
-            # Send to the same endpoint the web interface uses
+            files = {'audio_file': ('recording.wav', audio_data, 'audio/wav')}
             url = f"{self.bot_base_url}/api/v1/conversation/{candidate_id}/turn-fast"
             
-            async with httpx.AsyncClient(timeout=60.0) as client:
-                response = await client.post(url, files=files)
+            start_time = time.time()
+            response = await client.post(url, files=files)
+            latency_ms = (time.time() - start_time) * 1000
+            
+            if response.status_code == 200:
+                data = response.json()
                 
-                response_time = time.time()
+                # Debug: Log the full response structure to see what's available
+                logger.debug(f"Full API response: {json.dumps(data, indent=2)}")
                 
-                if response.status_code == 200:
-                    data = response.json()
-                    
-                    # Calculate timing metrics
-                    total_latency = (response_time - start_time) * 1000
-                    
-                    asr_data = data.get("asr", {})
-                    asr_text = asr_data.get("text", "")
-                    asr_confidence = asr_data.get("confidence", 0.0)
-                    bot_text = data.get("text", "")
-                    conversation_complete = data.get("conversation_complete", False)
-                    job_matches = data.get("matches", [])
-                    
-                    logger.info(f"✓ Turn completed in {total_latency:.0f}ms")
-                    logger.info(f"  ASR: '{asr_text}' (conf: {asr_confidence:.2f})")
-                    logger.info(f"  Bot: '{bot_text[:80]}...'")
-                    logger.info(f"  Complete: {conversation_complete}")
-                    
-                    if job_matches:
-                        logger.info(f"  Job Matches: {len(job_matches)} found!")
-                    
-                    return {
-                        "success": True,
-                        "asr_text": asr_text,
-                        "asr_confidence": asr_confidence,
-                        "bot_response": bot_text,
-                        "conversation_complete": conversation_complete,
-                        "latency_ms": total_latency,
-                        "job_matches": job_matches,
-                        "turn_id": data.get("turn_id", "")
-                    }
-                else:
-                    logger.error(f"HTTP error {response.status_code}: {response.text}")
-                    return {"success": False, "error": f"HTTP {response.status_code}"}
-                    
-        except Exception as e:
-            logger.error(f"Error on turn: {e}")
-            return {"success": False, "error": str(e)}
-    
-    async def run_full_conversation_test(self, test_name: str = "default") -> ConversationTestResult:
-        """Run a complete conversation flow test.
-        
-        Args:
-            test_name (str): Name identifier for this test
-            
-        Returns:
-            ConversationTestResult: Complete conversation test results
-        """
-        start_time = datetime.now()
-        session_id = f"http_conversation_test_{test_name}_{int(time.time())}"
-        
-        logger.info(f"🎭 Starting HTTP conversation test: {session_id}")
-        
-        # Start conversation session
-        candidate_id = await self.start_conversation_session()
-        
-        turns = []
-        completed_steps = 0
-        conversation_complete = False
-        final_bot_response = ""
-        reached_job_matching = False
-        job_matches = []
-        
-        # Run each conversation step
-        for i, step_config in enumerate(self.conversation_mapping):
-            step_name = step_config["step"]
-            audio_files = step_config["audio_files"]
-            expected_entity = step_config["expected_entity"]
-            
-            logger.info(f"\n--- Step {i+1}/{len(self.conversation_mapping)}: {step_name} ---")
-            
-            # Use first available audio file for this step
-            audio_file = None
-            for audio_id in audio_files:
-                audio_path = f"test_harness/generated_audio/{audio_id}_clean.wav"
-                if Path(audio_path).exists():
-                    audio_file = audio_path
-                    break
-            
-            if not audio_file:
-                logger.error(f"No audio file found for step {step_name}")
-                # Create failed turn
-                turn = ConversationTurn(
-                    turn_id=f"turn_{i+1}",
-                    step_name=step_name,
-                    expected_question=step_config["question"],
-                    audio_file="MISSING",
-                    expected_entity=expected_entity,
-                    success=False
+                asr_data = data.get("asr", {})
+                asr_text = asr_data.get("text", "")
+                asr_confidence = asr_data.get("confidence", 0.0)
+                bot_response = data.get("text", "")
+                conversation_completed = data.get("conversation_complete", False)
+                metrics = data.get("metrics", {})
+                current_field = metrics.get("current_field", "")
+                candidate_profile = metrics.get("candidate_profile", {})
+                
+                # Get raw ASR confidence data from the updated API
+                raw_confidence_data = asr_data.get("raw_confidence_data", {})
+                raw_asr_confidence = raw_confidence_data.get("model_confidence", asr_confidence)
+                
+                # Log detailed confidence information
+                logger.info(f"  Raw ASR Data: Provider={raw_confidence_data.get('asr_provider', 'unknown')}, Source={raw_confidence_data.get('confidence_source', 'unknown')}")
+                
+                logger.info(f"\u2713 Turn completed in {latency_ms:.0f}ms")
+                logger.info(f"  ASR: '{asr_text[:60]}...' (conf: {asr_confidence:.2f}, raw: {raw_asr_confidence:.2f})")
+                logger.info(f"  Bot: '{bot_response[:60]}...'")
+                logger.info(f"  Complete: {conversation_completed}")
+                
+                return ConversationTurn(
+                    turn_number=0, step_name=step_name, audio_file=audio_file,
+                    asr_text=asr_text, asr_confidence=raw_asr_confidence,  # Use raw ASR confidence
+                    bot_response=bot_response, latency_ms=latency_ms,
+                    success=True, extracted_entities=expected_entity,
+                    current_field=current_field, candidate_profile=candidate_profile,
+                    audio_variant=audio_variant
                 )
-                turns.append(turn)
-                break
-            
-            # Send the audio turn
-            response = await self.send_audio_turn(audio_file, candidate_id)
-            
-            # Create turn result
-            turn = ConversationTurn(
-                turn_id=response.get("turn_id", f"turn_{i+1}"),
-                step_name=step_name,
-                expected_question=step_config["question"],
-                audio_file=audio_file,
-                expected_entity=expected_entity,
-                bot_response=response.get("bot_response", ""),
-                asr_text=response.get("asr_text", ""),
-                asr_confidence=response.get("asr_confidence", 0.0),
-                latency_ms=response.get("latency_ms", 0.0),
-                success=response.get("success", False)
-            )
-            turns.append(turn)
-            
-            if turn.success:
-                completed_steps += 1
-                final_bot_response = turn.bot_response
-                
-                # Check if conversation is complete
-                if response.get("conversation_complete", False):
-                    conversation_complete = True
-                    reached_job_matching = True
-                    job_matches = response.get("job_matches", [])
-                    logger.info(f"🎉 Conversation completed! Found {len(job_matches)} job matches")
-                    break
             else:
-                logger.error(f"Failed on step {step_name}, stopping conversation")
-                break
+                logger.error(f"HTTP error {response.status_code}: {response.text}")
+                return ConversationTurn(
+                    turn_number=0, step_name=step_name, audio_file=audio_file,
+                    asr_text="", asr_confidence=0.0, bot_response="", 
+                    latency_ms=latency_ms, success=False, current_field="", candidate_profile={}, audio_variant=audio_variant
+                )
+                
+        except Exception as e:
+            logger.error(f"Error in audio turn: {e}")
+            return ConversationTurn(
+                turn_number=0, step_name=step_name, audio_file=audio_file,
+                asr_text="", asr_confidence=0.0, bot_response="", 
+                latency_ms=0, success=False, current_field="", candidate_profile={}, audio_variant=audio_variant
+            )
+
+    def _is_step_filled(self, step_name: str, profile: Dict) -> bool:
+        """Check if the given step has been filled in candidate_profile."""
+        if not profile:
+            return False
+        if step_name == "pincode":
+            return bool(profile.get("pincode"))
+        if step_name == "expected_salary":
+            return profile.get("expected_salary") is not None
+        if step_name == "has_two_wheeler":
+            return profile.get("has_two_wheeler") is not None
+        if step_name == "languages":
+            langs = profile.get("languages") or []
+            return len(langs) > 0
+        if step_name == "availability_date":
+            return bool(profile.get("availability_date"))
+        if step_name == "preferred_shift":
+            return bool(profile.get("preferred_shift"))
+        if step_name == "total_experience_months":
+            return profile.get("total_experience_months") is not None
+        if step_name == "confirmation":
+            return bool(profile.get("conversation_completed"))
+        return False
+
+    async def run_persona_test(self, persona_key: str) -> PersonaTestResult:
+        """Run complete conversation test for a single persona."""
+        persona = self.personas[persona_key]
+        start_time = datetime.now()
+        
+        logger.info(f"\ud83c\udfad Starting {persona['name']} conversation test...")
+        
+        async with httpx.AsyncClient(timeout=120.0) as client:
+            # Start conversation
+            candidate_id = await self.start_conversation_session(client)
+            if not candidate_id:
+                raise Exception("Failed to start conversation")
             
-            # Brief pause between turns
-            await asyncio.sleep(2)
-        
-        end_time = datetime.now()
-        
-        # Calculate metrics
-        successful_turns = [t for t in turns if t.success]
-        total_latency = sum(turn.latency_ms for turn in successful_turns)
-        avg_latency = total_latency / len(successful_turns) if successful_turns else 0
-        
-        result = ConversationTestResult(
-            session_id=session_id,
-            candidate_id=candidate_id,
-            start_time=start_time,
-            end_time=end_time,
-            turns=turns,
-            completed_steps=completed_steps,
-            total_steps=len(self.conversation_mapping),
-            reached_job_matching=reached_job_matching,
-            final_bot_response=final_bot_response,
-            conversation_completed=conversation_complete,
-            job_matches=job_matches,
-            total_latency_ms=total_latency,
-            avg_turn_latency_ms=avg_latency,
-            entity_extraction_accuracy=0.0  # TODO: Implement entity accuracy calculation
-        )
-        
-        # Save results
-        self.save_test_results(result)
-        
-        return result
+            logger.info(f"Started conversation session: {candidate_id}")
+            
+            # Wait a moment for conversation to be fully initialized
+            await asyncio.sleep(1)
+            
+            turns = []
+            confidences = []
+            
+            # Process each step in the persona's conversation flow
+            for i, step_config in enumerate(persona["conversation_flow"], 1):
+                logger.info(f"\n--- Step {i}/{len(persona['conversation_flow'])}: {step_config['step']} ---")
+                # Resend mechanism: retry same audio up to 3 times if bot is stuck on same field
+                max_retries = 3
+                attempt = 0
+                last_turn = None
+                while attempt < max_retries:
+                    turn_result = await self.send_audio_turn(
+                        client, candidate_id,
+                        step_config["audio_file"],
+                        step_config["step"],
+                        step_config.get("expected_entity", {}),
+                        force_clean=False
+                    )
+                    last_turn = turn_result
+                    # If HTTP failed, break and let outer logic handle
+                    if not turn_result.success:
+                        break
+                    # If field got filled or conversation moved on, accept and proceed
+                    if self._is_step_filled(step_config["step"], turn_result.candidate_profile):
+                        break
+                    # If bot's current_field is different from requested step, accept and move on
+                    if turn_result.current_field and turn_result.current_field != step_config["step"]:
+                        break
+                    # If ASR produced no text or bot repeated same field, retry same audio
+                    if (not turn_result.asr_text) or (turn_result.current_field == step_config["step"]):
+                        attempt += 1
+                        logger.warning(f"Bot might be stuck on '{step_config['step']}'. Retrying same audio (attempt {attempt}/{max_retries})...")
+                        await asyncio.sleep(1)
+                        continue
+                    break
+
+                turn_result = last_turn if last_turn else turn_result
+                turns.append(turn_result)
+                confidences.append(turn_result.asr_confidence)
+                
+                if turn_result.bot_response and ("job" in turn_result.bot_response.lower() or 
+                                               "match" in turn_result.bot_response.lower()):
+                    logger.info("\ud83c\udf89 Reached job matching!")
+                    break
+                
+                if not turn_result.success:
+                    logger.error(f"Failed on step {step_config['step']}, stopping conversation")
+                    break
+                
+                # Small delay between turns
+                await asyncio.sleep(2)
+            
+            end_time = datetime.now()
+            
+            # Calculate metrics
+            total_latency = sum(turn.latency_ms for turn in turns)
+            avg_latency = total_latency / len(turns) if turns else 0
+            avg_confidence = sum(confidences) / len(confidences) if confidences else 0
+            confidence_range = (min(confidences), max(confidences)) if confidences else (0, 0)
+            
+            final_turn = turns[-1] if turns else None
+            conversation_completed = final_turn and ("job" in final_turn.bot_response.lower() 
+                                                   or "match" in final_turn.bot_response.lower())
+            
+            return PersonaTestResult(
+                persona_name=persona["name"],
+                voice_id=persona["voice_id"],
+                noise_levels=persona["noise_levels"],
+                candidate_id=candidate_id,
+                start_time=start_time,
+                end_time=end_time,
+                turns=turns,
+                completed_steps=len(turns),
+                total_steps=len(persona["conversation_flow"]),
+                reached_job_matching=conversation_completed,
+                final_bot_response=final_turn.bot_response if final_turn else "",
+                conversation_completed=conversation_completed,
+                total_latency_ms=total_latency,
+                avg_turn_latency_ms=avg_latency,
+                avg_confidence=avg_confidence,
+                confidence_range=confidence_range
+            )
     
-    def save_test_results(self, result: ConversationTestResult) -> str:
-        """Save conversation test results to file.
+    async def run_all_personas_test(self) -> List[PersonaTestResult]:
+        """Run tests for all personas."""
+        results = []
         
-        Args:
-            result (ConversationTestResult): Test results to save
-            
-        Returns:
-            str: Path to saved results file
-        """
-        results_file = self.results_dir / f"{result.session_id}_conversation.json"
+        for persona_key in self.personas.keys():
+            try:
+                result = await self.run_persona_test(persona_key)
+                results.append(result)
+                
+                # Save individual result
+                timestamp = int(time.time())
+                filename = f"persona_{persona_key}_{timestamp}_with_preprocessing.json"
+                filepath = self.results_dir / filename
+                
+                with open(filepath, 'w', encoding='utf-8') as f:
+                    json.dump(result.to_dict(), f, indent=2, ensure_ascii=False)
+                
+                logger.info(f"Saved persona results to: {filepath}")
+                
+            except Exception as e:
+                logger.error(f"Failed to test persona {persona_key}: {e}")
         
-        with open(results_file, 'w', encoding='utf-8') as f:
-            json.dump(result.to_dict(), f, indent=2, ensure_ascii=False)
-        
-        logger.info(f"Saved conversation results to: {results_file}")
-        return str(results_file)
+        return results
     
-    def print_conversation_report(self, result: ConversationTestResult):
-        """Print formatted conversation test report.
+    def print_persona_comparison(self, results: List[PersonaTestResult]):
+        """Print comparison of all persona results."""
+        print(f"\n{'='*80}")
+        print("PERSONA CONVERSATION TEST COMPARISON")
+        print(f"{'='*80}")
         
-        Args:
-            result (ConversationTestResult): Conversation test results
-        """
-        print("\n" + "="*70)
-        print(f"🎭 HINGLISH VOICE BOT - HTTP CONVERSATION TEST")
-        print(f"Session ID: {result.session_id}")
-        print(f"Duration: {(result.end_time - result.start_time).total_seconds():.1f}s")
-        print("="*70)
-        
-        print(f"\n📊 CONVERSATION FLOW RESULTS:")
-        print(f"  Steps Completed:      {result.completed_steps}/{result.total_steps}")
-        print(f"  Conversation Complete: {'✅ YES' if result.conversation_completed else '❌ NO'}")
-        print(f"  Reached Job Matching: {'✅ YES' if result.reached_job_matching else '❌ NO'}")
-        print(f"  Average Turn Latency: {result.avg_turn_latency_ms:.0f}ms")
-        
-        if result.job_matches:
-            print(f"  Job Matches Found:    {len(result.job_matches)} 🎯")
-        
-        print(f"\n🔄 TURN-BY-TURN BREAKDOWN:")
-        for i, turn in enumerate(result.turns, 1):
-            status = "✅" if turn.success else "❌"
-            asr_preview = turn.asr_text[:40] + "..." if len(turn.asr_text) > 40 else turn.asr_text
-            bot_preview = turn.bot_response[:60] + "..." if len(turn.bot_response) > 60 else turn.bot_response
+        for result in results:
+            print(f"\n{result.persona_name}")
+            print(f"   Voice ID: {result.voice_id}")
+            print(f"   Steps Completed: {result.completed_steps}/{result.total_steps}")
+            print(f"   Conversation Complete: {'YES' if result.conversation_completed else 'NO'}")
+            print(f"   Average Latency: {result.avg_turn_latency_ms:.0f}ms")
+            print(f"   Average Confidence: {result.avg_confidence:.3f}")
+            print(f"   Confidence Range: {result.confidence_range[0]:.3f} - {result.confidence_range[1]:.3f}")
+            print(f"   Duration: {(result.end_time - result.start_time).total_seconds():.1f}s")
             
-            print(f"  {status} Turn {i}: {turn.step_name}")
-            print(f"     ASR: '{asr_preview}' (conf: {turn.asr_confidence:.2f})")
-            print(f"     Bot: '{bot_preview}'")
-            print(f"     Time: {turn.latency_ms:.0f}ms")
-            print()
-        
-        if result.reached_job_matching:
-            print(f"🎉 SUCCESS: Bot completed full conversation flow and found job matches!")
-            print(f"📄 Final Response: {result.final_bot_response}")
-            
-            if result.job_matches:
-                print(f"\n🎯 TOP JOB MATCHES:")
-                for i, match in enumerate(result.job_matches[:3], 1):  # Show top 3
-                    job = match.get("job", {})
-                    score = match.get("match_score", 0)
-                    print(f"  {i}. {job.get('title', 'N/A')} - Score: {score:.2f}")
-                    print(f"     Company: {job.get('company', 'N/A')}")
-                    print(f"     Location: {job.get('location', 'N/A')}")
-                    print(f"     Salary: ₹{job.get('salary_min', 0):,}-{job.get('salary_max', 0):,}")
-                    print()
-        else:
-            print(f"⚠️  INCOMPLETE: Conversation stopped at step {result.completed_steps}")
-        
-        print("="*70)
+            if result.turns:
+                print(f"   Confidence Variation:")
+                for turn in result.turns:
+                    print(f"     - {turn.step_name}: {turn.asr_confidence:.3f}")
 
 
 async def main():
-    """Run HTTP conversation flow tests."""
+    """Run persona conversation tests."""
     import argparse
     
-    parser = argparse.ArgumentParser(description="Test Hinglish Voice Bot Conversation Flow via HTTP")
-    parser.add_argument("--test-name", default="full_flow", help="Name for this test run")
+    parser = argparse.ArgumentParser(description="Test Isolated Persona Conversation Flows")
+    parser.add_argument("--persona", choices=["english_man", "calm_hindi", "energetic_hindi", "expressive_hindi"], 
+                       help="Test specific persona only")
     parser.add_argument("--url", default="http://localhost:8000", help="Bot base URL")
-    parser.add_argument("--utterances", nargs="+", help="Specific utterance IDs to test")
     args = parser.parse_args()
     
-    tester = HTTPConversationTester(bot_base_url=args.url)
+    tester = HTTPPersonaConversationTester(bot_base_url=args.url)
     
-    logger.info("🎭 Starting HTTP conversation flow test...")
-    result = await tester.run_full_conversation_test(test_name=args.test_name)
+    logger.info("🎭 Starting Persona Conversation Flow Tests...")
     
-    # Print results
-    tester.print_conversation_report(result)
-
+    if args.persona:
+        # Test single persona
+        result = await tester.run_persona_test(args.persona)
+        tester.print_persona_comparison([result])
+    else:
+        # Test all personas
+        results = await tester.run_all_personas_test()
+        tester.print_persona_comparison(results)
 
 if __name__ == "__main__":
     asyncio.run(main()) 

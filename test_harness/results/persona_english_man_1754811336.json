@@ -1,0 +1,37 @@
+{
+  "persona_name": "English Man (Professional)",
+  "voice_id": "LruHrtVF6PSyGItzMNHS",
+  "noise_levels": [
+    "clean",
+    "low"
+  ],
+  "candidate_id": "725a140b-80ee-447e-9058-4b8789267a08",
+  "start_time": "2025-08-10T15:35:34.627588",
+  "end_time": "2025-08-10T15:35:36.427725",
+  "turns": [
+    {
+      "turn_number": 0,
+      "step_name": "pincode",
+      "audio_file": "pin_diverse_001",
+      "asr_text": "",
+      "asr_confidence": 0.0,
+      "bot_response": "",
+      "latency_ms": 0,
+      "success": false,
+      "expected_question": "",
+      "extracted_entities": null
+    }
+  ],
+  "completed_steps": 1,
+  "total_steps": 8,
+  "reached_job_matching": false,
+  "final_bot_response": "",
+  "conversation_completed": false,
+  "total_latency_ms": 0,
+  "avg_turn_latency_ms": 0.0,
+  "avg_confidence": 0.0,
+  "confidence_range": [
+    0.0,
+    0.0
+  ]
+}

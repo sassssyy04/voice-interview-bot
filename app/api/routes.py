@@ -152,7 +152,7 @@ async def process_voice_turn_fast(candidate_id: str, background_tasks: Backgroun
     """Process a voice turn quickly: return text immediately; TTS audio ready via fetch."""
     try:
         audio_data = await audio_file.read()
-        response_text, conversation_complete, asr_text, asr_conf, turn_id = await orchestrator.process_turn_text_only(
+        response_text, conversation_complete, asr_text, asr_conf, raw_asr_data, turn_id = await orchestrator.process_turn_text_only(
             candidate_id, audio_data
         )
         # Kick off background TTS synthesis
@@ -196,7 +196,11 @@ async def process_voice_turn_fast(candidate_id: str, background_tasks: Backgroun
             "text": response_text,
             "conversation_complete": conversation_complete,
             "metrics": metrics,
-            "asr": {"text": asr_text or "", "confidence": asr_conf or 0.0},
+            "asr": {
+                "text": asr_text or "", 
+                "confidence": asr_conf or 0.0,
+                "raw_confidence_data": raw_asr_data or {}
+            },
             "matches": inline_matches,
             "total_jobs_considered": total_jobs_considered,
         }
