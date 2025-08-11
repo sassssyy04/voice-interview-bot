@@ -1,25 +1,49 @@
-Quick Start
-1. Environment Setup
-Create a .env file in the project root with your API keys:
+# Hinglish Voice Bot - Development Guide
 
-OPENAI_API_KEY=your_openai_api_key_here
+## 1. Setup
 
-# For Google Cloud TTS and ASR
-GOOGLE_APPLICATION_CREDENTIALS=/absolute/path/to/google_credentials.json
+```bash
+poetry lock --no-interaction
+poetry install --no-interaction
+```
 
-# Optional: Fallback voice services
-- ELEVENLABS_API_KEY=your_elevenlabs_key_here
-- SARVAM_API_KEY=your_sarvam_key_here
-Make sure the Google credentials file is downloaded from your Google Cloud project and that TTS and ASR APIs are enabled in the console.
+### Environment Configuration
 
-2. Local Development
+Create a `.env` file at project root as needed (keys are optional for demo mode):
 
+```env
+# Optional API Keys
+OPENAI_API_KEY=...
+ELEVENLABS_API_KEY=...
+GOOGLE_APPLICATION_CREDENTIALS=path\to\gcp.json
+
+# Server Configuration
+HOST=127.0.0.1
+PORT=8000
+
+```
+
+## 2. Local Development
+
+```bash
 make dev
-Installs dependencies, starts the dev server, and opens it in your browser.
-(Server runs on http://localhost:8000 by default.)
+```
 
-3. Evaluation
+**Without make:**
 
+```bash
+poetry run python scripts/dev.py
+```
+
+
+## 3. Evaluation
+
+```bash
 make eval
-Runs the evaluator and prints concise metrics.
-Requires the dev server to be running.
+```
+
+**Without make:**
+
+```bash
+poetry run python scripts/eval.py
+```
