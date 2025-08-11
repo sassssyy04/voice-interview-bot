@@ -8,8 +8,8 @@ OPENAI_API_KEY=your_openai_api_key_here
 GOOGLE_APPLICATION_CREDENTIALS=/absolute/path/to/google_credentials.json
 
 # Optional: Fallback voice services
-ELEVENLABS_API_KEY=your_elevenlabs_key_here
-SARVAM_API_KEY=your_sarvam_key_here
+- ELEVENLABS_API_KEY=your_elevenlabs_key_here
+- SARVAM_API_KEY=your_sarvam_key_here
 Make sure the Google credentials file is downloaded from your Google Cloud project and that TTS and ASR APIs are enabled in the console.
 
 2. Local Development
