@@ -1,0 +1,295 @@
+{
+  "persona_key": "english_man",
+  "persona_name": "English Man (Professional)",
+  "voice_id": "LruHrtVF6PSyGItzMNHS",
+  "noise_levels": [
+    "clean",
+    "low"
+  ],
+  "candidate_id": "a04c5894-7ce2-4b52-aad8-51b2ffb60478",
+  "start_time": "2025-08-11T09:58:57.909282",
+  "end_time": "2025-08-11T09:59:33.894317",
+  "turns": [
+    {
+      "turn_number": 0,
+      "step_name": "pincode",
+      "audio_file": "pin_diverse_001",
+      "asr_text": "में रहता हूं मेरा पिन कोड है क्या 9000 वांट?",
+      "asr_confidence": 0.38578617572784424,
+      "bot_response": "Aapki expected salary 9000 rupees per month hai, sahi?",
+      "latency_ms": 1878.0677318572998,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "pincode": "110001"
+      },
+      "current_field": "expected_salary",
+      "candidate_profile": {
+        "candidate_id": "a04c5894-7ce2-4b52-aad8-51b2ffb60478",
+        "created_at": "2025-08-11T09:58:58.376799",
+        "pincode": null,
+        "locality": "मेरा",
+        "availability_date": null,
+        "preferred_shift": null,
+        "expected_salary": null,
+        "languages": [],
+        "other_languages": [],
+        "has_two_wheeler": null,
+        "total_experience_months": null,
+        "conversation_completed": false,
+        "turn_count": 2
+      },
+      "audio_variant": "noisy"
+    },
+    {
+      "turn_number": 0,
+      "step_name": "expected_salary",
+      "audio_file": "sal_diverse_001",
+      "asr_text": "Bye main 25000 per month expect karta hun.",
+      "asr_confidence": 0.5849643349647522,
+      "bot_response": "Aapke paas two wheeler True hai, right?",
+      "latency_ms": 1198.0836391448975,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "expected_salary": 15000
+      },
+      "current_field": "has_two_wheeler",
+      "candidate_profile": {
+        "candidate_id": "a04c5894-7ce2-4b52-aad8-51b2ffb60478",
+        "created_at": "2025-08-11T09:58:58.376799",
+        "pincode": null,
+        "locality": "मेरा",
+        "availability_date": null,
+        "preferred_shift": null,
+        "expected_salary": 25000,
+        "languages": [],
+        "other_languages": [],
+        "has_two_wheeler": null,
+        "total_experience_months": null,
+        "conversation_completed": false,
+        "turn_count": 3
+      },
+      "audio_variant": "noisy"
+    },
+    {
+      "turn_number": 0,
+      "step_name": "has_two_wheeler",
+      "audio_file": "vehicle_diverse_001",
+      "asr_text": "नहीं भाई, मेरे पास बाइक नहीं है।",
+      "asr_confidence": 0.4975605607032776,
+      "bot_response": "Aap  bol sakte hain, confirm hai?",
+      "latency_ms": 1389.4362449645996,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "has_two_wheeler": true
+      },
+      "current_field": "languages",
+      "candidate_profile": {
+        "candidate_id": "a04c5894-7ce2-4b52-aad8-51b2ffb60478",
+        "created_at": "2025-08-11T09:58:58.376799",
+        "pincode": null,
+        "locality": "मेरा",
+        "availability_date": null,
+        "preferred_shift": null,
+        "expected_salary": 25000,
+        "languages": [],
+        "other_languages": [],
+        "has_two_wheeler": true,
+        "total_experience_months": null,
+        "conversation_completed": false,
+        "turn_count": 4
+      },
+      "audio_variant": "noisy"
+    },
+    {
+      "turn_number": 0,
+      "step_name": "languages",
+      "audio_file": "lang_diverse_001",
+      "asr_text": "मां हिंदी और इंग्लिश दोनों बोल सकता हूं फ्लूएंटली!",
+      "asr_confidence": 0.5067064762115479,
+      "bot_response": "Toh aap today se start kar sakte hain, correct?",
+      "latency_ms": 2764.34063911438,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "languages": [
+          "hindi",
+          "english"
+        ]
+      },
+      "current_field": "availability_date",
+      "candidate_profile": {
+        "candidate_id": "a04c5894-7ce2-4b52-aad8-51b2ffb60478",
+        "created_at": "2025-08-11T09:58:58.376799",
+        "pincode": null,
+        "locality": "मेरा",
+        "availability_date": null,
+        "preferred_shift": null,
+        "expected_salary": 25000,
+        "languages": [
+          "hindi",
+          "english"
+        ],
+        "other_languages": [],
+        "has_two_wheeler": true,
+        "total_experience_months": null,
+        "conversation_completed": false,
+        "turn_count": 5
+      },
+      "audio_variant": "noisy"
+    },
+    {
+      "turn_number": 0,
+      "step_name": "availability_date",
+      "audio_file": "avail_diverse_001",
+      "asr_text": "मैं इम्मीडिएटली स्टार्ट कर सकता हूं भाई आज से भी।",
+      "asr_confidence": 0.774401068687439,
+      "bot_response": "Aapko kitna kaam ka experience hai? Kitne saal ya mahine?",
+      "latency_ms": 1710.2446556091309,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "availability_date": "immediately"
+      },
+      "current_field": "total_experience_months",
+      "candidate_profile": {
+        "candidate_id": "a04c5894-7ce2-4b52-aad8-51b2ffb60478",
+        "created_at": "2025-08-11T09:58:58.376799",
+        "pincode": null,
+        "locality": "मेरा",
+        "availability_date": "today",
+        "preferred_shift": "flexible",
+        "expected_salary": 25000,
+        "languages": [
+          "hindi",
+          "english"
+        ],
+        "other_languages": [],
+        "has_two_wheeler": true,
+        "total_experience_months": null,
+        "conversation_completed": false,
+        "turn_count": 6
+      },
+      "audio_variant": "noisy"
+    },
+    {
+      "turn_number": 0,
+      "step_name": "preferred_shift",
+      "audio_file": "shift_diverse_001",
+      "asr_text": "मैं मॉर्निंग शिफ्ट प्रेफर करता हूं। सुबह का टाइम अच्छा लगता।",
+      "asr_confidence": 0.58725905418396,
+      "bot_response": "Aapka total experience 24 hai, correct?",
+      "latency_ms": 1858.912706375122,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "preferred_shift": "morning"
+      },
+      "current_field": "total_experience_months",
+      "candidate_profile": {
+        "candidate_id": "a04c5894-7ce2-4b52-aad8-51b2ffb60478",
+        "created_at": "2025-08-11T09:58:58.376799",
+        "pincode": null,
+        "locality": "मेरा",
+        "availability_date": "today",
+        "preferred_shift": "flexible",
+        "expected_salary": 25000,
+        "languages": [
+          "hindi",
+          "english"
+        ],
+        "other_languages": [],
+        "has_two_wheeler": true,
+        "total_experience_months": null,
+        "conversation_completed": false,
+        "turn_count": 7
+      },
+      "audio_variant": "noisy"
+    },
+    {
+      "turn_number": 0,
+      "step_name": "total_experience_months",
+      "audio_file": "exp_diverse_001",
+      "asr_text": "में दो महीने से वेयरहाउस में काम कर रहा हूं।",
+      "asr_confidence": 0.4319817125797272,
+      "bot_response": "Samajh nahi aaya. Kya saari information sahi hai? Ya kuch change karna hai?",
+      "latency_ms": 2232.379913330078,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "total_experience_months": 24
+      },
+      "current_field": "total_experience_months",
+      "candidate_profile": {
+        "candidate_id": "a04c5894-7ce2-4b52-aad8-51b2ffb60478",
+        "created_at": "2025-08-11T09:58:58.376799",
+        "pincode": null,
+        "locality": "मेरा",
+        "availability_date": "today",
+        "preferred_shift": "flexible",
+        "expected_salary": 25000,
+        "languages": [
+          "hindi",
+          "english"
+        ],
+        "other_languages": [],
+        "has_two_wheeler": true,
+        "total_experience_months": 2,
+        "conversation_completed": false,
+        "turn_count": 8
+      },
+      "audio_variant": "noisy"
+    },
+    {
+      "turn_number": 0,
+      "step_name": "confirmation",
+      "audio_file": "conf_diverse_001",
+      "asr_text": "खान भाई सारी डिटेल्स बिल्कुल सही है।",
+      "asr_confidence": 0.9152972102165222,
+      "bot_response": "Tumhara top 3 matches hai: \n- Delivery Executive @ QuickDeliver, Connaught Place, ₹15,000-₹22,000, flexible shifts, hindi/ english, 2-wheeler chahiye\n- Construction Helper @ BuildRight, Connaught Place, ₹16,000-₹24,000, morning shift, hindi, no 2-wheeler needed\n- Shop Assistant @ RetailMart, Darya Ganj, ₹14,000-₹20,000, morning/ evening shifts, hindi/ english, no 2-wheeler needed. Kaunsa job sunna pasand karoge?",
+      "latency_ms": 3210.667610168457,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "confirmation": "accept"
+      },
+      "current_field": "total_experience_months",
+      "candidate_profile": {
+        "candidate_id": "a04c5894-7ce2-4b52-aad8-51b2ffb60478",
+        "created_at": "2025-08-11T09:58:58.376799",
+        "pincode": null,
+        "locality": "मेरा",
+        "availability_date": "today",
+        "preferred_shift": "flexible",
+        "expected_salary": 25000,
+        "languages": [
+          "hindi",
+          "english"
+        ],
+        "other_languages": [],
+        "has_two_wheeler": true,
+        "total_experience_months": 2,
+        "conversation_completed": true,
+        "turn_count": 9
+      },
+      "audio_variant": "noisy"
+    }
+  ],
+  "completed_steps": 8,
+  "total_steps": 8,
+  "reached_job_matching": true,
+  "final_bot_response": "Tumhara top 3 matches hai: \n- Delivery Executive @ QuickDeliver, Connaught Place, ₹15,000-₹22,000, flexible shifts, hindi/ english, 2-wheeler chahiye\n- Construction Helper @ BuildRight, Connaught Place, ₹16,000-₹24,000, morning shift, hindi, no 2-wheeler needed\n- Shop Assistant @ RetailMart, Darya Ganj, ₹14,000-₹20,000, morning/ evening shifts, hindi/ english, no 2-wheeler needed. Kaunsa job sunna pasand karoge?",
+  "conversation_completed": true,
+  "total_latency_ms": 16242.133140563965,
+  "avg_turn_latency_ms": 2030.2666425704956,
+  "avg_confidence": 0.5854945741593838,
+  "confidence_range": [
+    0.38578617572784424,
+    0.9152972102165222
+  ],
+  "asr_cost_usd": 0.0236337,
+  "tts_cost_usd": 0.012144,
+  "total_cost_usd": 0.0357777
+}

@@ -185,6 +185,20 @@
                 <!-- Job matches will be populated here -->
             </div>
         </div>
+
+        <!-- DTMF Keypad (Hidden by default; shown during low-confidence confirmation) -->
+        <div id="dtmfPanel" class="hidden bg-white rounded-lg shadow-lg p-6 mt-8">
+            <h3 class="text-xl font-bold text-gray-800 mb-2">
+                <i class="fas fa-keyboard mr-2"></i>Confirm via Keypad
+            </h3>
+            <p class="text-sm text-gray-600 mb-4">ASR confidence is low. Use keypad: 1 = Yes, 2 = No, 3 = Edit.</p>
+            <div class="grid grid-cols-3 gap-4 max-w-xs mx-auto">
+                <button data-dtmf="1" class="bg-blue-100 hover:bg-blue-200 text-blue-800 font-semibold py-3 rounded-lg">1</button>
+                <button data-dtmf="2" class="bg-blue-100 hover:bg-blue-200 text-blue-800 font-semibold py-3 rounded-lg">2</button>
+                <button data-dtmf="3" class="bg-blue-100 hover:bg-blue-200 text-blue-800 font-semibold py-3 rounded-lg">3</button>
+            </div>
+            <p id="dtmfStatus" class="text-sm text-gray-500 mt-3">Choose an option to proceed.</p>
+        </div>
     </main>
 
     <!-- Audio Elements -->

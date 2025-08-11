@@ -6,6 +6,9 @@ from fastapi.responses import JSONResponse
 from app.services.conversation import ConversationOrchestrator
 from app.core.logger import logger
 import asyncio
+import io
+from pydub import AudioSegment
+from pydub.generators import Sine
 
 router = APIRouter()
 
@@ -187,8 +190,8 @@ async def process_voice_turn_fast(candidate_id: str, background_tasks: Backgroun
                         for m in matches_result.top_matches
                     ]
                     total_jobs_considered = matches_result.total_jobs_considered
-            except Exception as me:
-                logger.error(f"Inline match generation failed (fast): {me}")
+            except Exception as mm_e:
+                logger.error(f"Inline match generation failed (fast): {mm_e}")
                 inline_matches = []
 
         return {
@@ -205,11 +208,51 @@ async def process_voice_turn_fast(candidate_id: str, background_tasks: Backgroun
             "matches": inline_matches,
             "total_jobs_considered": total_jobs_considered,
         }
+    except HTTPException:
+        raise
     except Exception as e:
         import traceback
         logger.error(f"Failed to process fast turn: {e}")
         logger.error(f"Traceback: {traceback.format_exc()}")
         raise HTTPException(status_code=500, detail=f"Failed to process voice turn fast: {str(e)}")
+
+@router.post("/conversation/{candidate_id}/confirm-fast")
+async def confirm_fast_text(candidate_id: str, background_tasks: BackgroundTasks, payload: dict):
+    """Accept a simple text confirmation (e.g., from DTMF UI) and process it as a fast turn.
+    Body: { text_only: true, user_text: 'yes'|'no'|'edit' }
+    """
+    try:
+        user_text = (payload or {}).get("user_text", "").strip()
+        if not user_text:
+            raise HTTPException(status_code=422, detail="user_text required")
+        # Create a tiny synthetic WAV from text length (beeps), to reuse the same pipeline
+        # but we can also directly inject ASR text by generating a placeholder WAV and letting ASR return empty;
+        # better: generate a short 300ms tone
+        tone = Sine(1000).to_audio_segment(duration=300).set_frame_rate(16000).set_channels(1) - 10
+        buf = io.BytesIO()
+        tone.export(buf, format='wav')
+        buf.seek(0)
+        audio_data = buf.read()
+        # Use a dedicated text confirmation fast path to bypass ASR
+        response_text, conversation_complete, asr_text, asr_conf, raw_asr, turn_id = await orchestrator.process_text_confirmation(
+            candidate_id, user_text=user_text, confidence=0.95
+        )
+        metrics = orchestrator.get_conversation_metrics(candidate_id)
+        # Kick off background TTS synthesis so UI can fetch audio
+        background_tasks.add_task(orchestrator.synthesize_and_store_audio, candidate_id, turn_id, response_text)
+        return {
+            "candidate_id": candidate_id,
+            "turn_id": turn_id,
+            "text": response_text,
+            "conversation_complete": conversation_complete,
+            "metrics": metrics,
+            "asr": {"text": user_text, "confidence": 0.9, "raw_confidence_data": {"asr_provider": "dtmf", "confidence_source": "manual"}}
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Failed to process confirm-fast: {e}")
+        raise HTTPException(status_code=500, detail="Failed to process confirm-fast")
 
 @router.get("/conversation/{candidate_id}/turn-audio/{turn_id}")
 async def fetch_turn_audio(candidate_id: str, turn_id: str):

@@ -13,47 +13,47 @@ utterances:
     duration_range: [6, 8]
     
   - id: "pin_diverse_002"
-    text: "Main Delhi mein rehta hun, mera pincode hai 110001"
-    transcript: "main delhi mein rehta hun mera pincode hai ek lakh das hazar ek"
+    text: "Main bangalore mein rehta hun, mera pincode hai 560038"
+    transcript: "main delhi mein rehta hun mera pincode hai five six zero zero three eight"
     entities:
-      pincode: "110001"
+      pincode: "560001"
     accent: "calm_hindi"
     noise_level: "medium"
     duration_range: [6, 8]
     
   - id: "pin_diverse_003"
-    text: "Main Delhi mein rehta hun, mera pincode hai 110001"
-    transcript: "main delhi mein rehta hun mera pincode hai ek lakh das hazar ek"
+    text: "Main chennai mein rehta hun, mera pincode hai chaar lakh ek"
+    transcript: "main delhi mein rehta hun mera pincode hai chaar lakh ek"
     entities:
-      pincode: "110001"
+      pincode: "600001" 
     accent: "energetic_hindi"
     noise_level: "medium"
     duration_range: [6, 8]
     
   - id: "pin_diverse_004"
-    text: "Main Delhi mein rehta hun, mera pincode hai 110001"
-    transcript: "main delhi mein rehta hun mera pincode hai ek lakh das hazar ek"
+    text: "Main trichy mein rehta hun, mera pincode hai 620001"
+    transcript: "main trichy mein rehta hun mera pincode hai  six two zero zero zero one"
     entities:
-      pincode: "110001"
+      pincode: "620001"
     accent: "expressive_hindi"
     noise_level: "high"
     duration_range: [6, 8]
 
   # === SALARY VARIATIONS ===
   - id: "sal_diverse_001"
-    text: "Bhai main fifteen thousand per month expect karta hun"
-    transcript: "bhai main fifteen thousand per month expect karta hun"
+    text: "Bhai main twenty five thousand per month expect karta hun"
+    transcript: "bhai main twenty five thousand per month expect karta hun"
     entities:
-      expected_salary: 15000
+      expected_salary: 25000
     accent: "english_man"
     noise_level: "high"
     duration_range: [6, 8]
     
   - id: "sal_diverse_002"
-    text: "Bhai main fifteen thousand per month expect karta hun"
-    transcript: "bhai main fifteen thousand per month expect karta hun"
+    text: "Bhai main sixty thousand per month expect karta hun"
+    transcript: "bhai main sixty thousand per month expect karta hun"
     entities:
-      expected_salary: 15000
+      expected_salary: 60000
     accent: "calm_hindi"
     noise_level: "medium"
     duration_range: [6, 8]
@@ -62,35 +62,35 @@ utterances:
     text: "Salary kitna chahiye? Arey twenty five hazar rupaye monthly"
     transcript: "salary kitna chahiye arey twenty five hazar rupaye monthly"
     entities:
-      expected_salary: 25000
+      expected_salary: 50000
     accent: "energetic_hindi"
     noise_level: "low"
     duration_range: [7, 9]
     
   - id: "sal_diverse_004"
-    text: "Main fifty thousand expect karta hun per month"
-    transcript: "main fifty thousand expect karta hun per month"
+    text: "Main ten thousand expect karta hun per month"
+    transcript: "main ten thousand expect karta hun per month"
     entities:
-      expected_salary: 50000
+      expected_salary: 10000
     accent: "expressive_hindi"
     noise_level: "high"
     duration_range: [6, 8]
 
   # === VEHICLE VARIATIONS ===
   - id: "vehicle_diverse_001"
-    text: "Haan bhai, mere paas bike hai Bajaj Pulsar"
-    transcript: "haan bhai mere paas bike hai bajaj pulsar"
+    text: "nahi bhai, mere paas bike nahi hai"
+    transcript: "nahi bhai mere paas bike nahi hai"
     entities:
-      has_two_wheeler: true
+      has_two_wheeler: false
     accent: "english_man"
     noise_level: "high"
     duration_range: [5, 7]
     
   - id: "vehicle_diverse_002"
-    text: "Nahi yaar, bike nahi hai mere paas"
-    transcript: "nahi yaar bike nahi hai mere paas"
+    text: "haan yaar, bike hai mere paas"
+    transcript: "haan yaar bike hai mere paas"
     entities:
-      has_two_wheeler: false
+      has_two_wheeler: true
     accent: "calm_hindi"
     noise_level: "medium"
     duration_range: [4, 6]
@@ -198,28 +198,28 @@ utterances:
     duration_range: [5, 7]
     
   - id: "lang_diverse_002"
-    text: "Hindi English Marathi teeno languages aati hain mujhe"
-    transcript: "hindi english marathi teeno languages aati hain mujhe"
+    text: " English Kannada Tamil teeno languages aati hain mujhe"
+    transcript: "English Kannada Tamil  teeno languages aati hain mujhe"
     entities:
-      languages: ["hindi", "english", "marathi"]
+      languages: ["English", "Kannada", "Tamil"]
     accent: "calm_hindi"
     noise_level: "medium"
     duration_range: [6, 8]
     
   - id: "lang_diverse_003"
-    text: "Sirf Hindi bol sakta hun bhai, English thoda thoda"
-    transcript: "sirf hindi bol sakta hun bhai english thoda thoda"
+    text: "Sirf Tamil bol sakta hun bhai, English thoda thoda"
+    transcript: "sirf Tamil bol sakta hun bhai english thoda thoda"
     entities:
-      languages: ["hindi"]
+      languages: ["Tamil","English"]
     accent: "energetic_hindi"
     noise_level: "medium"
     duration_range: [5, 7]
     
   - id: "lang_diverse_004"
-    text: "Hindi Tamil English sabko bol leta hun perfectly"
-    transcript: "hindi tamil english sabko bol leta hun perfectly"
+    text: "Tamil bol leta hun perfectly"
+    transcript: "tamil bol leta hun perfectly"
     entities:
-      languages: ["hindi", "tamil", "english"]
+      languages: ["tamil"]
     accent: "expressive_hindi"
     noise_level: "high"
     duration_range: [6, 8]
@@ -229,7 +229,7 @@ utterances:
     text: "Main immediately start kar sakta hun bhai, aaj se bhi"
     transcript: "main immediately start kar sakta hun bhai aaj se bhi"
     entities:
-      availability_date: "immediately"
+      availability_date: "soon"
     accent: "english_man"
     noise_level: "high"
     duration_range: [5, 7]
@@ -256,35 +256,35 @@ utterances:
     text: "Abhi turant join kar sakta hun, ready hun bilkul"
     transcript: "abhi turant join kar sakta hun ready hun bilkul"
     entities:
-      availability_date: "immediately"
+      availability_date: "soon"
     accent: "expressive_hindi"
     noise_level: "high"
     duration_range: [5, 7]
 
   # === EXPERIENCE VARIATIONS ===
   - id: "exp_diverse_001"
-    text: "Main do saal se warehouse mein kaam kar raha hun"
-    transcript: "main do saal se warehouse mein kaam kar raha hun"
+    text: "Main do mahine se warehouse mein kaam kar raha hun"
+    transcript: "main do mahine se warehouse mein kaam kar raha hun"
     entities:
-      total_experience_months: 24
+      total_experience_months: 2
     accent: "english_man"
     noise_level: "high"
     duration_range: [6, 8]
     
   - id: "exp_diverse_002"
-    text: "Six months ka experience hai delivery boy ka"
-    transcript: "six months ka experience hai delivery boy ka"
+    text: "one year ka experience hai delivery boy ka"
+    transcript: "one year ka experience hai delivery boy ka"
     entities:
-      total_experience_months: 6
+      total_experience_months: 12
     accent: "calm_hindi"
     noise_level: "medium"
     duration_range: [5, 7]
     
   - id: "exp_diverse_003"
-    text: "Teen saal ka experience hai bhai, factory mein kaam kiya"
-    transcript: "teen saal ka experience hai bhai factory mein kaam kiya"
+    text: "Do saal ka experience hai bhai, factory mein kaam kiya"
+    transcript: "Do saal ka experience hai bhai factory mein kaam kiya"
     entities:
-      total_experience_months: 36
+      total_experience_months: 24
     accent: "energetic_hindi"
     noise_level: "medium"
     duration_range: [6, 8]

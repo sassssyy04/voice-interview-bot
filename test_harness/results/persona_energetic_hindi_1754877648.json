@@ -1,0 +1,264 @@
+{
+  "persona_key": "energetic_hindi",
+  "persona_name": "Energetic Hindi Speaker",
+  "voice_id": "IvLWq57RKibBrqZGpQrC",
+  "noise_levels": [
+    "medium",
+    "low"
+  ],
+  "candidate_id": "49e56bfb-79cd-4c54-adeb-978dac474f77",
+  "start_time": "2025-08-11T10:00:17.519533",
+  "end_time": "2025-08-11T10:00:48.254222",
+  "turns": [
+    {
+      "turn_number": 0,
+      "step_name": "pincode",
+      "audio_file": "pin_diverse_003",
+      "asr_text": "में चेन्नई में रहता हूं। मेरा पिन कोड है 4000 वत।",
+      "asr_confidence": 0.5065731406211853,
+      "bot_response": "Aapki expected salary 4000 rupees per month hai, sahi?",
+      "latency_ms": 2149.1212844848633,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "pincode": "110001"
+      },
+      "current_field": "expected_salary",
+      "candidate_profile": {
+        "candidate_id": "49e56bfb-79cd-4c54-adeb-978dac474f77",
+        "created_at": "2025-08-11T10:00:18.159952",
+        "pincode": "600001",
+        "locality": "Chennai",
+        "availability_date": null,
+        "preferred_shift": null,
+        "expected_salary": null,
+        "languages": [],
+        "other_languages": [],
+        "has_two_wheeler": null,
+        "total_experience_months": null,
+        "conversation_completed": false,
+        "turn_count": 2
+      },
+      "audio_variant": "noisy"
+    },
+    {
+      "turn_number": 0,
+      "step_name": "expected_salary",
+      "audio_file": "sal_diverse_003",
+      "asr_text": "सैलरी कितना चाहिए अरे 25000 मंथली!",
+      "asr_confidence": 0.7115073204040527,
+      "bot_response": "Aap kaunsi languages bol sakte hain? Hindi, English ya koi aur?",
+      "latency_ms": 930.4642677307129,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "expected_salary": 25000
+      },
+      "current_field": "languages",
+      "candidate_profile": {
+        "candidate_id": "49e56bfb-79cd-4c54-adeb-978dac474f77",
+        "created_at": "2025-08-11T10:00:18.159952",
+        "pincode": "600001",
+        "locality": "Chennai",
+        "availability_date": null,
+        "preferred_shift": null,
+        "expected_salary": 25000,
+        "languages": [],
+        "other_languages": [],
+        "has_two_wheeler": true,
+        "total_experience_months": null,
+        "conversation_completed": false,
+        "turn_count": 3
+      },
+      "audio_variant": "noisy"
+    },
+    {
+      "turn_number": 0,
+      "step_name": "has_two_wheeler",
+      "audio_file": "vehicle_diverse_003",
+      "asr_text": "हां हां होंडा एक्टिवा है मेरे पास।",
+      "asr_confidence": 0.6180302500724792,
+      "bot_response": "Aap  bol sakte hain, confirm hai?",
+      "latency_ms": 1678.7264347076416,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "has_two_wheeler": true
+      },
+      "current_field": "languages",
+      "candidate_profile": {
+        "candidate_id": "49e56bfb-79cd-4c54-adeb-978dac474f77",
+        "created_at": "2025-08-11T10:00:18.159952",
+        "pincode": "600001",
+        "locality": "Chennai",
+        "availability_date": null,
+        "preferred_shift": null,
+        "expected_salary": 25000,
+        "languages": [],
+        "other_languages": [],
+        "has_two_wheeler": true,
+        "total_experience_months": null,
+        "conversation_completed": false,
+        "turn_count": 4
+      },
+      "audio_variant": "noisy"
+    },
+    {
+      "turn_number": 0,
+      "step_name": "languages",
+      "audio_file": "lang_diverse_003",
+      "asr_text": "सिर्फ तमिल बोल सकता हूं भाई इंग्लिश थोड़ा थोड़ा!",
+      "asr_confidence": 0.7892283201217651,
+      "bot_response": "Aap kaunse time pe kaam karna chahte hain? Morning, evening ya night?",
+      "latency_ms": 2480.959177017212,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "languages": [
+          "hindi"
+        ]
+      },
+      "current_field": "preferred_shift",
+      "candidate_profile": {
+        "candidate_id": "49e56bfb-79cd-4c54-adeb-978dac474f77",
+        "created_at": "2025-08-11T10:00:18.159952",
+        "pincode": "600001",
+        "locality": "Chennai",
+        "availability_date": "soon",
+        "preferred_shift": null,
+        "expected_salary": 25000,
+        "languages": [
+          "tamil"
+        ],
+        "other_languages": [
+          "English"
+        ],
+        "has_two_wheeler": true,
+        "total_experience_months": null,
+        "conversation_completed": false,
+        "turn_count": 5
+      },
+      "audio_variant": "noisy"
+    },
+    {
+      "turn_number": 0,
+      "step_name": "availability_date",
+      "audio_file": "avail_diverse_003",
+      "asr_text": "एक भी बात स्टार्ट करूंगा नेक्स्ट मंडे से!",
+      "asr_confidence": 0.7964503765106201,
+      "bot_response": "Aapko kitna kaam ka experience hai? Kitne saal ya mahine?",
+      "latency_ms": 1439.894676208496,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "availability_date": "next week"
+      },
+      "current_field": "total_experience_months",
+      "candidate_profile": {
+        "candidate_id": "49e56bfb-79cd-4c54-adeb-978dac474f77",
+        "created_at": "2025-08-11T10:00:18.159952",
+        "pincode": "600001",
+        "locality": "Chennai",
+        "availability_date": "soon",
+        "preferred_shift": "morning",
+        "expected_salary": 25000,
+        "languages": [
+          "tamil"
+        ],
+        "other_languages": [
+          "English"
+        ],
+        "has_two_wheeler": true,
+        "total_experience_months": null,
+        "conversation_completed": false,
+        "turn_count": 6
+      },
+      "audio_variant": "noisy"
+    },
+    {
+      "turn_number": 0,
+      "step_name": "preferred_shift",
+      "audio_file": "shift_diverse_003",
+      "asr_text": "कोई भी शिफ्ट चलेगा भाई फ्लैक्सिबल हूं मैं।",
+      "asr_confidence": 0.611250102519989,
+      "bot_response": "Aapka total experience 0 hai, correct?",
+      "latency_ms": 1889.2605304718018,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "preferred_shift": "flexible"
+      },
+      "current_field": "total_experience_months",
+      "candidate_profile": {
+        "candidate_id": "49e56bfb-79cd-4c54-adeb-978dac474f77",
+        "created_at": "2025-08-11T10:00:18.159952",
+        "pincode": "600001",
+        "locality": "Chennai",
+        "availability_date": "soon",
+        "preferred_shift": "morning",
+        "expected_salary": 25000,
+        "languages": [
+          "tamil"
+        ],
+        "other_languages": [
+          "English"
+        ],
+        "has_two_wheeler": true,
+        "total_experience_months": null,
+        "conversation_completed": false,
+        "turn_count": 7
+      },
+      "audio_variant": "noisy"
+    },
+    {
+      "turn_number": 0,
+      "step_name": "total_experience_months",
+      "audio_file": "exp_diverse_003",
+      "asr_text": "2 साल का एक्सपीरियंस है भाई फैक्ट्री में काम किया।",
+      "asr_confidence": 0.7321698665618896,
+      "bot_response": "Sorry, koi suitable job abhi aapke area mein available nahi hai. Hum aapko inform karenge jab koi matching job aayegi. Kripya thoda intezaar karein. Kya aapko kisi aur job ki details chahiye?",
+      "latency_ms": 2972.090721130371,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "total_experience_months": 36
+      },
+      "current_field": "total_experience_months",
+      "candidate_profile": {
+        "candidate_id": "49e56bfb-79cd-4c54-adeb-978dac474f77",
+        "created_at": "2025-08-11T10:00:18.159952",
+        "pincode": "600001",
+        "locality": "Chennai",
+        "availability_date": "soon",
+        "preferred_shift": "morning",
+        "expected_salary": 25000,
+        "languages": [
+          "tamil"
+        ],
+        "other_languages": [
+          "English"
+        ],
+        "has_two_wheeler": true,
+        "total_experience_months": 24,
+        "conversation_completed": true,
+        "turn_count": 8
+      },
+      "audio_variant": "noisy"
+    }
+  ],
+  "completed_steps": 7,
+  "total_steps": 8,
+  "reached_job_matching": true,
+  "final_bot_response": "Sorry, koi suitable job abhi aapke area mein available nahi hai. Hum aapko inform karenge jab koi matching job aayegi. Kripya thoda intezaar karein. Kya aapko kisi aur job ki details chahiye?",
+  "conversation_completed": true,
+  "total_latency_ms": 13540.517091751099,
+  "avg_turn_latency_ms": 1934.3595845358711,
+  "avg_confidence": 0.6807441966874259,
+  "confidence_range": [
+    0.5065731406211853,
+    0.7964503765106201
+  ],
+  "asr_cost_usd": 0.018168487499999997,
+  "tts_cost_usd": 0.00808,
+  "total_cost_usd": 0.026248487499999997
+}

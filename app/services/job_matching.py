@@ -1,11 +1,13 @@
 import json
 import math
 from typing import List, Dict, Tuple, Optional
+from pathlib import Path
 from datetime import datetime
 from app.models.candidate import Candidate
 from app.models.job import Job, JobMatch, MatchingResult
 from app.core.config import settings
 from app.core.logger import logger
+from app.models.candidate import ShiftPreference, LanguageSkill
 
 try:
     import openai
@@ -35,6 +37,37 @@ class JobMatchingService:
             "560002": {"lat": 12.9698, "lng": 77.6044, "name": "Bangalore City"},
             "700001": {"lat": 22.5726, "lng": 88.3639, "name": "Kolkata GPO"}
         }
+
+    def _approximate_pincode_from_locality(self, locality: str) -> Optional[str]:
+        """Best-effort mapping from locality/city to a representative pincode.
+
+        Args:
+            locality (str): Candidate-provided locality or city name
+        Returns:
+            Optional[str]: 6-digit pincode when a canonical mapping is known, else None
+        """
+        if not locality:
+            return None
+        text = str(locality).strip().lower()
+        mapping = {
+            # Delhi
+            "delhi": "110001", "new delhi": "110001", "connaught place": "110001", "cp": "110001",
+            "darya ganj": "110002", "civil lines": "110003",
+            # Mumbai
+            "mumbai": "400001", "bombay": "400001", "fort": "400001", "fort mumbai": "400001",
+            "kalbadevi": "400002", "masjid": "400003",
+            # Bengaluru
+            "bangalore": "560001", "bengaluru": "560001", "bangalore gpo": "560001", "bengaluru gpo": "560001",
+            "bangalore city": "560002",
+            # Kolkata
+            "kolkata": "700001", "calcutta": "700001", "kolkata gpo": "700001",
+        }
+        if text in mapping:
+            return mapping[text]
+        for key, pin in mapping.items():
+            if key in text:
+                return pin
+        return None
     
     async def find_job_matches(self, candidate: Candidate) -> MatchingResult:
         """Find top 3 job matches for a candidate.
@@ -54,8 +87,9 @@ class JobMatchingService:
         job_scores = []
         for job in jobs:
             # Apply 60km distance filter before calculating full match score
-            if candidate.pincode and job.pincode:
-                distance_km = self._calculate_distance(candidate.pincode, job.pincode)
+            effective_candidate_pincode = candidate.pincode or self._approximate_pincode_from_locality(getattr(candidate, "locality", "") or "")
+            if effective_candidate_pincode and job.pincode:
+                distance_km = self._calculate_distance(effective_candidate_pincode, job.pincode)
                 if distance_km > 60.0:
                     continue  # Skip jobs beyond 60km
             
@@ -71,7 +105,8 @@ class JobMatchingService:
         
         # If no matches found within distance, log it
         if len(job_scores) == 0:
-            logger.info(f"No jobs found within 60km for candidate {candidate.candidate_id} at pincode {candidate.pincode}")
+            fallback_pin = candidate.pincode or self._approximate_pincode_from_locality(getattr(candidate, "locality", "") or "")
+            logger.info(f"No jobs found within 60km for candidate {candidate.candidate_id} at pincode {fallback_pin}")
         
         result = MatchingResult(
             candidate_id=candidate.candidate_id,
@@ -234,10 +269,10 @@ class JobMatchingService:
         # 1. Location Score (30% weight)
         if candidate.pincode and job.pincode:
             distance_km = self._calculate_distance(candidate.pincode, job.pincode)
-            if distance_km <= 5:
+            if distance_km <= 25:
                 location_score = 1.0
                 strengths.append(f"Job is very close ({distance_km:.1f}km from your location)")
-            elif distance_km <= 15:
+            elif distance_km <= 5:
                 location_score = 0.8
                 strengths.append(f"Job is nearby ({distance_km:.1f}km from your location)")
             elif distance_km <= settings.max_distance_km:
@@ -321,10 +356,10 @@ class JobMatchingService:
         # Calculate weighted overall score
         weights = {
             "location": 0.30,
-            "salary": 0.25,
-            "shift": 0.20,
+            "salary": 0.15,
+            "shift": 0.25,
             "language": 0.15,
-            "vehicle": 0.05,
+            "vehicle": 0.10,
             "experience": 0.05
         }
         
@@ -439,108 +474,127 @@ class JobMatchingService:
         """Get the criteria weights used for matching."""
         return {
             "location_weight": 0.30,
-            "salary_weight": 0.25,
-            "shift_weight": 0.20,
+            "salary_weight": 0.15,
+            "shift_weight": 0.25,
             "language_weight": 0.15,
-            "vehicle_weight": 0.05,
+            "vehicle_weight": 0.10,
             "experience_weight": 0.05,
             "max_distance_km": settings.max_distance_km,
             "salary_tolerance_percent": settings.salary_tolerance_percent
         }
     
     async def _load_available_jobs(self) -> List[Job]:
-        """Load available jobs from data source."""
-        # In real implementation, load from database
-        # For demo, return sample jobs
-        return [
-            Job(
-                job_id="DEL001",
-                title="Delivery Executive",
-                company="QuickDeliver",
-                category="delivery",
-                pincode="110001",
-                locality="Connaught Place",
-                required_shifts=["morning", "evening"],
-                salary_min=15000,
-                salary_max=22000,
-                required_languages=["hindi", "english"],
-                requires_two_wheeler=True,
-                min_experience_months=0,
-                max_experience_months=24,
-                description="Food delivery executive for busy Delhi area",
-                benefits=["Fuel allowance", "Mobile phone", "Incentives"],
-                contact_number="+91-9876543210"
-            ),
-            Job(
-                job_id="SEC002",
-                title="Security Guard",
-                company="SecureTech",
-                category="security",
-                pincode="110002",
-                locality="Darya Ganj",
-                required_shifts=["night"],
-                salary_min=18000,
-                salary_max=25000,
-                required_languages=["hindi"],
-                requires_two_wheeler=False,
-                min_experience_months=6,
-                max_experience_months=60,
-                description="Night security for commercial building",
-                benefits=["Medical insurance", "Uniform provided"],
-                contact_number="+91-9876543211"
-            ),
-            Job(
-                job_id="HK003",
-                title="Housekeeping Staff",
-                company="CleanCorp",
-                category="housekeeping",
-                pincode="110003",
-                locality="Civil Lines",
-                required_shifts=["morning", "afternoon"],
-                salary_min=12000,
-                salary_max=18000,
-                required_languages=["hindi"],
-                requires_two_wheeler=False,
-                min_experience_months=0,
-                max_experience_months=36,
-                description="Office cleaning and maintenance",
-                benefits=["Weekly off", "Festival bonus"],
-                contact_number="+91-9876543212"
-            ),
-            Job(
-                job_id="CON004",
-                title="Construction Helper",
-                company="BuildRight",
-                category="construction",
-                pincode="110001",
-                locality="Connaught Place",
-                required_shifts=["morning"],
-                salary_min=16000,
-                salary_max=24000,
-                required_languages=["hindi"],
-                requires_two_wheeler=False,
-                min_experience_months=0,
-                max_experience_months=24,
-                description="Construction site assistance work",
-                benefits=["Safety equipment", "Overtime pay"],
-                contact_number="+91-9876543213"
-            ),
-            Job(
-                job_id="RET005",
-                title="Shop Assistant",
-                company="RetailMart",
-                category="retail",
-                pincode="110002",
-                locality="Darya Ganj",
-                required_shifts=["morning", "evening"],
-                salary_min=14000,
-                salary_max=20000,
-                required_languages=["hindi", "english"],
-                requires_two_wheeler=False,
-                min_experience_months=3,
-                max_experience_months=48,
-                description="Customer service and inventory management",
-                benefits=["Staff discount", "Training provided"],
-                contact_number="+91-9876543214"
-            )
-        ] 
+        """Load available jobs from data/jobs.json with normalization and validation."""
+        jobs_path = Path(__file__).resolve().parents[2] / "data" / "jobs.json"
+        try:
+            with open(jobs_path, "r", encoding="utf-8") as f:
+                raw = json.load(f)
+        except Exception as e:
+            logger.error(f"Failed to load jobs from {jobs_path}: {e}")
+            return []
+
+        normalized_jobs: List[Job] = []
+        for idx, item in enumerate(raw or []):
+            try:
+                if not item or item.get("is_active") is False:
+                    continue
+                payload = self._normalize_job_json(item)
+                job = Job(**payload)
+                normalized_jobs.append(job)
+            except Exception as e:
+                logger.error(f"Skipping job at index {idx} due to parse error: {e} | data={item}")
+                continue
+        return normalized_jobs
+
+    def _normalize_job_json(self, item: Dict[str, object]) -> Dict[str, object]:
+        """Normalize a JSON job record to our Job model schema.
+
+        - Coerce enums (category, required_shifts, required_languages)
+        - Lowercase and filter unknowns; provide safe defaults
+        - Ensure types for numeric fields
+        """
+        # Category mapping to JobCategory
+        category_map = {
+            "delivery": "delivery",
+            "security": "security",
+            "housekeeping": "housekeeping",
+            "construction": "construction",
+            "manufacturing": "manufacturing",
+            "retail": "retail",
+            "food_service": "food_service",
+            "food_production": "food_service",
+            "transportation": "transportation",
+            # Map many miscellaneous categories to closest available enum
+            "maintenance": "manufacturing",
+            "carpentry": "manufacturing",
+            "electrical": "manufacturing",
+            "painting": "manufacturing",
+            "tailoring": "manufacturing",
+            "printing": "manufacturing",
+            "laundry": "housekeeping",
+            "logistics": "manufacturing",
+            "marketing": "retail",
+            "hospitality": "retail",
+            "backoffice": "retail",
+            "bpo": "retail",
+            "packaging": "manufacturing",
+            "automotive": "manufacturing",
+            "landscaping": "manufacturing",
+        }
+
+        cat_raw = str(item.get("category", "manufacturing")).strip().lower()
+        category = category_map.get(cat_raw, "manufacturing")
+
+        # Shifts
+        try:
+            from app.models.candidate import ShiftPreference as _SP
+            valid_shifts = {s.value for s in _SP}
+        except Exception:
+            valid_shifts = {"morning", "afternoon", "evening", "night", "flexible"}
+        shifts_raw = item.get("required_shifts") or []
+        shifts_norm = []
+        for s in shifts_raw:
+            sval = str(s).strip().lower()
+            if sval == "early_morning":
+                sval = "morning"
+            if sval in valid_shifts:
+                shifts_norm.append(sval)
+        if not shifts_norm:
+            shifts_norm = ["morning"]
+
+        # Languages
+        try:
+            from app.models.candidate import LanguageSkill as _LS
+            valid_langs = {l.value for l in _LS}
+        except Exception:
+            valid_langs = {
+                "hindi","english","marathi","bengali","tamil","telugu","gujarati",
+                "kannada","punjabi","malayalam","odia","assamese","urdu"
+            }
+        langs_raw = item.get("required_languages") or []
+        langs_norm = []
+        for lval in langs_raw:
+            lv = str(lval).strip().lower()
+            if lv in valid_langs:
+                langs_norm.append(lv)
+
+        payload: Dict[str, object] = {
+            "job_id": str(item.get("job_id")),
+            "title": str(item.get("title")),
+            "company": str(item.get("company")),
+            "category": category,
+            "pincode": str(item.get("pincode")),
+            "locality": str(item.get("locality")),
+            "required_shifts": shifts_norm,
+            "salary_min": int(item.get("salary_min", 0)),
+            "salary_max": int(item.get("salary_max", 0)),
+            "required_languages": langs_norm,
+            "requires_two_wheeler": bool(item.get("requires_two_wheeler", False)),
+            "min_experience_months": int(item.get("min_experience_months", 0)),
+            "max_experience_months": int(item["max_experience_months"]) if item.get("max_experience_months") is not None else None,
+            "description": str(item.get("description", "")),
+            "benefits": list(item.get("benefits", [])),
+            "contact_number": str(item.get("contact_number", "")),
+            "is_active": True,
+        }
+        return payload 

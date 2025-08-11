@@ -1,0 +1,655 @@
+{
+  "persona_key": "energetic_hindi",
+  "persona_name": "Energetic Hindi Speaker",
+  "voice_id": "IvLWq57RKibBrqZGpQrC",
+  "noise_levels": [
+    "medium",
+    "low"
+  ],
+  "candidate_id": "7008081f-fb2a-489d-a831-19d32ded6c0e",
+  "start_time": "2025-08-11T17:07:29.885664",
+  "end_time": "2025-08-11T17:07:39.251401",
+  "turns": [
+    {
+      "turn_number": 0,
+      "step_name": "pincode",
+      "audio_file": "pin_diverse_003",
+      "asr_text": "में चेन्नई में रहता हूं। मेरा पिन कोड है 4000 वत।",
+      "asr_confidence": 0.5065731406211853,
+      "bot_response": "Aapne Chennai kaha, sahi hai na?",
+      "latency_ms": 1024.6331691741943,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "pincode": "600001"
+      },
+      "current_field": "pincode",
+      "candidate_profile": {
+        "candidate_id": "7008081f-fb2a-489d-a831-19d32ded6c0e",
+        "created_at": "2025-08-11T17:07:30.309599",
+        "pincode": null,
+        "locality": null,
+        "availability_date": null,
+        "preferred_shift": null,
+        "expected_salary": null,
+        "languages": [],
+        "other_languages": [],
+        "has_two_wheeler": null,
+        "total_experience_months": null,
+        "conversation_completed": false,
+        "turn_count": 1
+      },
+      "audio_variant": "noisy",
+      "tester_llm_entities": null
+    },
+    {
+      "turn_number": 0,
+      "step_name": "pincode",
+      "audio_file": "pin_diverse_004",
+      "asr_text": "में त्रिची में रहता हूं मेरा पिन कोड है द सिटी 2001 तक।",
+      "asr_confidence": 0.4473719298839569,
+      "bot_response": "Aap kahan rehte hain? Apna pincode ya area batayiye।",
+      "latency_ms": 2132.1163177490234,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "pincode": "600001"
+      },
+      "current_field": "pincode",
+      "candidate_profile": {
+        "candidate_id": "7008081f-fb2a-489d-a831-19d32ded6c0e",
+        "created_at": "2025-08-11T17:07:30.309599",
+        "pincode": null,
+        "locality": "त्रिची",
+        "availability_date": null,
+        "preferred_shift": null,
+        "expected_salary": null,
+        "languages": [],
+        "other_languages": [],
+        "has_two_wheeler": null,
+        "total_experience_months": null,
+        "conversation_completed": false,
+        "turn_count": 2
+      },
+      "audio_variant": "clean",
+      "tester_llm_entities": null
+    },
+    {
+      "turn_number": 0,
+      "step_name": "pincode",
+      "audio_file": "pin_diverse_001",
+      "asr_text": "में रहता हूं मेरा पिन कोड है क्या 9000 वांट?",
+      "asr_confidence": 0.38578617572784424,
+      "bot_response": "Aapne मेरा kaha, sahi hai na?",
+      "latency_ms": 994.4033622741699,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "pincode": "600001"
+      },
+      "current_field": "pincode",
+      "candidate_profile": {
+        "candidate_id": "7008081f-fb2a-489d-a831-19d32ded6c0e",
+        "created_at": "2025-08-11T17:07:30.309599",
+        "pincode": null,
+        "locality": "त्रिची",
+        "availability_date": null,
+        "preferred_shift": null,
+        "expected_salary": null,
+        "languages": [],
+        "other_languages": [],
+        "has_two_wheeler": null,
+        "total_experience_months": null,
+        "conversation_completed": false,
+        "turn_count": 3
+      },
+      "audio_variant": "noisy",
+      "tester_llm_entities": null
+    },
+    {
+      "turn_number": 0,
+      "step_name": "pincode",
+      "audio_file": "pin_diverse_003",
+      "asr_text": "में चेन्नई में रहता हूं। मेरा पिन कोड है 4000 वत।",
+      "asr_confidence": 0.5065731406211853,
+      "bot_response": "Aap kahan rehte hain? Apna pincode ya area batayiye।",
+      "latency_ms": 2361.4649772644043,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "pincode": "600001"
+      },
+      "current_field": "pincode",
+      "candidate_profile": {
+        "candidate_id": "7008081f-fb2a-489d-a831-19d32ded6c0e",
+        "created_at": "2025-08-11T17:07:30.309599",
+        "pincode": null,
+        "locality": "Chennai",
+        "availability_date": null,
+        "preferred_shift": null,
+        "expected_salary": null,
+        "languages": [],
+        "other_languages": [],
+        "has_two_wheeler": null,
+        "total_experience_months": null,
+        "conversation_completed": false,
+        "turn_count": 4
+      },
+      "audio_variant": "noisy",
+      "tester_llm_entities": null
+    },
+    {
+      "turn_number": 0,
+      "step_name": "pincode",
+      "audio_file": "pin_diverse_003",
+      "asr_text": "में चेन्नई में रहता हूं। मेरा पिन कोड है 4000 वत।",
+      "asr_confidence": 0.5065731406211853,
+      "bot_response": "Aapne Chennai kaha, sahi hai na?",
+      "latency_ms": 1045.6814765930176,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "pincode": "600001"
+      },
+      "current_field": "pincode",
+      "candidate_profile": {
+        "candidate_id": "7008081f-fb2a-489d-a831-19d32ded6c0e",
+        "created_at": "2025-08-11T17:07:30.309599",
+        "pincode": null,
+        "locality": "Chennai",
+        "availability_date": null,
+        "preferred_shift": null,
+        "expected_salary": null,
+        "languages": [],
+        "other_languages": [],
+        "has_two_wheeler": null,
+        "total_experience_months": null,
+        "conversation_completed": false,
+        "turn_count": 5
+      },
+      "audio_variant": "noisy",
+      "tester_llm_entities": null
+    },
+    {
+      "turn_number": 0,
+      "step_name": "availability_date",
+      "audio_file": "avail_diverse_003",
+      "asr_text": "एक भी बात स्टार्ट करूंगा नेक्स्ट मंडे से!",
+      "asr_confidence": 0.7964503765106201,
+      "bot_response": "Aap kahan rehte hain? Apna pincode ya area batayiye।",
+      "latency_ms": 2585.236072540283,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "availability_date": "One week"
+      },
+      "current_field": "pincode",
+      "candidate_profile": {
+        "candidate_id": "7008081f-fb2a-489d-a831-19d32ded6c0e",
+        "created_at": "2025-08-11T17:07:30.309599",
+        "pincode": null,
+        "locality": "नेक्स्ट",
+        "availability_date": null,
+        "preferred_shift": null,
+        "expected_salary": null,
+        "languages": [],
+        "other_languages": [],
+        "has_two_wheeler": null,
+        "total_experience_months": null,
+        "conversation_completed": false,
+        "turn_count": 6
+      },
+      "audio_variant": "noisy",
+      "tester_llm_entities": null
+    },
+    {
+      "turn_number": 0,
+      "step_name": "availability_date",
+      "audio_file": "avail_diverse_003",
+      "asr_text": "एक भी बात स्टार्ट करूंगा नेक्स्ट मंडे से!",
+      "asr_confidence": 0.7964503765106201,
+      "bot_response": "Aap kahan rehte hain? Apna pincode ya area batayiye।",
+      "latency_ms": 2388.751983642578,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "availability_date": "One week"
+      },
+      "current_field": "pincode",
+      "candidate_profile": {
+        "candidate_id": "7008081f-fb2a-489d-a831-19d32ded6c0e",
+        "created_at": "2025-08-11T17:07:30.309599",
+        "pincode": null,
+        "locality": "नेक्स्ट",
+        "availability_date": "soon",
+        "preferred_shift": null,
+        "expected_salary": null,
+        "languages": [],
+        "other_languages": [],
+        "has_two_wheeler": null,
+        "total_experience_months": null,
+        "conversation_completed": false,
+        "turn_count": 7
+      },
+      "audio_variant": "noisy",
+      "tester_llm_entities": null
+    },
+    {
+      "turn_number": 0,
+      "step_name": "preferred_shift",
+      "audio_file": "shift_diverse_003",
+      "asr_text": "कोई भी शिफ्ट चलेगा भाई फ्लैक्सिबल हूं मैं।",
+      "asr_confidence": 0.611250102519989,
+      "bot_response": "Aapne फ्लैक्सिबल kaha, sahi hai na?",
+      "latency_ms": 916.4347648620605,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "preferred_shift": "flexible"
+      },
+      "current_field": "pincode",
+      "candidate_profile": {
+        "candidate_id": "7008081f-fb2a-489d-a831-19d32ded6c0e",
+        "created_at": "2025-08-11T17:07:30.309599",
+        "pincode": null,
+        "locality": "नेक्स्ट",
+        "availability_date": "soon",
+        "preferred_shift": null,
+        "expected_salary": null,
+        "languages": [],
+        "other_languages": [],
+        "has_two_wheeler": null,
+        "total_experience_months": null,
+        "conversation_completed": false,
+        "turn_count": 8
+      },
+      "audio_variant": "noisy",
+      "tester_llm_entities": null
+    },
+    {
+      "turn_number": 0,
+      "step_name": "preferred_shift",
+      "audio_file": "shift_diverse_003",
+      "asr_text": "कोई भी शिफ्ट चलेगा भाई फ्लैक्सिबल हूं मैं।",
+      "asr_confidence": 0.611250102519989,
+      "bot_response": "Aap kahan rehte hain? Apna pincode ya area batayiye।",
+      "latency_ms": 1454.6804428100586,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "preferred_shift": "flexible"
+      },
+      "current_field": "pincode",
+      "candidate_profile": {
+        "candidate_id": "7008081f-fb2a-489d-a831-19d32ded6c0e",
+        "created_at": "2025-08-11T17:07:30.309599",
+        "pincode": null,
+        "locality": "फ्लैक्सिबल",
+        "availability_date": "soon",
+        "preferred_shift": null,
+        "expected_salary": null,
+        "languages": [],
+        "other_languages": [],
+        "has_two_wheeler": null,
+        "total_experience_months": null,
+        "conversation_completed": false,
+        "turn_count": 9
+      },
+      "audio_variant": "noisy",
+      "tester_llm_entities": null
+    },
+    {
+      "turn_number": 0,
+      "step_name": "expected_salary",
+      "audio_file": "sal_diverse_003",
+      "asr_text": "सैलरी कितना चाहिए अरे 25000 मंथली!",
+      "asr_confidence": 0.7115073204040527,
+      "bot_response": "Aap kahan rehte hain? Apna pincode ya area batayiye।",
+      "latency_ms": 2659.336805343628,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "expected_salary": 50000
+      },
+      "current_field": "pincode",
+      "candidate_profile": {
+        "candidate_id": "7008081f-fb2a-489d-a831-19d32ded6c0e",
+        "created_at": "2025-08-11T17:07:30.309599",
+        "pincode": null,
+        "locality": "Monthली",
+        "availability_date": "soon",
+        "preferred_shift": "flexible",
+        "expected_salary": null,
+        "languages": [],
+        "other_languages": [],
+        "has_two_wheeler": null,
+        "total_experience_months": null,
+        "conversation_completed": false,
+        "turn_count": 10
+      },
+      "audio_variant": "noisy",
+      "tester_llm_entities": null
+    },
+    {
+      "turn_number": 0,
+      "step_name": "expected_salary",
+      "audio_file": "sal_diverse_003",
+      "asr_text": "सैलरी कितना चाहिए अरे 25000 मंथली!",
+      "asr_confidence": 0.7115073204040527,
+      "bot_response": "Aap kahan rehte hain? Apna pincode ya area batayiye।",
+      "latency_ms": 2940.250873565674,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "expected_salary": 50000
+      },
+      "current_field": "pincode",
+      "candidate_profile": {
+        "candidate_id": "7008081f-fb2a-489d-a831-19d32ded6c0e",
+        "created_at": "2025-08-11T17:07:30.309599",
+        "pincode": null,
+        "locality": "Monthली",
+        "availability_date": "soon",
+        "preferred_shift": "flexible",
+        "expected_salary": 25000,
+        "languages": [],
+        "other_languages": [],
+        "has_two_wheeler": null,
+        "total_experience_months": null,
+        "conversation_completed": false,
+        "turn_count": 11
+      },
+      "audio_variant": "noisy",
+      "tester_llm_entities": null
+    },
+    {
+      "turn_number": 0,
+      "step_name": "languages",
+      "audio_file": "lang_diverse_003",
+      "asr_text": "सिर्फ तमिल बोल सकता हूं भाई इंग्लिश थोड़ा थोड़ा!",
+      "asr_confidence": 0.7892283201217651,
+      "bot_response": "Aap kahan rehte hain? Apna pincode ya area batayiye।",
+      "latency_ms": 2994.887113571167,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "languages": [
+          "Tamil",
+          "English"
+        ]
+      },
+      "current_field": "pincode",
+      "candidate_profile": {
+        "candidate_id": "7008081f-fb2a-489d-a831-19d32ded6c0e",
+        "created_at": "2025-08-11T17:07:30.309599",
+        "pincode": null,
+        "locality": "English",
+        "availability_date": "soon",
+        "preferred_shift": "flexible",
+        "expected_salary": 25000,
+        "languages": [
+          "tamil"
+        ],
+        "other_languages": [
+          "English"
+        ],
+        "has_two_wheeler": null,
+        "total_experience_months": null,
+        "conversation_completed": false,
+        "turn_count": 12
+      },
+      "audio_variant": "noisy",
+      "tester_llm_entities": null
+    },
+    {
+      "turn_number": 0,
+      "step_name": "has_two_wheeler",
+      "audio_file": "vehicle_diverse_003",
+      "asr_text": "हां हां होंडा एक्टिवा है मेरे पास।",
+      "asr_confidence": 0.6180302500724792,
+      "bot_response": "Aapne Honda kaha, sahi hai na?",
+      "latency_ms": 725.1298427581787,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "has_two_wheeler": true
+      },
+      "current_field": "pincode",
+      "candidate_profile": {
+        "candidate_id": "7008081f-fb2a-489d-a831-19d32ded6c0e",
+        "created_at": "2025-08-11T17:07:30.309599",
+        "pincode": null,
+        "locality": "English",
+        "availability_date": "soon",
+        "preferred_shift": "flexible",
+        "expected_salary": 25000,
+        "languages": [
+          "tamil"
+        ],
+        "other_languages": [
+          "English"
+        ],
+        "has_two_wheeler": null,
+        "total_experience_months": null,
+        "conversation_completed": false,
+        "turn_count": 13
+      },
+      "audio_variant": "noisy",
+      "tester_llm_entities": null
+    },
+    {
+      "turn_number": 0,
+      "step_name": "has_two_wheeler",
+      "audio_file": "vehicle_diverse_003",
+      "asr_text": "हां हां होंडा एक्टिवा है मेरे पास।",
+      "asr_confidence": 0.6180302500724792,
+      "bot_response": "Aap kahan rehte hain? Apna pincode ya area batayiye।",
+      "latency_ms": 3622.189998626709,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "has_two_wheeler": true
+      },
+      "current_field": "pincode",
+      "candidate_profile": {
+        "candidate_id": "7008081f-fb2a-489d-a831-19d32ded6c0e",
+        "created_at": "2025-08-11T17:07:30.309599",
+        "pincode": null,
+        "locality": "Honda",
+        "availability_date": "soon",
+        "preferred_shift": "flexible",
+        "expected_salary": 25000,
+        "languages": [
+          "tamil"
+        ],
+        "other_languages": [
+          "English"
+        ],
+        "has_two_wheeler": null,
+        "total_experience_months": null,
+        "conversation_completed": false,
+        "turn_count": 14
+      },
+      "audio_variant": "noisy",
+      "tester_llm_entities": null
+    },
+    {
+      "turn_number": 0,
+      "step_name": "total_experience_months",
+      "audio_file": "exp_diverse_003",
+      "asr_text": "2 साल का एक्सपीरियंस है भाई फैक्ट्री में काम किया।",
+      "asr_confidence": 0.7321698665618896,
+      "bot_response": "Aap kahan rehte hain? Apna pincode ya area batayiye।",
+      "latency_ms": 1858.945608139038,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "total_experience_months": 24
+      },
+      "current_field": "pincode",
+      "candidate_profile": {
+        "candidate_id": "7008081f-fb2a-489d-a831-19d32ded6c0e",
+        "created_at": "2025-08-11T17:07:30.309599",
+        "pincode": null,
+        "locality": "्सपीरियंस",
+        "availability_date": "soon",
+        "preferred_shift": "flexible",
+        "expected_salary": 25000,
+        "languages": [
+          "tamil"
+        ],
+        "other_languages": [
+          "English"
+        ],
+        "has_two_wheeler": false,
+        "total_experience_months": null,
+        "conversation_completed": false,
+        "turn_count": 15
+      },
+      "audio_variant": "noisy",
+      "tester_llm_entities": null
+    },
+    {
+      "turn_number": 0,
+      "step_name": "total_experience_months",
+      "audio_file": "exp_diverse_003",
+      "asr_text": "2 साल का एक्सपीरियंस है भाई फैक्ट्री में काम किया।",
+      "asr_confidence": 0.7321699261665344,
+      "bot_response": "Aap kahan rehte hain? Apna pincode ya area batayiye।",
+      "latency_ms": 1541.8264865875244,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "total_experience_months": 24
+      },
+      "current_field": "pincode",
+      "candidate_profile": {
+        "candidate_id": "7008081f-fb2a-489d-a831-19d32ded6c0e",
+        "created_at": "2025-08-11T17:07:30.309599",
+        "pincode": null,
+        "locality": "्सपीरियंस",
+        "availability_date": "soon",
+        "preferred_shift": "flexible",
+        "expected_salary": 25000,
+        "languages": [
+          "tamil"
+        ],
+        "other_languages": [
+          "English"
+        ],
+        "has_two_wheeler": false,
+        "total_experience_months": 24,
+        "conversation_completed": false,
+        "turn_count": 16
+      },
+      "audio_variant": "noisy",
+      "tester_llm_entities": null
+    }
+  ],
+  "completed_steps": 6,
+  "total_steps": 7,
+  "reached_job_matching": false,
+  "final_bot_response": "Aap kahan rehte hain? Apna pincode ya area batayiye।",
+  "conversation_completed": false,
+  "total_latency_ms": 4151.152849197388,
+  "avg_turn_latency_ms": 1383.7176163991292,
+  "avg_confidence": 0.44657708207766217,
+  "confidence_range": [
+    0.38578617572784424,
+    0.5065731406211853
+  ],
+  "asr_cost_usd": 0.04171473749999999,
+  "tts_cost_usd": 0.011679999999999998,
+  "total_cost_usd": 0.053394737499999984,
+  "entity_extraction_metrics": {
+    "per_slot": {
+      "pincode": {
+        "tp": 1,
+        "fp": 0,
+        "fn": 0,
+        "f1": 1.0,
+        "expected": "600001",
+        "predicted": "600001",
+        "normalized_expected": "600001",
+        "normalized_predicted": "600001"
+      },
+      "availability_date": {
+        "tp": 0,
+        "fp": 1,
+        "fn": 1,
+        "f1": 0.0,
+        "expected": "One week",
+        "predicted": "soon",
+        "normalized_expected": "one week",
+        "normalized_predicted": "soon"
+      },
+      "preferred_shift": {
+        "tp": 1,
+        "fp": 0,
+        "fn": 0,
+        "f1": 1.0,
+        "expected": "flexible",
+        "predicted": "flexible",
+        "normalized_expected": "flexible",
+        "normalized_predicted": "flexible"
+      },
+      "expected_salary": {
+        "tp": 0,
+        "fp": 1,
+        "fn": 1,
+        "f1": 0.0,
+        "expected": 50000,
+        "predicted": 25000,
+        "normalized_expected": 50000,
+        "normalized_predicted": 25000
+      },
+      "languages": {
+        "tp": 1,
+        "fp": 0,
+        "fn": 0,
+        "f1": 1.0,
+        "expected": [
+          "Tamil",
+          "English"
+        ],
+        "predicted": [
+          "tamil",
+          "English"
+        ],
+        "normalized_expected": [
+          "english",
+          "tamil"
+        ],
+        "normalized_predicted": [
+          "english",
+          "tamil"
+        ]
+      },
+      "has_two_wheeler": {
+        "tp": 0,
+        "fp": 1,
+        "fn": 1,
+        "f1": 0.0,
+        "expected": true,
+        "predicted": false,
+        "normalized_expected": true,
+        "normalized_predicted": false
+      },
+      "total_experience_months": {
+        "tp": 1,
+        "fp": 0,
+        "fn": 0,
+        "f1": 1.0,
+        "expected": 24,
+        "predicted": 24,
+        "normalized_expected": 24,
+        "normalized_predicted": 24
+      }
+    },
+    "macro_f1": 0.5714285714285714,
+    "micro_f1": 0.5714285714285714,
+    "total_tp": 4,
+    "total_fp": 3,
+    "total_fn": 3
+  }
+}

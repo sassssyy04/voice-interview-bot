@@ -1,0 +1,409 @@
+{
+  "persona_key": "calm_hindi",
+  "persona_name": "Calm Hindi Speaker",
+  "voice_id": "1Z7Y8o9cvUeWq8oLKgMY",
+  "noise_levels": [
+    "low",
+    "medium"
+  ],
+  "candidate_id": "460e47aa-91d4-409c-b118-344019da733c",
+  "start_time": "2025-08-11T16:28:26.997716",
+  "end_time": "2025-08-11T16:28:57.468632",
+  "turns": [
+    {
+      "turn_number": 0,
+      "step_name": "pincode",
+      "audio_file": "pin_diverse_002",
+      "asr_text": "मैं बैंगलोर में रहता हूं। मेरा पिन कोड है है पंडरी लेन जो 38।",
+      "asr_confidence": 0.5913649797439575,
+      "bot_response": "Aapne Bangalore kaha, sahi hai na?",
+      "latency_ms": 1210.984230041504,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "pincode": "110001"
+      },
+      "current_field": "pincode",
+      "candidate_profile": {
+        "candidate_id": "460e47aa-91d4-409c-b118-344019da733c",
+        "created_at": "2025-08-11T16:28:27.434133",
+        "pincode": null,
+        "locality": null,
+        "availability_date": null,
+        "preferred_shift": null,
+        "expected_salary": null,
+        "languages": [],
+        "other_languages": [],
+        "has_two_wheeler": null,
+        "total_experience_months": null,
+        "conversation_completed": false,
+        "turn_count": 1
+      },
+      "audio_variant": "clean",
+      "tester_llm_entities": null
+    },
+    {
+      "turn_number": 0,
+      "step_name": "pincode",
+      "audio_file": "pin_diverse_002",
+      "asr_text": "मैं बैंगलोर में रहता हूं। मेरा पिन कोड है है पंडरी लेन जो 38।",
+      "asr_confidence": 0.5913649797439575,
+      "bot_response": "Aap kahan rehte hain? Apna pincode ya area batayiye।",
+      "latency_ms": 3408.1132411956787,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "pincode": "110001"
+      },
+      "current_field": "pincode",
+      "candidate_profile": {
+        "candidate_id": "460e47aa-91d4-409c-b118-344019da733c",
+        "created_at": "2025-08-11T16:28:27.434133",
+        "pincode": null,
+        "locality": "Bangalore",
+        "availability_date": null,
+        "preferred_shift": null,
+        "expected_salary": null,
+        "languages": [],
+        "other_languages": [],
+        "has_two_wheeler": null,
+        "total_experience_months": null,
+        "conversation_completed": false,
+        "turn_count": 2
+      },
+      "audio_variant": "clean",
+      "tester_llm_entities": {
+        "pincode": "560001"
+      }
+    },
+    {
+      "turn_number": 0,
+      "step_name": "pincode",
+      "audio_file": "tester_text_pincode",
+      "asr_text": "560001",
+      "asr_confidence": 0.95,
+      "bot_response": "",
+      "latency_ms": 0.0,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {},
+      "current_field": "",
+      "candidate_profile": {
+        "candidate_id": "460e47aa-91d4-409c-b118-344019da733c",
+        "created_at": "2025-08-11T16:28:27.434133",
+        "pincode": "560001",
+        "locality": null,
+        "availability_date": null,
+        "preferred_shift": null,
+        "expected_salary": null,
+        "languages": [],
+        "other_languages": [],
+        "has_two_wheeler": null,
+        "total_experience_months": null,
+        "conversation_completed": false,
+        "turn_count": 3
+      },
+      "audio_variant": "text",
+      "tester_llm_entities": null
+    },
+    {
+      "turn_number": 0,
+      "step_name": "has_two_wheeler",
+      "audio_file": "vehicle_diverse_002",
+      "asr_text": "हां यार बाइक है मेरे पास।",
+      "asr_confidence": 0.7910169959068298,
+      "bot_response": "Aapko kitni salary chahiye har mahine? Rupees mein batayiye।",
+      "latency_ms": 2633.6441040039062,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "has_two_wheeler": false
+      },
+      "current_field": "expected_salary",
+      "candidate_profile": {
+        "candidate_id": "460e47aa-91d4-409c-b118-344019da733c",
+        "created_at": "2025-08-11T16:28:27.434133",
+        "pincode": "560001",
+        "locality": null,
+        "availability_date": "soon",
+        "preferred_shift": null,
+        "expected_salary": null,
+        "languages": [],
+        "other_languages": [],
+        "has_two_wheeler": null,
+        "total_experience_months": null,
+        "conversation_completed": false,
+        "turn_count": 4
+      },
+      "audio_variant": "clean",
+      "tester_llm_entities": null
+    },
+    {
+      "turn_number": 0,
+      "step_name": "expected_salary",
+      "audio_file": "sal_diverse_002",
+      "asr_text": "भाई मैं 60000 पर मंथ एक्सपेक्ट करता हूं।",
+      "asr_confidence": 0.6378349661827087,
+      "bot_response": "Aapki expected salary 60000 rupees per month hai, sahi?",
+      "latency_ms": 754.1449069976807,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "expected_salary": 15000
+      },
+      "current_field": "expected_salary",
+      "candidate_profile": {
+        "candidate_id": "460e47aa-91d4-409c-b118-344019da733c",
+        "created_at": "2025-08-11T16:28:27.434133",
+        "pincode": "560001",
+        "locality": null,
+        "availability_date": "soon",
+        "preferred_shift": null,
+        "expected_salary": null,
+        "languages": [],
+        "other_languages": [],
+        "has_two_wheeler": null,
+        "total_experience_months": null,
+        "conversation_completed": false,
+        "turn_count": 5
+      },
+      "audio_variant": "clean",
+      "tester_llm_entities": null
+    },
+    {
+      "turn_number": 0,
+      "step_name": "expected_salary",
+      "audio_file": "sal_diverse_002",
+      "asr_text": "भाई मैं 60000 पर मंथ एक्सपेक्ट करता हूं।",
+      "asr_confidence": 0.6378349661827087,
+      "bot_response": "Aapke paas two wheeler True hai, right?",
+      "latency_ms": 840.073823928833,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "expected_salary": 15000
+      },
+      "current_field": "has_two_wheeler",
+      "candidate_profile": {
+        "candidate_id": "460e47aa-91d4-409c-b118-344019da733c",
+        "created_at": "2025-08-11T16:28:27.434133",
+        "pincode": "560001",
+        "locality": null,
+        "availability_date": "soon",
+        "preferred_shift": null,
+        "expected_salary": 60000,
+        "languages": [],
+        "other_languages": [],
+        "has_two_wheeler": null,
+        "total_experience_months": null,
+        "conversation_completed": false,
+        "turn_count": 6
+      },
+      "audio_variant": "clean",
+      "tester_llm_entities": null
+    },
+    {
+      "turn_number": 0,
+      "step_name": "has_two_wheeler",
+      "audio_file": "vehicle_diverse_002",
+      "asr_text": "हां यार बाइक है मेरे पास।",
+      "asr_confidence": 0.7910169959068298,
+      "bot_response": "Aap kaunsi languages bol sakte hain? Hindi, English ya koi aur?",
+      "latency_ms": 2362.6246452331543,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "has_two_wheeler": false
+      },
+      "current_field": "languages",
+      "candidate_profile": {
+        "candidate_id": "460e47aa-91d4-409c-b118-344019da733c",
+        "created_at": "2025-08-11T16:28:27.434133",
+        "pincode": "560001",
+        "locality": null,
+        "availability_date": "soon",
+        "preferred_shift": "flexible",
+        "expected_salary": 60000,
+        "languages": [],
+        "other_languages": [],
+        "has_two_wheeler": true,
+        "total_experience_months": null,
+        "conversation_completed": false,
+        "turn_count": 7
+      },
+      "audio_variant": "clean",
+      "tester_llm_entities": null
+    },
+    {
+      "turn_number": 0,
+      "step_name": "languages",
+      "audio_file": "lang_diverse_002",
+      "asr_text": "English Canada Tamil teenon languages Aati Hain Mujhe",
+      "asr_confidence": 0.7043142914772034,
+      "bot_response": "Aapko kitna kaam ka experience hai? Kitne saal ya mahine?",
+      "latency_ms": 2000.1609325408936,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "languages": [
+          "hindi",
+          "english",
+          "marathi"
+        ]
+      },
+      "current_field": "total_experience_months",
+      "candidate_profile": {
+        "candidate_id": "460e47aa-91d4-409c-b118-344019da733c",
+        "created_at": "2025-08-11T16:28:27.434133",
+        "pincode": "560001",
+        "locality": null,
+        "availability_date": "soon",
+        "preferred_shift": "flexible",
+        "expected_salary": 60000,
+        "languages": [
+          "english",
+          "tamil"
+        ],
+        "other_languages": [
+          "Tamil",
+          "Canada"
+        ],
+        "has_two_wheeler": true,
+        "total_experience_months": null,
+        "conversation_completed": false,
+        "turn_count": 8
+      },
+      "audio_variant": "clean",
+      "tester_llm_entities": null
+    },
+    {
+      "turn_number": 0,
+      "step_name": "total_experience_months",
+      "audio_file": "exp_diverse_002",
+      "asr_text": "वन ईयर का एक्सपीरियंस है डिलीवरी बॉय का।",
+      "asr_confidence": 0.8258891105651855,
+      "bot_response": "Dhanyawad! Main aapki details repeat karta hun:\nPincode: 560001,\nAvailability: soon,\naapka Preferred shift: Flexible hai,\nExpected salary: ₹60,000 per month,\naap English, Tamil, Tamil, Canada bol sakte hain,\naapke paas Two wheeler: Hai. \nExperience: 1 year\n\nKya yeh saari information jo humne collect ki hai, sahi hai? Agar kuch galat hai toh please bataiye.",
+      "latency_ms": 1728.783130645752,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "total_experience_months": 6
+      },
+      "current_field": "total_experience_months",
+      "candidate_profile": {
+        "candidate_id": "460e47aa-91d4-409c-b118-344019da733c",
+        "created_at": "2025-08-11T16:28:27.434133",
+        "pincode": "560001",
+        "locality": null,
+        "availability_date": "soon",
+        "preferred_shift": "flexible",
+        "expected_salary": 60000,
+        "languages": [
+          "english",
+          "tamil"
+        ],
+        "other_languages": [
+          "Tamil",
+          "Canada"
+        ],
+        "has_two_wheeler": true,
+        "total_experience_months": 12,
+        "conversation_completed": false,
+        "turn_count": 9
+      },
+      "audio_variant": "clean",
+      "tester_llm_entities": null
+    },
+    {
+      "turn_number": 0,
+      "step_name": "total_experience_months",
+      "audio_file": "exp_diverse_002",
+      "asr_text": "वन ईयर का एक्सपीरियंस है डिलीवरी बॉय का।",
+      "asr_confidence": 0.8258891105651855,
+      "bot_response": "Tumhara pincode 560001 hai aur jaldi kaam shuru karna chahte ho. Top 3 jobs ke details neeche hain. Konsa job dekhna pasand karoge?\n\n- Retail Associate at ValueMart, Rajiv nagar\n  Salary: ₹45,000-₹65,000, Flexible evening shift, No two-wheeler needed\n- Back Office Clerk at NeoDocs, Thambu Chetty Palaya\n  Salary: ₹45,000-₹50,000, Flexible evening shift, No two-wheeler needed\n- Store Cashier at DailyFresh, Whitefield\n  Salary: ₹35,000-₹40,000, Evening shift, No two-wheeler needed",
+      "latency_ms": 4695.446014404297,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "total_experience_months": 6
+      },
+      "current_field": "total_experience_months",
+      "candidate_profile": {
+        "candidate_id": "460e47aa-91d4-409c-b118-344019da733c",
+        "created_at": "2025-08-11T16:28:27.434133",
+        "pincode": "560001",
+        "locality": null,
+        "availability_date": "soon",
+        "preferred_shift": "flexible",
+        "expected_salary": 60000,
+        "languages": [
+          "english",
+          "tamil"
+        ],
+        "other_languages": [
+          "Tamil",
+          "Canada"
+        ],
+        "has_two_wheeler": true,
+        "total_experience_months": 12,
+        "conversation_completed": true,
+        "turn_count": 10
+      },
+      "audio_variant": "clean",
+      "tester_llm_entities": null
+    }
+  ],
+  "completed_steps": 8,
+  "total_steps": 8,
+  "reached_job_matching": true,
+  "final_bot_response": "Tumhara pincode 560001 hai aur jaldi kaam shuru karna chahte ho. Top 3 jobs ke details neeche hain. Konsa job dekhna pasand karoge?\n\n- Retail Associate at ValueMart, Rajiv nagar\n  Salary: ₹45,000-₹65,000, Flexible evening shift, No two-wheeler needed\n- Back Office Clerk at NeoDocs, Thambu Chetty Palaya\n  Salary: ₹45,000-₹50,000, Flexible evening shift, No two-wheeler needed\n- Store Cashier at DailyFresh, Whitefield\n  Salary: ₹35,000-₹40,000, Evening shift, No two-wheeler needed",
+  "conversation_completed": true,
+  "total_latency_ms": 19633.9750289917,
+  "avg_turn_latency_ms": 1963.39750289917,
+  "avg_confidence": 0.7346526396274566,
+  "confidence_range": [
+    0.5913649797439575,
+    0.95
+  ],
+  "asr_cost_usd": 0.00417684375,
+  "tts_cost_usd": 0.0192,
+  "total_cost_usd": 0.023376843749999997,
+  "entity_extraction_metrics": {
+    "per_slot": {
+      "pincode": {
+        "tp": 0,
+        "fp": 1,
+        "fn": 1,
+        "f1": 0.0,
+        "expected": "110001",
+        "predicted": "560001",
+        "normalized_expected": "110001",
+        "normalized_predicted": "560001"
+      },
+      "expected_salary": {
+        "tp": 0,
+        "fp": 1,
+        "fn": 1,
+        "f1": 0.0,
+        "expected": 15000,
+        "predicted": 60000,
+        "normalized_expected": 15000,
+        "normalized_predicted": 60000
+      },
+      "languages": {
+        "tp": 0,
+        "fp": 1,
+        "fn": 1,
+        "f1": 0.0,
+        "expected": [
+          "hindi",
+          "english",
+          "marathi"
+        ],
+        "predicted": [
+          "english",
+          "tamil",
+          "Tamil",
+          "Canada"
+        ],
+        "normalized_expected": 

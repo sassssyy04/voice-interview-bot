@@ -80,6 +80,7 @@ class ConversationState(BaseModel):
     pending_confirmation_value: Optional[str] = Field(None, description="Value awaiting confirmation")
     pending_confirmation_slot: Optional[str] = Field(None, description="Slot awaiting confirmation")
     in_final_confirmation: bool = Field(False, description="Whether in final entity confirmation step")
+    low_conf_attempts: int = Field(0, description="Consecutive low-confidence attempts for current field")
     
     @property
     def completion_rate(self) -> float:

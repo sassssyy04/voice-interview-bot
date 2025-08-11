@@ -201,61 +201,10 @@ class ConversationOrchestrator:
             if t.tts_text:
                 history_pairs.append(("Bot", t.tts_text))
 
-        # If awaiting a confirmation, classify yes/no via LLM and branch
-        if state.needs_confirmation and state.pending_confirmation_slot:
-            # First, allow user to provide a new value directly instead of yes/no
-            slot = state.pending_confirmation_slot
-            try:
-                entities = await self.nlu_service.extract_entities(transcribed_text, slot)
-                if self._try_update_slot(candidate, state, slot, entities, transcribed_text):
-                    # Accept new value and clear confirmation
-                    state.needs_confirmation = False
-                    state.pending_confirmation_value = None
-                    state.pending_confirmation_slot = None
-                    response_text, target_slot, is_completed = await self._generate_intelligent_response(
-                        transcribed_text, confidence, candidate, state, history_pairs
-                    )
-                else:
-                    # Fallback to yes/no classification
-                    decision = await self._classify_affirmation_via_llm(
-                        transcribed_text,
-                        history_pairs,
-                        slot,
-                        state.pending_confirmation_value
-                    )
-                    if decision == "yes":
-                        self._apply_confirmed_value(candidate, state, slot, state.pending_confirmation_value)
-                        state.needs_confirmation = False
-                        state.pending_confirmation_value = None
-                        state.pending_confirmation_slot = None
-                        response_text, target_slot, is_completed = await self._generate_intelligent_response(
-                            transcribed_text, confidence, candidate, state, history_pairs
-                        )
-                    else:
-                        prompt_key = self.prompt_key_map.get(slot)
-                        if prompt_key and prompt_key in self.prompts:
-                            response_text = self.prompts[prompt_key]
-                        else:
-                            response_text = f"Kya aap bata sakte hain aapka {self._get_slot_description(slot)}?"
-                        state.needs_confirmation = False
-                        state.pending_confirmation_value = None
-                        state.pending_confirmation_slot = None
-                        target_slot = slot
-                        is_completed = False
-            except Exception as e:
-                logger.error(f"Confirmation handling error: {e}")
-                # Safe fallback to re-ask
-                prompt_key = self.prompt_key_map.get(slot)
-                response_text = self.prompts.get(prompt_key, f"Kya aap bata sakte hain aapka {self._get_slot_description(slot)}?")
-                state.needs_confirmation = False
-                state.pending_confirmation_value = None
-                state.pending_confirmation_slot = None
-                target_slot = slot
-                is_completed = False
-        else:
-            response_text, target_slot, is_completed = await self._generate_intelligent_response(
-                transcribed_text, confidence, candidate, state, history_pairs
-            )
+        # Confirmation logic moved to _generate_intelligent_response
+        response_text, target_slot, is_completed = await self._generate_intelligent_response(
+            transcribed_text, confidence, candidate, state, history_pairs
+        )
         # Generate a turn_id now and log the turn without audio (tts latency 0)
         turn_id = str(uuid.uuid4())
         status = "completed" if is_completed else ("intelligent" if target_slot else "contextual")
@@ -314,6 +263,40 @@ class ConversationOrchestrator:
         
         return response_text, response_audio, is_completed, transcribed_text, confidence
 
+    async def process_text_confirmation(self, candidate_id: str, user_text: str, confidence: float = 0.95) -> Tuple[str, bool, str, float, Dict[str, Any], str]:
+        """Process a confirmation or text-only turn without ASR.
+        Args:
+            candidate_id: Conversation id
+            user_text: Text input to treat as ASR transcript
+            confidence: Synthetic confidence to use for gating
+        Returns:
+            (response_text, is_completed, asr_text, asr_confidence, raw_confidence_data, turn_id)
+        """
+        if self.nlu_service is None:
+            raise Exception("Voice services not available - NLU needs to be enabled")
+        start_time = time.time()
+        state = self.conversation_states.get(candidate_id)
+        candidate = self.candidates.get(candidate_id)
+        if not state or not candidate:
+            raise ValueError(f"No conversation found for candidate {candidate_id}")
+        # Build history
+        history_pairs = []
+        for t in self.conversation_turns.get(candidate_id, [])[-8:]:
+            if t.asr_text:
+                history_pairs.append(("User", t.asr_text))
+            if t.tts_text:
+                history_pairs.append(("Bot", t.tts_text))
+        # Route through the same intelligent handler
+        response_text, target_slot, is_completed = await self._generate_intelligent_response(
+            user_text, confidence, candidate, state, history_pairs
+        )
+        # Create turn id and log
+        turn_id = str(uuid.uuid4())
+        status = "completed" if is_completed else ("intelligent" if target_slot else "contextual")
+        self._log_turn(candidate_id, user_text, confidence, response_text, start_time, status, turn_id=turn_id)
+        raw_confidence_data = {"asr_provider": "dtmf", "confidence_source": "manual"}
+        return response_text, is_completed, user_text, confidence, raw_confidence_data, turn_id
+
     async def _generate_intelligent_response(
         self, 
         user_text: str, 
@@ -327,6 +310,85 @@ class ConversationOrchestrator:
         Returns:
             Tuple[str, Optional[str], bool]: (response_text, target_slot, is_completed)
         """
+        
+        # First check: If awaiting a confirmation, handle yes/no response
+        logger.info(f"Confirmation state check: needs_confirmation={getattr(state, 'needs_confirmation', False)}, pending_slot={getattr(state, 'pending_confirmation_slot', None)}")
+        if state.needs_confirmation and state.pending_confirmation_slot:
+            slot = state.pending_confirmation_slot
+            try:
+                # Allow user to provide a new value directly instead of yes/no
+                llm_allowed = (confidence >= settings.confidence_threshold) or (slot == "languages")
+                entities = await self.nlu_service.extract_entities(user_text, slot, context={"llm_allowed": llm_allowed})
+                if self._try_update_slot(candidate, state, slot, entities, user_text):
+                    # Accept new value and clear confirmation
+                    state.needs_confirmation = False
+                    state.pending_confirmation_value = None
+                    state.pending_confirmation_slot = None
+                    logger.info(f"User provided new value during confirmation: {user_text}")
+                    # Continue with normal flow to ask next question
+                else:
+                    # Fallback to yes/no classification
+                    decision = await self._classify_affirmation_via_llm(
+                        user_text, history, slot, state.pending_confirmation_value
+                    )
+                    if decision == "yes":
+                        # Apply and log before clearing
+                        confirmed_value = state.pending_confirmation_value
+                        self._apply_confirmed_value(candidate, state, slot, confirmed_value)
+                        # Consider the slot complete when a usable value exists
+                        if slot == "pincode":
+                            if (candidate.pincode or candidate.locality) and (slot not in state.fields_completed):
+                                state.fields_completed.append(slot)
+                        else:
+                            if slot not in state.fields_completed:
+                                state.fields_completed.append(slot)
+                        # Clear confirmation state
+                        state.needs_confirmation = False
+                        state.pending_confirmation_value = None
+                        state.pending_confirmation_slot = None
+                        logger.info(f"User confirmed value for {slot}: {confirmed_value}")
+                        # Immediately move on: compute next slot and return its prompt without extracting from this 'yes'
+                        required_slots = ["pincode", "availability_date", "preferred_shift", "expected_salary", 
+                                         "languages", "has_two_wheeler", "total_experience_months", "confirmation"]
+                        completed_slots = set(state.fields_completed)
+                        missing_slots = [s for s in required_slots if s not in completed_slots]
+                        # If only confirmation remains, jump to confirmation step
+                        if len(missing_slots) == 1 and "confirmation" in missing_slots:
+                            logger.info("Triggering confirmation step after user acceptance")
+                            return await self._handle_confirmation_step(candidate, state, "", confidence)
+                        # Choose next non-confirmation slot
+                        extraction_slots = [s for s in missing_slots if s != "confirmation"]
+                        next_slot = self._choose_next_slot(extraction_slots, user_text, extracted_anything=False)
+                        if state.current_field != next_slot:
+                            state.current_field = next_slot
+                            state.retry_count = 0
+                            state.low_conf_attempts = 0
+                        prompt_key = self.prompt_key_map.get(next_slot)
+                        if prompt_key and prompt_key in self.prompts:
+                            response_text = self.prompts[prompt_key]
+                        else:
+                            response_text = f"Kya aap bata sakte hain aapka {self._get_slot_description(next_slot)}?"
+                        return response_text, next_slot, False
+                    else:
+                        # User said no, re-ask for the slot
+                        prompt_key = self.prompt_key_map.get(slot)
+                        if prompt_key and prompt_key in self.prompts:
+                            response_text = self.prompts[prompt_key]
+                        else:
+                            response_text = f"Kya aap bata sakte hain aapka {self._get_slot_description(slot)}?"
+                        state.needs_confirmation = False
+                        state.pending_confirmation_value = None
+                        state.pending_confirmation_slot = None
+                        return response_text, slot, False
+            except Exception as e:
+                logger.error(f"Confirmation handling error in _generate_intelligent_response: {e}")
+                # Safe fallback to re-ask
+                prompt_key = self.prompt_key_map.get(slot)
+                response_text = self.prompts.get(prompt_key, f"Kya aap bata sakte hain aapka {self._get_slot_description(slot)}?")
+                state.needs_confirmation = False
+                state.pending_confirmation_value = None
+                state.pending_confirmation_slot = None
+                return response_text, slot, False
         # Get missing slots
         required_slots = ["pincode", "availability_date", "preferred_shift", "expected_salary", 
                          "languages", "has_two_wheeler", "total_experience_months", "confirmation"]
@@ -345,59 +407,49 @@ class ConversationOrchestrator:
         if state.current_field != next_slot:
             state.current_field = next_slot
             state.retry_count = 0
+            state.low_conf_attempts = 0
         
-        # If user provided input, try to extract information (confidence only applies to entity extraction)
+        # If user provided input, try to extract information
         extracted_something = False
         if user_text.strip() and confidence >= settings.confidence_threshold:
+            # High confidence: proceed with normal extraction
             # Try to extract for the next expected slot first
-            entities = await self.nlu_service.extract_entities(user_text, next_slot)
+            entities = await self.nlu_service.extract_entities(user_text, next_slot, context={"llm_allowed": True})
             if self._try_update_slot(candidate, state, next_slot, entities, user_text):
                 extracted_something = True
                 state.retry_count = 0
+                state.low_conf_attempts = 0
                 logger.info(f"Successfully extracted {next_slot} from user input: {user_text}")
             
             # If that didn't work, try other missing slots
             if not extracted_something:
                 for slot in extraction_slots:
                     if slot != next_slot:  # Skip the one we already tried
-                        entities = await self.nlu_service.extract_entities(user_text, slot)
+                        entities = await self.nlu_service.extract_entities(user_text, slot, context={"llm_allowed": True})
                         if self._try_update_slot(candidate, state, slot, entities, user_text):
                             extracted_something = True
                             state.current_field = slot
                             state.retry_count = 0
+                            state.low_conf_attempts = 0
                             logger.info(f"Successfully extracted {slot} from user input: {user_text}")
                             break
-        
-        # If rule-based extraction struggled for this slot more than twice, escalate to LLM
-        if not extracted_something and user_text.strip() and state.retry_count >= 2 and settings.openai_api_key:
-            try:
-                entities = await self.nlu_service._extract_with_openai(user_text, next_slot)
-                if self._try_update_slot(candidate, state, next_slot, entities, user_text):
-                    extracted_something = True
-                    state.retry_count = 0
-                    logger.info(f"LLM extraction succeeded for {next_slot}: {entities}")
-            except Exception as e:
-                logger.error(f"LLM extraction failed for {next_slot}: {e}")
-        
-        # If ASR confidence is low, propose extracted entity and ask for confirmation instead of updating directly
-        if user_text.strip() and not extracted_something and confidence < settings.confidence_threshold:
-            try:
-                entities = await self.nlu_service.extract_entities(user_text, next_slot)
-                value = entities.get("value") if isinstance(entities, dict) else None
-                if value is not None and value != "":
-                    # Build a readable value for confirmation
-                    if isinstance(value, list):
-                        display_value = ", ".join([str(v) for v in value if v is not None])
-                    else:
-                        display_value = str(value)
-                    state.needs_confirmation = True
-                    state.pending_confirmation_value = display_value
-                    state.pending_confirmation_slot = next_slot
-                    confirm_text = self._build_low_conf_confirmation(next_slot, display_value)
-                    return confirm_text, next_slot, False
-            except Exception as e:
-                logger.error(f"Low-confidence provisional extraction failed: {e}")
-        
+        elif user_text.strip() and confidence < settings.confidence_threshold:
+            # Low confidence: try to extract but ask for confirmation
+            logger.info(f"Low confidence ({confidence:.2f}) - will ask for confirmation even if extraction succeeds")
+            entities = await self.nlu_service.extract_entities(user_text, next_slot, context={"llm_allowed": False})
+            value = entities.get("value") if isinstance(entities, dict) else None
+            if value is not None and value != "":
+                # Build a readable value for confirmation
+                if isinstance(value, list):
+                    display_value = ", ".join([str(v) for v in value if v is not None])
+                else:
+                    display_value = str(value)
+                state.needs_confirmation = True
+                state.pending_confirmation_value = display_value
+                state.pending_confirmation_slot = next_slot
+                logger.info(f"Setting confirmation state: slot={next_slot}, value={display_value}")
+                confirm_text = self._build_low_conf_confirmation(next_slot, display_value)
+                return confirm_text, next_slot, False
         # Refresh missing slots after potential extraction
         completed_slots = set(state.fields_completed)
         missing_slots = [s for s in required_slots if s not in completed_slots]
@@ -405,9 +457,20 @@ class ConversationOrchestrator:
         logger.info(f"Conversation flow: completed_slots={completed_slots}, missing_slots={missing_slots}")
         
         # Check if we're done with data collection (only confirmation left)
+        # But only proceed to confirmation if confidence is high enough OR if user provided no new input
         if len(missing_slots) == 1 and "confirmation" in missing_slots:
-            logger.info("Triggering confirmation step - only confirmation is missing")
-            return await self._handle_confirmation_step(candidate, state, "", confidence)
+            # Only go to confirmation if:
+            # 1. No user input (first time reaching confirmation step), OR  
+            # 2. User input with high confidence (>= 0.7), OR
+            # 3. Manual confirmation (web UI keyboard input)
+            if not user_text.strip() or confidence >= 0.7:
+                logger.info("Triggering confirmation step - only confirmation is missing and conditions met")
+                return await self._handle_confirmation_step(candidate, state, "", confidence)
+            else:
+                # Low confidence with user input - continue with normal slot collection flow
+                # to allow for potential extraction or confirmation of the low-confidence input
+                logger.info(f"Skipping confirmation step due to low confidence ({confidence:.2f}) with user input")
+                # Fall through to normal processing below
         
         # Recalculate missing slots after potential entity extraction
         if extracted_something:
@@ -955,7 +1018,7 @@ class ConversationOrchestrator:
                 else:
                     candidate.locality = None  # Clear locality when we have pincode
                 return True
-            # treat short textual value as locality
+            # treat short textual value as locality, but do NOT complete the pincode slot
             if isinstance(value, str) and any(ch.isalpha() for ch in value):
                 loc = value.strip().title()
                 # Avoid generic acknowledgements becoming locality
@@ -963,7 +1026,7 @@ class ConversationOrchestrator:
                 if loc not in banned and len(loc) >= 3:
                     candidate.locality = loc
                     candidate.pincode = None  # Clear pincode when we have locality
-                    return True
+                    return False  # re-ask for a valid 6-digit pincode
             # if list provided by model, take first stringy token
             if isinstance(value, list):
                 for v in value:
@@ -973,7 +1036,7 @@ class ConversationOrchestrator:
                         if loc not in banned and len(loc) >= 3:
                             candidate.locality = loc
                             candidate.pincode = None  # Clear pincode when we have locality
-                            return True
+                            return False  # re-ask for a valid 6-digit pincode
         # Simple fallback - look for 6-digit number in raw text
         import re
         pincode_match = re.search(r'\b\d{6}\b', text)
@@ -991,7 +1054,7 @@ class ConversationOrchestrator:
                 guess = filtered[-1]
                 if len(guess) >= 3:
                     candidate.locality = guess.title()
-                    return True
+                    return False  # re-ask for a valid 6-digit pincode
         # Fallback: if user spoke a short area name, accept as locality
         cleaned = text.strip()
         if any(ch.isalpha() for ch in cleaned) and len(cleaned.split()) <= 6:
@@ -999,7 +1062,7 @@ class ConversationOrchestrator:
             banned = {"Ok", "Okay", "Correct", "Sahi", "Haan", "Yes"}
             if loc not in banned and len(loc) >= 3:
                 candidate.locality = loc
-                return True
+                return False  # re-ask for a valid 6-digit pincode
         return False
     
     def _extract_and_set_availability(self, candidate: Candidate, entities: Dict, text: str) -> bool:

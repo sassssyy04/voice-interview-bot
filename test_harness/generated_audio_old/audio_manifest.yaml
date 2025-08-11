@@ -11,44 +11,42 @@ files:
   audio_path: test_harness\generated_audio\pin_diverse_002_clean.wav
   duration_seconds: 6.0
   entities:
-    pincode: '560038'
+    pincode: '110001'
   id: pin_diverse_002
   noise_level: medium
-  transcript: main delhi mein rehta hun mera pincode hai five six zero zero three
-    eight
+  transcript: main delhi mein rehta hun mera pincode hai ek lakh das hazar ek
 - accent: energetic_hindi
   audio_path: test_harness\generated_audio\pin_diverse_003_clean.wav
   duration_seconds: 6.0
   entities:
-    pincode: '400001'
+    pincode: '110001'
   id: pin_diverse_003
   noise_level: medium
-  transcript: main delhi mein rehta hun mera pincode hai chaar lakh ek
+  transcript: main delhi mein rehta hun mera pincode hai ek lakh das hazar ek
 - accent: expressive_hindi
   audio_path: test_harness\generated_audio\pin_diverse_004_clean.wav
   duration_seconds: 6.0
   entities:
-    pincode: '620001'
+    pincode: '110001'
   id: pin_diverse_004
   noise_level: high
-  transcript: main trichy mein rehta hun mera pincode hai  six two zero zero zero
-    one
+  transcript: main delhi mein rehta hun mera pincode hai ek lakh das hazar ek
 - accent: english_man
   audio_path: test_harness\generated_audio\sal_diverse_001_clean.wav
   duration_seconds: 6.0
   entities:
-    expected_salary: 25000
+    expected_salary: 15000
   id: sal_diverse_001
   noise_level: high
-  transcript: bhai main twenty five thousand per month expect karta hun
+  transcript: bhai main fifteen thousand per month expect karta hun
 - accent: calm_hindi
   audio_path: test_harness\generated_audio\sal_diverse_002_clean.wav
   duration_seconds: 6.0
   entities:
-    expected_salary: 60000
+    expected_salary: 15000
   id: sal_diverse_002
   noise_level: medium
-  transcript: bhai main sixty thousand per month expect karta hun
+  transcript: bhai main fifteen thousand per month expect karta hun
 - accent: energetic_hindi
   audio_path: test_harness\generated_audio\sal_diverse_003_clean.wav
   duration_seconds: 6.0
@@ -61,26 +59,26 @@ files:
   audio_path: test_harness\generated_audio\sal_diverse_004_clean.wav
   duration_seconds: 6.0
   entities:
-    expected_salary: 10000
+    expected_salary: 50000
   id: sal_diverse_004
   noise_level: high
-  transcript: main ten thousand expect karta hun per month
+  transcript: main fifty thousand expect karta hun per month
 - accent: english_man
   audio_path: test_harness\generated_audio\vehicle_diverse_001_clean.wav
   duration_seconds: 6.0
   entities:
-    has_two_wheeler: false
+    has_two_wheeler: true
   id: vehicle_diverse_001
   noise_level: high
-  transcript: nahi bhai mere paas bike nahi hai
+  transcript: haan bhai mere paas bike hai bajaj pulsar
 - accent: calm_hindi
   audio_path: test_harness\generated_audio\vehicle_diverse_002_clean.wav
   duration_seconds: 6.0
   entities:
-    has_two_wheeler: true
+    has_two_wheeler: false
   id: vehicle_diverse_002
   noise_level: medium
-  transcript: haan yaar bike hai mere paas
+  transcript: nahi yaar bike nahi hai mere paas
 - accent: energetic_hindi
   audio_path: test_harness\generated_audio\vehicle_diverse_003_clean.wav
   duration_seconds: 6.0
@@ -177,31 +175,32 @@ files:
   duration_seconds: 6.0
   entities:
     languages:
-    - English
-    - Kannada
-    - Tamil
+    - hindi
+    - english
+    - marathi
   id: lang_diverse_002
   noise_level: medium
-  transcript: English Kannada Tamil  teeno languages aati hain mujhe
+  transcript: hindi english marathi teeno languages aati hain mujhe
 - accent: energetic_hindi
   audio_path: test_harness\generated_audio\lang_diverse_003_clean.wav
   duration_seconds: 6.0
   entities:
     languages:
-    - Tamil
-    - English
+    - hindi
   id: lang_diverse_003
   noise_level: medium
-  transcript: sirf Tamil bol sakta hun bhai english thoda thoda
+  transcript: sirf hindi bol sakta hun bhai english thoda thoda
 - accent: expressive_hindi
   audio_path: test_harness\generated_audio\lang_diverse_004_clean.wav
   duration_seconds: 6.0
   entities:
     languages:
+    - hindi
     - tamil
+    - english
   id: lang_diverse_004
   noise_level: high
-  transcript: tamil bol leta hun perfectly
+  transcript: hindi tamil english sabko bol leta hun perfectly
 - accent: english_man
   audio_path: test_harness\generated_audio\avail_diverse_001_clean.wav
   duration_seconds: 6.0
@@ -238,26 +237,26 @@ files:
   audio_path: test_harness\generated_audio\exp_diverse_001_clean.wav
   duration_seconds: 6.0
   entities:
-    total_experience_months: 2
+    total_experience_months: 24
   id: exp_diverse_001
   noise_level: high
-  transcript: main do mahine se warehouse mein kaam kar raha hun
+  transcript: main do saal se warehouse mein kaam kar raha hun
 - accent: calm_hindi
   audio_path: test_harness\generated_audio\exp_diverse_002_clean.wav
   duration_seconds: 6.0
   entities:
-    total_experience_months: 12
+    total_experience_months: 6
   id: exp_diverse_002
   noise_level: medium
-  transcript: one year ka experience hai delivery boy ka
+  transcript: six months ka experience hai delivery boy ka
 - accent: energetic_hindi
   audio_path: test_harness\generated_audio\exp_diverse_003_clean.wav
   duration_seconds: 6.0
   entities:
-    total_experience_months: 24
+    total_experience_months: 36
   id: exp_diverse_003
   noise_level: medium
-  transcript: Do saal ka experience hai bhai factory mein kaam kiya
+  transcript: teen saal ka experience hai bhai factory mein kaam kiya
 - accent: expressive_hindi
   audio_path: test_harness\generated_audio\exp_diverse_004_clean.wav
   duration_seconds: 6.0
@@ -266,5 +265,5 @@ files:
   id: exp_diverse_004
   noise_level: high
   transcript: fresher hun main pehli baar job kar raha hun
-generated_at: '1110191.8065827'
+generated_at: '1045237.8879071'
 total_files: 32

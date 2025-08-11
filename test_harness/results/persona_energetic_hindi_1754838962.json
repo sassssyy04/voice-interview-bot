@@ -1,0 +1,298 @@
+{
+  "persona_name": "Energetic Hindi Speaker",
+  "voice_id": "IvLWq57RKibBrqZGpQrC",
+  "noise_levels": [
+    "medium",
+    "low"
+  ],
+  "candidate_id": "e3d5fe17-c245-4bfc-9f10-9aa0fefe3192",
+  "start_time": "2025-08-10T23:15:23.027334",
+  "end_time": "2025-08-10T23:16:02.284498",
+  "turns": [
+    {
+      "turn_number": 0,
+      "step_name": "pincode",
+      "audio_file": "pin_diverse_003",
+      "asr_text": "मैं डेली में रहता हूं मेरा पिन कोड है 1100001।",
+      "asr_confidence": 0.7480844259262085,
+      "bot_response": "Aapko kitni salary chahiye har mahine? Rupees mein batayiye।",
+      "latency_ms": 1983.3950996398926,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "pincode": "110001"
+      },
+      "current_field": "expected_salary",
+      "candidate_profile": {
+        "candidate_id": "e3d5fe17-c245-4bfc-9f10-9aa0fefe3192",
+        "created_at": "2025-08-10T23:15:23.471678",
+        "pincode": "110001",
+        "locality": "डेली",
+        "availability_date": null,
+        "preferred_shift": null,
+        "expected_salary": null,
+        "languages": [],
+        "other_languages": [],
+        "has_two_wheeler": null,
+        "total_experience_months": null,
+        "conversation_completed": false,
+        "turn_count": 1
+      },
+      "audio_variant": "noisy"
+    },
+    {
+      "turn_number": 0,
+      "step_name": "expected_salary",
+      "audio_file": "sal_diverse_003",
+      "asr_text": "सैलरी कितना चाहिए आर ए 25000 मंथली?",
+      "asr_confidence": 0.5459729433059692,
+      "bot_response": "Aapke paas two wheeler True hai, right?",
+      "latency_ms": 1161.8239879608154,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "expected_salary": 25000
+      },
+      "current_field": "has_two_wheeler",
+      "candidate_profile": {
+        "candidate_id": "e3d5fe17-c245-4bfc-9f10-9aa0fefe3192",
+        "created_at": "2025-08-10T23:15:23.471678",
+        "pincode": "110001",
+        "locality": "डेली",
+        "availability_date": null,
+        "preferred_shift": null,
+        "expected_salary": 25000,
+        "languages": [],
+        "other_languages": [],
+        "has_two_wheeler": null,
+        "total_experience_months": null,
+        "conversation_completed": false,
+        "turn_count": 3
+      },
+      "audio_variant": "noisy"
+    },
+    {
+      "turn_number": 0,
+      "step_name": "has_two_wheeler",
+      "audio_file": "vehicle_diverse_003",
+      "asr_text": "हां हां होंडा एक्टिवा है मेरे पास।",
+      "asr_confidence": 0.6260576844215393,
+      "bot_response": "Aap  bol sakte hain, confirm hai?",
+      "latency_ms": 1651.8723964691162,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "has_two_wheeler": true
+      },
+      "current_field": "languages",
+      "candidate_profile": {
+        "candidate_id": "e3d5fe17-c245-4bfc-9f10-9aa0fefe3192",
+        "created_at": "2025-08-10T23:15:23.471678",
+        "pincode": "110001",
+        "locality": "डेली",
+        "availability_date": null,
+        "preferred_shift": null,
+        "expected_salary": 25000,
+        "languages": [],
+        "other_languages": [],
+        "has_two_wheeler": true,
+        "total_experience_months": null,
+        "conversation_completed": false,
+        "turn_count": 4
+      },
+      "audio_variant": "noisy"
+    },
+    {
+      "turn_number": 0,
+      "step_name": "languages",
+      "audio_file": "lang_diverse_003",
+      "asr_text": "सिर्फ हिंदी बोल सकता हूं भाई इंग्लिश थोड़ा-थोड़ा!",
+      "asr_confidence": 0.7890822887420654,
+      "bot_response": "Aap kaunse time pe kaam karna chahte hain? Morning, evening ya night?",
+      "latency_ms": 2993.807077407837,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "languages": [
+          "hindi"
+        ]
+      },
+      "current_field": "preferred_shift",
+      "candidate_profile": {
+        "candidate_id": "e3d5fe17-c245-4bfc-9f10-9aa0fefe3192",
+        "created_at": "2025-08-10T23:15:23.471678",
+        "pincode": "110001",
+        "locality": "डेली",
+        "availability_date": "soon",
+        "preferred_shift": null,
+        "expected_salary": 25000,
+        "languages": [
+          "hindi"
+        ],
+        "other_languages": [
+          "English"
+        ],
+        "has_two_wheeler": true,
+        "total_experience_months": null,
+        "conversation_completed": false,
+        "turn_count": 5
+      },
+      "audio_variant": "noisy"
+    },
+    {
+      "turn_number": 0,
+      "step_name": "availability_date",
+      "audio_file": "avail_diverse_003",
+      "asr_text": "एक वीक बात स्टार्ट करूंगा नेक्स्ट मंडे से!",
+      "asr_confidence": 0.8478288054466248,
+      "bot_response": "Aapko kitna kaam ka experience hai? Kitne saal ya mahine?",
+      "latency_ms": 2011.7106437683105,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "availability_date": "next week"
+      },
+      "current_field": "total_experience_months",
+      "candidate_profile": {
+        "candidate_id": "e3d5fe17-c245-4bfc-9f10-9aa0fefe3192",
+        "created_at": "2025-08-10T23:15:23.471678",
+        "pincode": "110001",
+        "locality": "डेली",
+        "availability_date": "soon",
+        "preferred_shift": "flexible",
+        "expected_salary": 25000,
+        "languages": [
+          "hindi"
+        ],
+        "other_languages": [
+          "English"
+        ],
+        "has_two_wheeler": true,
+        "total_experience_months": null,
+        "conversation_completed": false,
+        "turn_count": 6
+      },
+      "audio_variant": "noisy"
+    },
+    {
+      "turn_number": 0,
+      "step_name": "preferred_shift",
+      "audio_file": "shift_diverse_003",
+      "asr_text": "कोई भी शिफ्ट चलेगा भाई फ्लैक्सिबल हूं मैं।",
+      "asr_confidence": 0.5626708269119263,
+      "bot_response": "Aapka total experience 0 hai, correct?",
+      "latency_ms": 1847.21040725708,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "preferred_shift": "flexible"
+      },
+      "current_field": "total_experience_months",
+      "candidate_profile": {
+        "candidate_id": "e3d5fe17-c245-4bfc-9f10-9aa0fefe3192",
+        "created_at": "2025-08-10T23:15:23.471678",
+        "pincode": "110001",
+        "locality": "डेली",
+        "availability_date": "soon",
+        "preferred_shift": "flexible",
+        "expected_salary": 25000,
+        "languages": [
+          "hindi"
+        ],
+        "other_languages": [
+          "English"
+        ],
+        "has_two_wheeler": true,
+        "total_experience_months": null,
+        "conversation_completed": false,
+        "turn_count": 7
+      },
+      "audio_variant": "noisy"
+    },
+    {
+      "turn_number": 0,
+      "step_name": "total_experience_months",
+      "audio_file": "exp_diverse_003",
+      "asr_text": "3 साल का एक्सपीरियंस है भाई फैक्ट्री में काम किया।",
+      "asr_confidence": 0.7381568551063538,
+      "bot_response": "Tumhare liye top 3 naukriyan hain: Security Guard (₹18,000-₹25,000) Darya Ganj mein, Construction Helper (₹16,000-₹24,000) Connaught Place mein, Housekeeping Staff (₹12,000-₹18,000) Civil Lines mein. Sabmein kaam paas hai, salary thik hai, aur flexible shifts available hain. Kaunsi naukri ke baare mein aur sunna chahte ho?",
+      "latency_ms": 4114.452362060547,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "total_experience_months": 36
+      },
+      "current_field": "total_experience_months",
+      "candidate_profile": {
+        "candidate_id": "e3d5fe17-c245-4bfc-9f10-9aa0fefe3192",
+        "created_at": "2025-08-10T23:15:23.471678",
+        "pincode": "110001",
+        "locality": "डेली",
+        "availability_date": "soon",
+        "preferred_shift": "flexible",
+        "expected_salary": 25000,
+        "languages": [
+          "hindi"
+        ],
+        "other_languages": [
+          "English"
+        ],
+        "has_two_wheeler": true,
+        "total_experience_months": 36,
+        "conversation_completed": true,
+        "turn_count": 8
+      },
+      "audio_variant": "noisy"
+    },
+    {
+      "turn_number": 0,
+      "step_name": "confirmation",
+      "audio_file": "conf_diverse_003",
+      "asr_text": "बिल्कुल ठीक है भाई!",
+      "asr_confidence": 0.8128434419631958,
+      "bot_response": "Tumhara pincode 110001 hai aur tumhe jaldi kaam chahiye flexible shift mein. Tumhara salary expectation ₹25,000 hai. Yeh teen kaam tumhare liye fit hai:\n\n- Security Guard at SecureTech, Darya Ganj: Salary ₹18,000-₹25,000, night shift, hindi mein baat kar sakte ho, 0.1km door\n- Construction Helper at BuildRight, Connaught Place: Salary ₹16,000-₹24,000, morning shift, hindi mein baat kar sakte ho, 0.0km door\n- Housekeeping Staff at CleanCorp, Civil Lines: Salary ₹12,000-₹18,000, morning/afternoon shift, hindi mein baat kar sakte ho, 0.2km door\n\nKaunsa kaam sunna pasand karoge?",
+      "latency_ms": 3228.7070751190186,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "confirmation": "accept"
+      },
+      "current_field": "summary",
+      "candidate_profile": {
+        "candidate_id": "e3d5fe17-c245-4bfc-9f10-9aa0fefe3192",
+        "created_at": "2025-08-10T23:15:23.471678",
+        "pincode": "110001",
+        "locality": "डेली",
+        "availability_date": "soon",
+        "preferred_shift": "flexible",
+        "expected_salary": 25000,
+        "languages": [
+          "hindi"
+        ],
+        "other_languages": [
+          "English"
+        ],
+        "has_two_wheeler": true,
+        "total_experience_months": 36,
+        "conversation_completed": true,
+        "turn_count": 9
+      },
+      "audio_variant": "noisy"
+    }
+  ],
+  "completed_steps": 8,
+  "total_steps": 8,
+  "reached_job_matching": false,
+  "final_bot_response": "Tumhara pincode 110001 hai aur tumhe jaldi kaam chahiye flexible shift mein. Tumhara salary expectation ₹25,000 hai. Yeh teen kaam tumhare liye fit hai:\n\n- Security Guard at SecureTech, Darya Ganj: Salary ₹18,000-₹25,000, night shift, hindi mein baat kar sakte ho, 0.1km door\n- Construction Helper at BuildRight, Connaught Place: Salary ₹16,000-₹24,000, morning shift, hindi mein baat kar sakte ho, 0.0km door\n- Housekeeping Staff at CleanCorp, Civil Lines: Salary ₹12,000-₹18,000, morning/afternoon shift, hindi mein baat kar sakte ho, 0.2km door\n\nKaunsa kaam sunna pasand karoge?",
+  "conversation_completed": false,
+  "total_latency_ms": 18992.979049682617,
+  "avg_turn_latency_ms": 2374.122381210327,
+  "avg_confidence": 0.7088371589779854,
+  "confidence_range": [
+    0.5459729433059692,
+    0.8478288054466248
+  ],
+  "asr_cost_usd": 0.019205699999999996,
+  "tts_cost_usd": 0.019215999999999997,
+  "total_cost_usd": 0.03842169999999999
+}

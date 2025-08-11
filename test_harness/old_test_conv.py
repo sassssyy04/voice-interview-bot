@@ -80,194 +80,62 @@ class HTTPPersonaConversationTester:
                 "voice_id": "LruHrtVF6PSyGItzMNHS",
                 "noise_levels": ["clean", "low"],
                 "conversation_flow": [
-                    {
-                        "step": "pincode",
-                        "audio_file": "pin_diverse_001",  # english_man + clean
-                        "expected_entity": {"pincode": "110001"}
-                    },
-                    {
-                        "step": "expected_salary", 
-                        "audio_file": "sal_diverse_001",  # english_man + clean
-                        "expected_entity": {"expected_salary": 15000}
-                    },
-                    {
-                        "step": "has_two_wheeler",
-                        "audio_file": "vehicle_diverse_001",  # english_man + low
-                        "expected_entity": {"has_two_wheeler": True}
-                    },
-                    {
-                        "step": "languages",
-                        "audio_file": "lang_diverse_001",  # english_man + clean
-                        "expected_entity": {"languages": ["hindi", "english"]}
-                    },
-                    {
-                        "step": "availability_date",
-                        "audio_file": "avail_diverse_001",  # english_man + clean
-                        "expected_entity": {"availability_date": "immediately"}
-                    },
-                    {
-                        "step": "preferred_shift",
-                        "audio_file": "shift_diverse_001",  # english_man + clean
-                        "expected_entity": {"preferred_shift": "morning"}
-                    },
-                    {
-                        "step": "total_experience_months",
-                        "audio_file": "exp_diverse_001",  # english_man + clean
-                        "expected_entity": {"total_experience_months": 24}
-                    },
-                    {
-                        "step": "confirmation",
-                        "audio_file": "conf_diverse_001",  # english_man + clean
-                        "expected_entity": {"confirmation": "accept"}
-                    }
-                ]
+                    {"step": "pincode", "audio_file": "pin_diverse_001", "expected_entity": {"pincode": "110001"}},
+                    {"step": "expected_salary", "audio_file": "sal_diverse_001", "expected_entity": {"expected_salary": 25000}},
+                    {"step": "has_two_wheeler", "audio_file": "vehicle_diverse_001", "expected_entity": {"has_two_wheeler": False}},
+                    {"step": "languages", "audio_file": "lang_diverse_001", "expected_entity": {"languages": ["hindi", "english"]}},
+                    {"step": "availability_date", "audio_file": "avail_diverse_001", "expected_entity": {"availability_date": "soon"}},
+                    {"step": "preferred_shift", "audio_file": "shift_diverse_001", "expected_entity": {"preferred_shift": "morning"}},
+                    {"step": "total_experience_months", "audio_file": "exp_diverse_001", "expected_entity": {"total_experience_months": 2}},
+                    # {"step": "confirmation", "audio_file": "conf_diverse_001", "expected_entity": {"confirmation": "accept"}},
+                ],
             },
-            
             "calm_hindi": {
                 "name": "Calm Hindi Speaker",
-                "voice_id": "1Z7Y8o9cvUeWq8oLKgMY", 
+                "voice_id": "1Z7Y8o9cvUeWq8oLKgMY",
                 "noise_levels": ["low", "medium"],
                 "conversation_flow": [
-                    {
-                        "step": "pincode",
-                        "audio_file": "pin_diverse_002",  # calm_hindi + low
-                        "expected_entity": {"pincode": "110001"}
-                    },
-                    {
-                        "step": "expected_salary",
-                        "audio_file": "sal_diverse_002",  # calm_hindi + medium
-                        "expected_entity": {"expected_salary": 15000}
-                    },
-                    {
-                        "step": "has_two_wheeler", 
-                        "audio_file": "vehicle_diverse_002",  # calm_hindi + clean
-                        "expected_entity": {"has_two_wheeler": False}
-                    },
-                    {
-                        "step": "languages",
-                        "audio_file": "lang_diverse_002",  # calm_hindi + low
-                        "expected_entity": {"languages": ["hindi", "english", "marathi"]}
-                    },
-                    {
-                        "step": "availability_date",
-                        "audio_file": "avail_diverse_002",  # calm_hindi + low
-                        "expected_entity": {"availability_date": "tomorrow"}
-                    },
-                    {
-                        "step": "preferred_shift",
-                        "audio_file": "shift_diverse_002",  # calm_hindi + low
-                        "expected_entity": {"preferred_shift": "evening"}
-                    },
-                    {
-                        "step": "total_experience_months",
-                        "audio_file": "exp_diverse_002",  # calm_hindi + low
-                        "expected_entity": {"total_experience_months": 6}
-                    },
-                    {
-                        "step": "confirmation", 
-                        "audio_file": "conf_diverse_002",  # calm_hindi + low
-                        "expected_entity": {"confirmation": "accept"}
-                    }
-                ]
+                    {"step": "pincode", "audio_file": "pin_diverse_002", "expected_entity": {"pincode": "560008"}},
+                    {"step": "expected_salary", "audio_file": "sal_diverse_002", "expected_entity": {"expected_salary": 60000}},
+                    {"step": "has_two_wheeler", "audio_file": "vehicle_diverse_002", "expected_entity": {"has_two_wheeler": True}},
+                    {"step": "languages", "audio_file": "lang_diverse_002", "expected_entity": {"languages": ["English", "Kannada", "Tamil"]}},
+                    {"step": "availability_date", "audio_file": "avail_diverse_002", "expected_entity": {"availability_date": "soon"}},
+                    {"step": "preferred_shift", "audio_file": "shift_diverse_002", "expected_entity": {"preferred_shift": "evening"}},
+                    {"step": "total_experience_months", "audio_file": "exp_diverse_002", "expected_entity": {"total_experience_months": 12}},
+                    # {"step": "confirmation", "audio_file": "conf_diverse_002", "expected_entity": {"confirmation": "accept"}},
+                ],
             },
-            
             "energetic_hindi": {
                 "name": "Energetic Hindi Speaker",
                 "voice_id": "IvLWq57RKibBrqZGpQrC",
                 "noise_levels": ["medium", "low"],
                 "conversation_flow": [
-                    {
-                        "step": "pincode",
-                        "audio_file": "pin_diverse_003",  # energetic_hindi + medium
-                        "expected_entity": {"pincode": "110001"}
-                    },
-                    {
-                        "step": "expected_salary",
-                        "audio_file": "sal_diverse_003",  # energetic_hindi + low
-                        "expected_entity": {"expected_salary": 25000}
-                    },
-                    {
-                        "step": "has_two_wheeler",
-                        "audio_file": "vehicle_diverse_003",  # energetic_hindi + high
-                        "expected_entity": {"has_two_wheeler": True}
-                    },
-                    {
-                        "step": "languages",
-                        "audio_file": "lang_diverse_003",  # energetic_hindi + medium
-                        "expected_entity": {"languages": ["hindi"]}
-                    },
-                    {
-                        "step": "availability_date",
-                        "audio_file": "avail_diverse_003",  # energetic_hindi + medium
-                        "expected_entity": {"availability_date": "next week"}
-                    },
-                    {
-                        "step": "preferred_shift",
-                        "audio_file": "shift_diverse_003",  # energetic_hindi + medium
-                        "expected_entity": {"preferred_shift": "flexible"}
-                    },
-                    {
-                        "step": "total_experience_months",
-                        "audio_file": "exp_diverse_003",  # energetic_hindi + medium
-                        "expected_entity": {"total_experience_months": 36}
-                    },
-                    {
-                        "step": "confirmation",
-                        "audio_file": "conf_diverse_003",  # energetic_hindi + medium
-                        "expected_entity": {"confirmation": "accept"}
-                    }
-                ]
+                    {"step": "pincode", "audio_file": "pin_diverse_003", "expected_entity": {"pincode": "600001"}},
+                    {"step": "expected_salary", "audio_file": "sal_diverse_003", "expected_entity": {"expected_salary": 50000}},
+                    {"step": "has_two_wheeler", "audio_file": "vehicle_diverse_003", "expected_entity": {"has_two_wheeler": True}},
+                    {"step": "languages", "audio_file": "lang_diverse_003", "expected_entity": {"languages": ["Tamil", "English"]}},
+                    {"step": "availability_date", "audio_file": "avail_diverse_003", "expected_entity": {"availability_date": "One week"}},
+                    {"step": "preferred_shift", "audio_file": "shift_diverse_003", "expected_entity": {"preferred_shift": "flexible"}},
+                    {"step": "total_experience_months", "audio_file": "exp_diverse_003", "expected_entity": {"total_experience_months": 24}},
+                    # {"step": "confirmation", "audio_file": "conf_diverse_003", "expected_entity": {"confirmation": "accept"}},
+                ],
             },
-            
             "expressive_hindi": {
                 "name": "Expressive Hindi Speaker",
                 "voice_id": "ni6cdqyS9wBvic5LPA7M",
                 "noise_levels": ["high", "medium"],
                 "conversation_flow": [
-                    {
-                        "step": "pincode",
-                        "audio_file": "pin_diverse_004",  # expressive_hindi + high
-                        "expected_entity": {"pincode": "110001"}
-                    },
-                    {
-                        "step": "expected_salary",
-                        "audio_file": "sal_diverse_004",  # expressive_hindi + high  
-                        "expected_entity": {"expected_salary": 50000}
-                    },
-                    {
-                        "step": "has_two_wheeler",
-                        "audio_file": "vehicle_diverse_004",  # expressive_hindi + medium
-                        "expected_entity": {"has_two_wheeler": True}
-                    },
-                    {
-                        "step": "languages",
-                        "audio_file": "lang_diverse_004",  # expressive_hindi + high
-                        "expected_entity": {"languages": ["hindi", "tamil", "english"]}
-                    },
-                    {
-                        "step": "availability_date",
-                        "audio_file": "avail_diverse_004",  # expressive_hindi + high
-                        "expected_entity": {"availability_date": "immediately"}
-                    },
-                    {
-                        "step": "preferred_shift",
-                        "audio_file": "shift_diverse_004",  # expressive_hindi + high
-                        "expected_entity": {"preferred_shift": "night"}
-                    },
-                    {
-                        "step": "total_experience_months",
-                        "audio_file": "exp_diverse_004",  # expressive_hindi + high
-                        "expected_entity": {"total_experience_months": 0}
-                    },
-                    {
-                        "step": "confirmation",
-                        "audio_file": "conf_diverse_004",  # expressive_hindi + high (correction)
-                        "expected_entity": {"confirmation": "modify", "expected_salary": 20000}
-                    }
-                ]
-            }
+                    {"step": "pincode", "audio_file": "pin_diverse_004", "expected_entity": {"pincode": "620001"}},
+                    {"step": "expected_salary", "audio_file": "sal_diverse_004", "expected_entity": {"expected_salary": 10000}},
+                    {"step": "has_two_wheeler", "audio_file": "vehicle_diverse_004", "expected_entity": {"has_two_wheeler": True}},
+                    {"step": "languages", "audio_file": "lang_diverse_004", "expected_entity": {"languages": ["tamil"]}},
+                    {"step": "availability_date", "audio_file": "avail_diverse_004", "expected_entity": {"availability_date": "soon"}},
+                    {"step": "preferred_shift", "audio_file": "shift_diverse_004", "expected_entity": {"preferred_shift": "night"}},
+                    {"step": "total_experience_months", "audio_file": "exp_diverse_004", "expected_entity": {"total_experience_months": 0}},
+                    # {"step": "confirmation", "audio_file": "conf_diverse_004", "expected_entity": {"confirmation": "modify", "expected_salary": 20000}},
+                ],
+            },
         }
-    
     async def start_conversation_session(self, client: httpx.AsyncClient) -> Optional[str]:
         """Start a new conversation session."""
         try:

@@ -105,16 +105,22 @@ class NLUService:
         # Normalize text first
         normalized_text = self._normalize_text(text)
         
+        # Determine LLM allowance from context (default True)
+        llm_allowed = True
+        if isinstance(context, dict):
+            llm_allowed = context.get("llm_allowed", True)
+        
         # Use appropriate extraction method based on field
         if field == "pincode":
-            result = await self._extract_pincode(normalized_text)
+            result = await self._extract_pincode(normalized_text, context={"llm_allowed": llm_allowed})
         elif field == "availability_date":
             result = await self._extract_availability(normalized_text)
         elif field == "preferred_shift":
             result = await self._extract_shift(normalized_text)
         elif field == "expected_salary":
-            result = await self._extract_salary(normalized_text)
+            result = await self._extract_salary(normalized_text, context={"llm_allowed": llm_allowed})
         elif field == "languages":
+            # Languages prefer LLM inherently; ignore llm_allowed gate for this slot
             result = await self._extract_languages(normalized_text)
         elif field == "has_two_wheeler":
             result = await self._extract_boolean(normalized_text, field)
@@ -122,7 +128,11 @@ class NLUService:
             result = await self._extract_experience(normalized_text)
         else:
             # Generic extraction using OpenAI
-            result = await self._extract_with_openai(normalized_text, field, context)
+            if llm_allowed:
+                result = await self._extract_with_openai(normalized_text, field, context)
+            else:
+                # If LLM not allowed, return empty result for unknown field
+                result = {"value": None, "confidence": 0.0, "field": field, "method": "disabled_llm"}
         
         # Validate and enhance result
         result = self._validate_extraction_result(result, field, text)
@@ -908,9 +918,10 @@ class NLUService:
         
         return text
     
-    async def _extract_pincode(self, text: str) -> Dict[str, Any]:
+    async def _extract_pincode(self, text: str, context: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         """Extract pincode or locality from text with improved validation."""
         text_lower = text.lower().strip()
+        llm_allowed = True if not context else context.get("llm_allowed", True)
         
         # Look for 6-digit numbers first (highest priority)
         pincode_pattern = r'\b(\d{6})\b'
@@ -945,25 +956,26 @@ class NLUService:
             invalid_localities = {'ok', 'okay', 'correct', 'sahi', 'haan', 'yes', 'right', 'samjha'}
             if locality.lower() not in invalid_localities and len(locality) >= 3:
                 # Try to resolve locality to pincode for better distance matching
-                resolved_pincode = await self.resolve_pincode_from_locality(locality)
-                if resolved_pincode:
-                    return {
-                        "value": resolved_pincode,
-                        "confidence": 0.8,
-                        "field": "pincode",
-                        "method": "locality_resolved",
-                        "original_locality": locality.title()
-                    }
-                else:
-                    return {
-                        "value": locality.title(),
-                        "confidence": 0.7,
-                        "field": "locality",
-                        "method": "rule"
-                    }
+                if llm_allowed:
+                    resolved_pincode = await self.resolve_pincode_from_locality(locality)
+                    if resolved_pincode:
+                        return {
+                            "value": resolved_pincode,
+                            "confidence": 0.8,
+                            "field": "pincode",
+                            "method": "locality_resolved",
+                            "original_locality": locality.title()
+                        }
+                # If LLM not allowed or resolution failed, return locality only
+                return {
+                    "value": locality.title(),
+                    "confidence": 0.7,
+                    "field": "locality",
+                    "method": "rule"
+                }
         
-        # Try LLM for complex location extraction
-        if settings.openai_api_key and openai is not None:
+        # Try LLM for complex location extraction (only if allowed)
+        if llm_allowed and settings.openai_api_key and openai is not None:
             try:
                 prompt = (
                     "Extract location (pincode or city/area name) from user text. Return ONLY a JSON object.\n"
@@ -979,51 +991,25 @@ class NLUService:
                     openai.chat.completions.create,
                     model="gpt-4o",
                     messages=[{"role": "user", "content": prompt}],
-                    max_tokens=50,
+                    max_tokens=120,
                     temperature=0.0
                 )
                 content = resp.choices[0].message.content.strip()
-                
-                # Extract JSON
                 import json as _json
                 if '{' in content and '}' in content:
                     start = content.find('{')
                     end = content.rfind('}') + 1
                     data = _json.loads(content[start:end])
-                    location_type = data.get('type', 'locality')
-                    value = data.get('value', '').strip()
-                    
-                    if value and len(value) >= 3:
-                        if location_type == 'pincode' and re.match(r'^\d{6}$', value):
-                            return {
-                                "value": value,
-                                "confidence": 0.8,
-                                "field": "pincode",
-                                "method": "llm"
-                            }
-                        else:
-                            # Try to resolve locality to pincode for better matching
-                            resolved_pincode = await self.resolve_pincode_from_locality(value)
-                            if resolved_pincode:
-                                return {
-                                    "value": resolved_pincode,
-                                    "confidence": 0.8,
-                                    "field": "pincode",
-                                    "method": "llm_locality_resolved",
-                                    "original_locality": value.title()
-                                }
-                            else:
-                                return {
-                                    "value": value.title(),
-                                    "confidence": 0.8,
-                                    "field": "locality", 
-                                    "method": "llm"
-                                }
+                    typ = (data.get("type") or "").lower()
+                    val = data.get("value")
+                    if typ == "pincode" and isinstance(val, str) and re.fullmatch(r"\d{6}", val):
+                        return {"value": val, "confidence": 0.85, "field": "pincode", "method": "openai"}
+                    if typ == "locality" and isinstance(val, str) and len(val) >= 3:
+                        return {"value": val.title(), "confidence": 0.7, "field": "locality", "method": "openai"}
             except Exception as e:
-                logger.error(f"LLM pincode extraction failed: {e}")
+                logger.error(f"LLM location extraction failed: {e}")
         
-        # Fallback to OpenAI generic extraction
-        return await self._extract_with_openai(text, "pincode")
+        return {"value": None, "confidence": 0.0, "field": "pincode", "method": "none"}
     
     async def _extract_availability(self, text: str) -> Dict[str, Any]:
         """Extract availability date from text."""
@@ -1068,109 +1054,16 @@ class NLUService:
         
         return await self._extract_with_openai(text, "shift_preference")
     
-    async def _extract_salary(self, text: str) -> Dict[str, Any]:
-        """Extract salary amount from text with improved parsing."""
+    async def _extract_salary(self, text: str, context: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+        """Extract expected salary with number normalization; uses LLM only if allowed via context."""
         text_lower = text.lower()
+        llm_allowed = True if not context else context.get("llm_allowed", True)
         
-        # Enhanced patterns with better multiplier detection
-        salary_patterns = [
-            # Word + lakh patterns (highest priority)
-            r'(?:fifteen|15|पंद्रह)\s*(?:lakh|lac|lakhs|लाख)',
-            r'(?:twenty|20|बीस)\s*(?:lakh|lac|lakhs|लाख)',
-            r'(?:twenty five|25|पच्चीस)\s*(?:lakh|lac|lakhs|लाख)',
-            r'(?:thirty|30|तीस)\s*(?:lakh|lac|lakhs|लाख)',
-            # Lakh patterns with numbers
-            r'(\d+(?:\.\d+)?)\s*(?:lakh|lac|lakhs|लाख)',
-            
-            # Word + thousand patterns
-            r'(?:fifteen|15|पंद्रह)\s*(?:thousand|hazaar|हजार|k)\b',
-            r'(?:twenty|20|बीस)\s*(?:thousand|hazaar|हजार|k)\b',
-            r'(?:twenty five|25|पच्चीस)\s*(?:thousand|hazaar|हजार|k)\b',
-            r'(?:thirty|30|तीस)\s*(?:thousand|hazaar|हजार|k)\b',
-            r'(?:forty|40|चालीस)\s*(?:thousand|hazaar|हजार|k)\b',
-            r'(?:fifty|50|पचास)\s*(?:thousand|hazaar|हजार|k)\b',
-            # Thousand patterns with numbers
-            r'(\d+(?:\.\d+)?)\s*(?:thousand|hazaar|हजार|k)\b',
-            
-            # Rupees with explicit currency
-            r'(?:rs\.?\s*|rupees?\s*|₹\s*)(\d+(?:,\d{3})*)',
-            # Plain numbers (4-6 digits for salary range)
-            r'\b(\d{4,6})\b'
-        ]
-        
-        for i, pattern in enumerate(salary_patterns):
-            match = re.search(pattern, text_lower)
-            if match:
-                try:
-                    # Handle word-based patterns (lakh and thousand)
-                    if i <= 3:  # Word + lakh patterns
-                        if "fifteen" in match.group() or "15" in match.group() or "पंद्रह" in match.group():
-                            amount = 15 * 100000
-                        elif "twenty five" in match.group() or "25" in match.group() or "पच्चीस" in match.group():
-                            amount = 25 * 100000
-                        elif "twenty" in match.group() or "20" in match.group() or "बीस" in match.group():
-                            amount = 20 * 100000
-                        elif "thirty" in match.group() or "30" in match.group() or "तीस" in match.group():
-                            amount = 30 * 100000
-                        else:
-                            continue
-                        confidence = 0.95
-                    elif i == 4:  # Numeric lakh patterns
-                        amount_str = match.group(1).replace(',', '')
-                        amount = float(amount_str) * 100000
-                        confidence = 0.95
-                    elif i <= 10:  # Word + thousand patterns
-                        if "fifteen" in match.group() or "15" in match.group() or "पंद्रह" in match.group():
-                            amount = 15000
-                        elif "twenty five" in match.group() or "25" in match.group() or "पच्चीस" in match.group():
-                            amount = 25000
-                        elif "twenty" in match.group() or "20" in match.group() or "बीस" in match.group():
-                            amount = 20000
-                        elif "thirty" in match.group() or "30" in match.group() or "तीस" in match.group():
-                            amount = 30000
-                        elif "forty" in match.group() or "40" in match.group() or "चालीस" in match.group():
-                            amount = 40000
-                        elif "fifty" in match.group() or "50" in match.group() or "पचास" in match.group():
-                            amount = 50000
-                        else:
-                            continue
-                        confidence = 0.9
-                    elif i == 11:  # Numeric thousand patterns  
-                        amount_str = match.group(1).replace(',', '')
-                        amount = float(amount_str) * 1000
-                        confidence = 0.9
-                    elif i == 12:  # Explicit currency
-                        amount_str = match.group(1).replace(',', '')
-                        amount = float(amount_str)
-                        confidence = 0.9
-                    else:  # Plain numbers
-                        amount_str = match.group(1).replace(',', '')
-                        amount = float(amount_str)
-                        confidence = 0.8
-                        # Heuristic: if number is very large, might be annual
-                        if amount > 500000:
-                            amount = amount / 12  # Convert annual to monthly
-                    
-                    # Validate reasonable salary range (1000 to 500000 monthly)
-                    if 1000 <= amount <= 500000:
-                        return {
-                            "value": int(amount),
-                            "confidence": confidence,
-                            "field": "expected_salary",
-                            "method": "regex"
-                        }
-                        
-                except (ValueError, IndexError):
-                    continue
-        
-        # Try LLM for complex salary expressions
-        if settings.openai_api_key and openai is not None:
+        # Try LLM first if allowed
+        if llm_allowed and settings.openai_api_key and openai is not None:
             try:
                 prompt = (
-                    "Extract monthly salary from user text. Return ONLY a JSON object.\n"
-                    "Rules:\n"
-                    "- Convert lakh to 100000 (e.g., 2.5 lakh = 250000)\n"  
-                    "- Convert thousand to 1000 (e.g., 15 thousand = 15000)\n"
+                    "You are extracting expected monthly salary (INR) from a Hinglish/English utterance.\n"
                     "- If yearly salary mentioned, divide by 12\n"
                     "- Return reasonable monthly amount between 5000-200000\n"
                     f"TEXT: '{text}'\n"
@@ -1220,7 +1113,10 @@ class NLUService:
                     "method": "fallback"
                 }
         
-        return await self._extract_with_openai(text, "salary")
+        # Final fallback to LLM generic only if allowed
+        if llm_allowed:
+            return await self._extract_with_openai(text, "salary")
+        return {"value": None, "confidence": 0.0, "field": "expected_salary", "method": "none"}
     
     async def _extract_languages(self, text: str) -> Dict[str, Any]:
         """Extract language skills from text.

@@ -9,6 +9,8 @@ class VoiceBot {
         this.lastTurnStartTime = null;
         this.minRecordingMs = 300;
         this.recordingStartTimeMs = null;
+        this.dtmfPanel = null;
+        this.dtmfStatus = null;
         
         this.initializeElements();
         this.setupEventListeners();
@@ -29,6 +31,8 @@ class VoiceBot {
         this.conversationLog = document.getElementById('conversationLog');
         this.responseAudio = document.getElementById('responseAudio');
         this.connectionStatus = document.getElementById('connection-status');
+        this.dtmfPanel = document.getElementById('dtmfPanel');
+        this.dtmfStatus = document.getElementById('dtmfStatus');
         
         // Metrics
         this.responseTimeEl = document.getElementById('responseTime');
@@ -75,6 +79,16 @@ class VoiceBot {
                 this.micStatus.textContent = 'Press and hold to talk';
             }
         });
+
+        // DTMF handlers
+        if (this.dtmfPanel) {
+            this.dtmfPanel.addEventListener('click', async (e) => {
+                const btn = e.target.closest('button[data-dtmf]');
+                if (!btn) return;
+                const key = btn.getAttribute('data-dtmf');
+                await this.sendDtmfConfirmation(key);
+            });
+        }
     }
 
     checkBrowserSupport() {
@@ -333,6 +347,15 @@ class VoiceBot {
             if (data.asr && (data.asr.text || data.asr.text === '')) {
                 console.log(`ASR: "${data.asr.text}" (conf ${Math.round((data.asr.confidence || 0)*100)}%)`);
                 this.addToConversationLog('ASR', `${data.asr.text || ''} (${Math.round((data.asr.confidence || 0)*100)}%)`, false);
+            }
+
+            // Toggle DTMF keypad when ASR is low-confidence OR when bot is asking for confirmation
+            const isConfirmationStage = data.text && /confirm|sahi|thik|theek|accept/i.test(data.text);
+            const conf = (data.asr && typeof data.asr.confidence === 'number') ? data.asr.confidence : 0;
+            if (conf < 0.7 || isConfirmationStage) {
+                this.showDtmfPanel(true);
+            } else {
+                this.showDtmfPanel(false);
             }
             
             // Update metrics
@@ -853,6 +876,46 @@ class VoiceBot {
             }
         }
         return arrayBuffer;
+    }
+
+    showDtmfPanel(show) {
+        if (!this.dtmfPanel) return;
+        if (show) this.dtmfPanel.classList.remove('hidden');
+        else this.dtmfPanel.classList.add('hidden');
+    }
+
+    async sendDtmfConfirmation(key) {
+        if (!this.candidateId) return;
+        const map = { '1': 'yes', '2': 'no', '3': 'edit' };
+        const text = map[key] || '';
+        if (!text) return;
+        try {
+            this.dtmfStatus.textContent = 'Sending confirmation...';
+            const resp = await fetch(`/api/v1/conversation/${this.candidateId}/confirm-fast`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ text_only: true, user_text: text })
+            });
+            if (resp.ok) {
+                const data = await resp.json();
+                this.dtmfStatus.textContent = 'Confirmation sent';
+                this.showDtmfPanel(false);
+                // Update log and metrics similar to fast turn
+                if (data.text) this.addToConversationLog('Bot', data.text, true);
+                if (data.metrics) this.updateMetrics(data.metrics);
+                if (data.turn_id) {
+                    this.pollAndPlayTurnAudio(data.turn_id);
+                }
+                if (data.conversation_complete) {
+                    this.micStatus.textContent = 'Conversation completed';
+                    this.conversationActive = false;
+                }
+            } else {
+                this.dtmfStatus.textContent = 'Failed to send; try voice';
+            }
+        } catch (e) {
+            this.dtmfStatus.textContent = 'Network error; try again';
+        }
     }
 }
 

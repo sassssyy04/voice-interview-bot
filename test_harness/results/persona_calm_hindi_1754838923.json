@@ -1,0 +1,265 @@
+{
+  "persona_name": "Calm Hindi Speaker",
+  "voice_id": "1Z7Y8o9cvUeWq8oLKgMY",
+  "noise_levels": [
+    "low",
+    "medium"
+  ],
+  "candidate_id": "62dba211-5ed4-42f0-acc8-0b536122a690",
+  "start_time": "2025-08-10T23:14:48.758620",
+  "end_time": "2025-08-10T23:15:23.026162",
+  "turns": [
+    {
+      "turn_number": 0,
+      "step_name": "pincode",
+      "audio_file": "pin_diverse_002",
+      "asr_text": "मैं दिल्ली में रहता हूं। मेरा पिन कोड है क्या था वज्राक?",
+      "asr_confidence": 0.5465343594551086,
+      "bot_response": "Aapki expected salary 20000 rupees per month hai, sahi?",
+      "latency_ms": 3933.6700439453125,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "pincode": "110001"
+      },
+      "current_field": "expected_salary",
+      "candidate_profile": {
+        "candidate_id": "62dba211-5ed4-42f0-acc8-0b536122a690",
+        "created_at": "2025-08-10T23:14:49.176398",
+        "pincode": null,
+        "locality": "वज्राक",
+        "availability_date": null,
+        "preferred_shift": null,
+        "expected_salary": null,
+        "languages": [],
+        "other_languages": [],
+        "has_two_wheeler": null,
+        "total_experience_months": null,
+        "conversation_completed": false,
+        "turn_count": 2
+      },
+      "audio_variant": "clean"
+    },
+    {
+      "turn_number": 0,
+      "step_name": "expected_salary",
+      "audio_file": "sal_diverse_002",
+      "asr_text": "भाई मैं 15000 पर मंथ एक्सपेक्ट करता हूं।",
+      "asr_confidence": 0.7135359644889832,
+      "bot_response": "Aap kaunsi languages bol sakte hain? Hindi, English ya koi aur?",
+      "latency_ms": 849.7653007507324,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "expected_salary": 15000
+      },
+      "current_field": "languages",
+      "candidate_profile": {
+        "candidate_id": "62dba211-5ed4-42f0-acc8-0b536122a690",
+        "created_at": "2025-08-10T23:14:49.176398",
+        "pincode": null,
+        "locality": "वज्राक",
+        "availability_date": null,
+        "preferred_shift": null,
+        "expected_salary": 15000,
+        "languages": [],
+        "other_languages": [],
+        "has_two_wheeler": true,
+        "total_experience_months": null,
+        "conversation_completed": false,
+        "turn_count": 3
+      },
+      "audio_variant": "clean"
+    },
+    {
+      "turn_number": 0,
+      "step_name": "has_two_wheeler",
+      "audio_file": "vehicle_diverse_002",
+      "asr_text": "नहीं यार बाइक नहीं है मेरे पास।",
+      "asr_confidence": 0.6514038443565369,
+      "bot_response": "Aap  bol sakte hain, confirm hai?",
+      "latency_ms": 1992.065668106079,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "has_two_wheeler": false
+      },
+      "current_field": "languages",
+      "candidate_profile": {
+        "candidate_id": "62dba211-5ed4-42f0-acc8-0b536122a690",
+        "created_at": "2025-08-10T23:14:49.176398",
+        "pincode": null,
+        "locality": "वज्राक",
+        "availability_date": null,
+        "preferred_shift": null,
+        "expected_salary": 15000,
+        "languages": [],
+        "other_languages": [],
+        "has_two_wheeler": true,
+        "total_experience_months": null,
+        "conversation_completed": false,
+        "turn_count": 4
+      },
+      "audio_variant": "clean"
+    },
+    {
+      "turn_number": 0,
+      "step_name": "languages",
+      "audio_file": "lang_diverse_002",
+      "asr_text": "हिंदी इंग्लिश मराठी तीनों लैंग्वेज आती हैं मुझे।",
+      "asr_confidence": 0.6334010362625122,
+      "bot_response": "Toh aap soon se start kar sakte hain, correct?",
+      "latency_ms": 2686.232805252075,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "languages": [
+          "hindi",
+          "english",
+          "marathi"
+        ]
+      },
+      "current_field": "availability_date",
+      "candidate_profile": {
+        "candidate_id": "62dba211-5ed4-42f0-acc8-0b536122a690",
+        "created_at": "2025-08-10T23:14:49.176398",
+        "pincode": null,
+        "locality": "वज्राक",
+        "availability_date": null,
+        "preferred_shift": null,
+        "expected_salary": 15000,
+        "languages": [
+          "hindi",
+          "english",
+          "marathi"
+        ],
+        "other_languages": [],
+        "has_two_wheeler": true,
+        "total_experience_months": null,
+        "conversation_completed": false,
+        "turn_count": 5
+      },
+      "audio_variant": "clean"
+    },
+    {
+      "turn_number": 0,
+      "step_name": "availability_date",
+      "audio_file": "avail_diverse_002",
+      "asr_text": "कल से शुरू कर सकता हूं टुमारो अवेलेबल।",
+      "asr_confidence": 0.7466602325439453,
+      "bot_response": "Aapko kitna kaam ka experience hai? Kitne saal ya mahine?",
+      "latency_ms": 1546.34428024292,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "availability_date": "tomorrow"
+      },
+      "current_field": "total_experience_months",
+      "candidate_profile": {
+        "candidate_id": "62dba211-5ed4-42f0-acc8-0b536122a690",
+        "created_at": "2025-08-10T23:14:49.176398",
+        "pincode": null,
+        "locality": "वज्राक",
+        "availability_date": "tomorrow",
+        "preferred_shift": "morning",
+        "expected_salary": 15000,
+        "languages": [
+          "hindi",
+          "english",
+          "marathi"
+        ],
+        "other_languages": [],
+        "has_two_wheeler": true,
+        "total_experience_months": null,
+        "conversation_completed": false,
+        "turn_count": 6
+      },
+      "audio_variant": "clean"
+    },
+    {
+      "turn_number": 0,
+      "step_name": "preferred_shift",
+      "audio_file": "shift_diverse_002",
+      "asr_text": "इवनिंग शिफ्ट ठीक है यार नाइट में काम कर सकता हूं।",
+      "asr_confidence": 0.649354875087738,
+      "bot_response": "Aapka total experience 24 hai, correct?",
+      "latency_ms": 1792.3851013183594,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "preferred_shift": "evening"
+      },
+      "current_field": "total_experience_months",
+      "candidate_profile": {
+        "candidate_id": "62dba211-5ed4-42f0-acc8-0b536122a690",
+        "created_at": "2025-08-10T23:14:49.176398",
+        "pincode": null,
+        "locality": "वज्राक",
+        "availability_date": "tomorrow",
+        "preferred_shift": "morning",
+        "expected_salary": 15000,
+        "languages": [
+          "hindi",
+          "english",
+          "marathi"
+        ],
+        "other_languages": [],
+        "has_two_wheeler": true,
+        "total_experience_months": null,
+        "conversation_completed": false,
+        "turn_count": 7
+      },
+      "audio_variant": "clean"
+    },
+    {
+      "turn_number": 0,
+      "step_name": "total_experience_months",
+      "audio_file": "exp_diverse_002",
+      "asr_text": "सिक्स मंथ का एक्सपीरियंस है डिलीवरी बॉय का।",
+      "asr_confidence": 0.8361853361129761,
+      "bot_response": "Tumhara profile match karta hai in teen jobs ke saath. Delivery Executive QuickDeliver mein, salary ₹15,000-₹22,000, morning shift, hindi aur english chahiye, 2-wheeler hona zaroori hai. Construction Helper BuildRight mein, salary ₹16,000-₹24,000, morning shift, sirf hindi chahiye, 2-wheeler ki zarurat nahi hai. Shop Assistant RetailMart mein, salary ₹14,000-₹20,000, morning shift, hindi aur english chahiye, 2-wheeler ki zarurat nahi hai. Kaunsi job ke baare mein aur sunna chahoge?",
+      "latency_ms": 4341.728925704956,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "total_experience_months": 6
+      },
+      "current_field": "total_experience_months",
+      "candidate_profile": {
+        "candidate_id": "62dba211-5ed4-42f0-acc8-0b536122a690",
+        "created_at": "2025-08-10T23:14:49.176398",
+        "pincode": null,
+        "locality": "वज्राक",
+        "availability_date": "tomorrow",
+        "preferred_shift": "morning",
+        "expected_salary": 15000,
+        "languages": [
+          "hindi",
+          "english",
+          "marathi"
+        ],
+        "other_languages": [],
+        "has_two_wheeler": true,
+        "total_experience_months": 6,
+        "conversation_completed": true,
+        "turn_count": 8
+      },
+      "audio_variant": "clean"
+    }
+  ],
+  "completed_steps": 7,
+  "total_steps": 8,
+  "reached_job_matching": true,
+  "final_bot_response": "Tumhara profile match karta hai in teen jobs ke saath. Delivery Executive QuickDeliver mein, salary ₹15,000-₹22,000, morning shift, hindi aur english chahiye, 2-wheeler hona zaroori hai. Construction Helper BuildRight mein, salary ₹16,000-₹24,000, morning shift, sirf hindi chahiye, 2-wheeler ki zarurat nahi hai. Shop Assistant RetailMart mein, salary ₹14,000-₹20,000, morning shift, hindi aur english chahiye, 2-wheeler ki zarurat nahi hai. Kaunsi job ke baare mein aur sunna chahoge?",
+  "conversation_completed": true,
+  "total_latency_ms": 17142.192125320435,
+  "avg_turn_latency_ms": 2448.8845893314906,
+  "avg_confidence": 0.6824393783296857,
+  "confidence_range": [
+    0.5465343594551086,
+    0.8361853361129761
+  ],
+  "asr_cost_usd": 0.0032982843749999992,
+  "tts_cost_usd": 0.012464,
+  "total_cost_usd": 0.015762284374999998
+}

@@ -1,0 +1,488 @@
+{
+  "persona_key": "english_man",
+  "persona_name": "English Man (Professional)",
+  "voice_id": "LruHrtVF6PSyGItzMNHS",
+  "noise_levels": [
+    "clean",
+    "low"
+  ],
+  "candidate_id": "0e43173e-5830-4e0f-b1f8-de836c1e256f",
+  "start_time": "2025-08-11T17:06:32.202087",
+  "end_time": "2025-08-11T17:06:56.678217",
+  "turns": [
+    {
+      "turn_number": 0,
+      "step_name": "pincode",
+      "audio_file": "pin_diverse_001",
+      "asr_text": "में रहता हूं मेरा पिन कोड है क्या 9000 वांट?",
+      "asr_confidence": 0.38578617572784424,
+      "bot_response": "Aapne मेरा kaha, sahi hai na?",
+      "latency_ms": 1094.4020748138428,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "pincode": "110001"
+      },
+      "current_field": "pincode",
+      "candidate_profile": {
+        "candidate_id": "0e43173e-5830-4e0f-b1f8-de836c1e256f",
+        "created_at": "2025-08-11T17:06:32.637628",
+        "pincode": null,
+        "locality": null,
+        "availability_date": null,
+        "preferred_shift": null,
+        "expected_salary": null,
+        "languages": [],
+        "other_languages": [],
+        "has_two_wheeler": null,
+        "total_experience_months": null,
+        "conversation_completed": false,
+        "turn_count": 1
+      },
+      "audio_variant": "noisy",
+      "tester_llm_entities": null
+    },
+    {
+      "turn_number": 0,
+      "step_name": "pincode",
+      "audio_file": "pin_diverse_002",
+      "asr_text": "मैं बैंगलोर में रहता हूं। मेरा पिन कोड है है पंडरी लेन जो 38।",
+      "asr_confidence": 0.5913649797439575,
+      "bot_response": "Aap kahan rehte hain? Apna pincode ya area batayiye।",
+      "latency_ms": 4178.8976192474365,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "pincode": "110001"
+      },
+      "current_field": "pincode",
+      "candidate_profile": {
+        "candidate_id": "0e43173e-5830-4e0f-b1f8-de836c1e256f",
+        "created_at": "2025-08-11T17:06:32.637628",
+        "pincode": null,
+        "locality": "Bangalore",
+        "availability_date": null,
+        "preferred_shift": null,
+        "expected_salary": null,
+        "languages": [],
+        "other_languages": [],
+        "has_two_wheeler": null,
+        "total_experience_months": null,
+        "conversation_completed": false,
+        "turn_count": 2
+      },
+      "audio_variant": "clean",
+      "tester_llm_entities": {
+        "pincode": "560001"
+      }
+    },
+    {
+      "turn_number": 0,
+      "step_name": "pincode",
+      "audio_file": "tester_text_pincode",
+      "asr_text": "560001",
+      "asr_confidence": 0.95,
+      "bot_response": "",
+      "latency_ms": 0.0,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {},
+      "current_field": "",
+      "candidate_profile": {
+        "candidate_id": "0e43173e-5830-4e0f-b1f8-de836c1e256f",
+        "created_at": "2025-08-11T17:06:32.637628",
+        "pincode": "560001",
+        "locality": null,
+        "availability_date": null,
+        "preferred_shift": null,
+        "expected_salary": null,
+        "languages": [],
+        "other_languages": [],
+        "has_two_wheeler": null,
+        "total_experience_months": null,
+        "conversation_completed": false,
+        "turn_count": 3
+      },
+      "audio_variant": "text",
+      "tester_llm_entities": null
+    },
+    {
+      "turn_number": 0,
+      "step_name": "has_two_wheeler",
+      "audio_file": "vehicle_diverse_001",
+      "asr_text": "नहीं भाई, मेरे पास बाइक नहीं है।",
+      "asr_confidence": 0.4975605607032776,
+      "bot_response": "Aapki expected salary नहीं rupees per month hai, sahi?",
+      "latency_ms": 840.1672840118408,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "has_two_wheeler": false
+      },
+      "current_field": "expected_salary",
+      "candidate_profile": {
+        "candidate_id": "0e43173e-5830-4e0f-b1f8-de836c1e256f",
+        "created_at": "2025-08-11T17:06:32.637628",
+        "pincode": "560001",
+        "locality": null,
+        "availability_date": null,
+        "preferred_shift": null,
+        "expected_salary": null,
+        "languages": [],
+        "other_languages": [],
+        "has_two_wheeler": null,
+        "total_experience_months": null,
+        "conversation_completed": false,
+        "turn_count": 4
+      },
+      "audio_variant": "noisy",
+      "tester_llm_entities": null
+    },
+    {
+      "turn_number": 0,
+      "step_name": "expected_salary",
+      "audio_file": "sal_diverse_001",
+      "asr_text": "Bye main 25000 per month expect karta hun.",
+      "asr_confidence": 0.5849643349647522,
+      "bot_response": "Aapke paas two wheeler True hai, right?",
+      "latency_ms": 1564.8653507232666,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "expected_salary": 25000
+      },
+      "current_field": "has_two_wheeler",
+      "candidate_profile": {
+        "candidate_id": "0e43173e-5830-4e0f-b1f8-de836c1e256f",
+        "created_at": "2025-08-11T17:06:32.637628",
+        "pincode": "560001",
+        "locality": null,
+        "availability_date": null,
+        "preferred_shift": null,
+        "expected_salary": 25000,
+        "languages": [],
+        "other_languages": [],
+        "has_two_wheeler": null,
+        "total_experience_months": null,
+        "conversation_completed": false,
+        "turn_count": 5
+      },
+      "audio_variant": "noisy",
+      "tester_llm_entities": null
+    },
+    {
+      "turn_number": 0,
+      "step_name": "has_two_wheeler",
+      "audio_file": "vehicle_diverse_002",
+      "asr_text": "हां यार बाइक है मेरे पास।",
+      "asr_confidence": 0.7910169959068298,
+      "bot_response": "Aap kaunsi languages bol sakte hain? Hindi, English ya koi aur?",
+      "latency_ms": 2393.847703933716,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "has_two_wheeler": false
+      },
+      "current_field": "languages",
+      "candidate_profile": {
+        "candidate_id": "0e43173e-5830-4e0f-b1f8-de836c1e256f",
+        "created_at": "2025-08-11T17:06:32.637628",
+        "pincode": "560001",
+        "locality": null,
+        "availability_date": "soon",
+        "preferred_shift": null,
+        "expected_salary": 25000,
+        "languages": [],
+        "other_languages": [],
+        "has_two_wheeler": true,
+        "total_experience_months": null,
+        "conversation_completed": false,
+        "turn_count": 6
+      },
+      "audio_variant": "clean",
+      "tester_llm_entities": null
+    },
+    {
+      "turn_number": 0,
+      "step_name": "languages",
+      "audio_file": "lang_diverse_001",
+      "asr_text": "मां हिंदी और इंग्लिश दोनों बोल सकता हूं फ्लूएंटली!",
+      "asr_confidence": 0.5067064762115479,
+      "bot_response": "Aap hindi, english bol sakte hain, confirm hai?",
+      "latency_ms": 1956.8719863891602,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "languages": [
+          "hindi",
+          "english"
+        ]
+      },
+      "current_field": "languages",
+      "candidate_profile": {
+        "candidate_id": "0e43173e-5830-4e0f-b1f8-de836c1e256f",
+        "created_at": "2025-08-11T17:06:32.637628",
+        "pincode": "560001",
+        "locality": null,
+        "availability_date": "soon",
+        "preferred_shift": null,
+        "expected_salary": 25000,
+        "languages": [],
+        "other_languages": [],
+        "has_two_wheeler": true,
+        "total_experience_months": null,
+        "conversation_completed": false,
+        "turn_count": 7
+      },
+      "audio_variant": "noisy",
+      "tester_llm_entities": null
+    },
+    {
+      "turn_number": 0,
+      "step_name": "languages",
+      "audio_file": "lang_diverse_002",
+      "asr_text": "इंग्लिश कनाडा तमिल तीनों लैंग्वेज आती हैं मुझे।",
+      "asr_confidence": 0.6300294995307922,
+      "bot_response": "Aap flexible shift prefer karte hain, right?",
+      "latency_ms": 2839.8797512054443,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "languages": [
+          "hindi",
+          "english"
+        ]
+      },
+      "current_field": "preferred_shift",
+      "candidate_profile": {
+        "candidate_id": "0e43173e-5830-4e0f-b1f8-de836c1e256f",
+        "created_at": "2025-08-11T17:06:32.637628",
+        "pincode": "560001",
+        "locality": null,
+        "availability_date": "soon",
+        "preferred_shift": null,
+        "expected_salary": 25000,
+        "languages": [
+          "english",
+          "tamil"
+        ],
+        "other_languages": [
+          "Kannada"
+        ],
+        "has_two_wheeler": true,
+        "total_experience_months": null,
+        "conversation_completed": false,
+        "turn_count": 8
+      },
+      "audio_variant": "clean",
+      "tester_llm_entities": null
+    },
+    {
+      "turn_number": 0,
+      "step_name": "preferred_shift",
+      "audio_file": "shift_diverse_001",
+      "asr_text": "मैं मॉर्निंग शिफ्ट प्रेफर करता हूं। सुबह का टाइम अच्छा लगता।",
+      "asr_confidence": 0.58725905418396,
+      "bot_response": "Aapka total experience 0 hai, correct?",
+      "latency_ms": 2174.135684967041,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "preferred_shift": "morning"
+      },
+      "current_field": "total_experience_months",
+      "candidate_profile": {
+        "candidate_id": "0e43173e-5830-4e0f-b1f8-de836c1e256f",
+        "created_at": "2025-08-11T17:06:32.637628",
+        "pincode": "560001",
+        "locality": null,
+        "availability_date": "soon",
+        "preferred_shift": "morning",
+        "expected_salary": 25000,
+        "languages": [
+          "english",
+          "tamil"
+        ],
+        "other_languages": [
+          "Kannada"
+        ],
+        "has_two_wheeler": true,
+        "total_experience_months": null,
+        "conversation_completed": false,
+        "turn_count": 9
+      },
+      "audio_variant": "noisy",
+      "tester_llm_entities": null
+    },
+    {
+      "turn_number": 0,
+      "step_name": "total_experience_months",
+      "audio_file": "exp_diverse_001",
+      "asr_text": "में दो महीने से वेयरहाउस में काम कर रहा हूं।",
+      "asr_confidence": 0.4319817125797272,
+      "bot_response": "Samajh nahi aaya. Kya saari information sahi hai? Ya kuch change karna hai?",
+      "latency_ms": 3273.2913494110107,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "total_experience_months": 2
+      },
+      "current_field": "total_experience_months",
+      "candidate_profile": {
+        "candidate_id": "0e43173e-5830-4e0f-b1f8-de836c1e256f",
+        "created_at": "2025-08-11T17:06:32.637628",
+        "pincode": "560001",
+        "locality": null,
+        "availability_date": "soon",
+        "preferred_shift": "morning",
+        "expected_salary": 25000,
+        "languages": [
+          "english",
+          "tamil"
+        ],
+        "other_languages": [
+          "Kannada"
+        ],
+        "has_two_wheeler": true,
+        "total_experience_months": 2,
+        "conversation_completed": false,
+        "turn_count": 10
+      },
+      "audio_variant": "noisy",
+      "tester_llm_entities": null
+    },
+    {
+      "turn_number": 0,
+      "step_name": "confirmation",
+      "audio_file": "tester_text_confirm",
+      "asr_text": "haan",
+      "asr_confidence": 0.95,
+      "bot_response": "",
+      "latency_ms": 0.0,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {},
+      "current_field": "",
+      "candidate_profile": {
+        "candidate_id": "0e43173e-5830-4e0f-b1f8-de836c1e256f",
+        "created_at": "2025-08-11T17:06:32.637628",
+        "pincode": "560001",
+        "locality": null,
+        "availability_date": "soon",
+        "preferred_shift": "morning",
+        "expected_salary": 25000,
+        "languages": [
+          "english",
+          "tamil"
+        ],
+        "other_languages": [
+          "Kannada"
+        ],
+        "has_two_wheeler": true,
+        "total_experience_months": 2,
+        "conversation_completed": true,
+        "turn_count": 11
+      },
+      "audio_variant": "text",
+      "tester_llm_entities": null
+    }
+  ],
+  "completed_steps": 7,
+  "total_steps": 7,
+  "reached_job_matching": true,
+  "final_bot_response": "",
+  "conversation_completed": true,
+  "total_latency_ms": 14868.931770324707,
+  "avg_turn_latency_ms": 1858.6164712905884,
+  "avg_confidence": 0.6171786278486252,
+  "confidence_range": [
+    0.38578617572784424,
+    0.95
+  ],
+  "asr_cost_usd": 0.019037746875,
+  "tts_cost_usd": 0.007055999999999999,
+  "total_cost_usd": 0.026093746875,
+  "entity_extraction_metrics": {
+    "per_slot": {
+      "pincode": {
+        "tp": 0,
+        "fp": 1,
+        "fn": 1,
+        "f1": 0.0,
+        "expected": "110001",
+        "predicted": "560001",
+        "normalized_expected": "110001",
+        "normalized_predicted": "560001"
+      },
+      "preferred_shift": {
+        "tp": 1,
+        "fp": 0,
+        "fn": 0,
+        "f1": 1.0,
+        "expected": "morning",
+        "predicted": "morning",
+        "normalized_expected": "morning",
+        "normalized_predicted": "morning"
+      },
+      "expected_salary": {
+        "tp": 1,
+        "fp": 0,
+        "fn": 0,
+        "f1": 1.0,
+        "expected": 25000,
+        "predicted": 25000,
+        "normalized_expected": 25000,
+        "normalized_predicted": 25000
+      },
+      "languages": {
+        "tp": 0,
+        "fp": 1,
+        "fn": 1,
+        "f1": 0.0,
+        "expected": [
+          "hindi",
+          "english"
+        ],
+        "predicted": [
+          "english",
+          "tamil",
+          "Kannada"
+        ],
+        "normalized_expected": [
+          "english",
+          "hindi"
+        ],
+        "normalized_predicted": [
+          "english",
+          "tamil",
+          "kannada"
+        ]
+      },
+      "has_two_wheeler": {
+        "tp": 0,
+        "fp": 1,
+        "fn": 1,
+        "f1": 0.0,
+        "expected": false,
+        "predicted": true,
+        "normalized_expected": false,
+        "normalized_predicted": true
+      },
+      "total_experience_months": {
+        "tp": 1,
+        "fp": 0,
+        "fn": 0,
+        "f1": 1.0,
+        "expected": 2,
+        "predicted": 2,
+        "normalized_expected": 2,
+        "normalized_predicted": 2
+      }
+    },
+    "macro_f1": 0.5,
+    "micro_f1": 0.5,
+    "total_tp": 3,
+    "total_fp": 3,
+    "total_fn": 3
+  }
+}

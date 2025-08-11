@@ -53,7 +53,7 @@ class Settings(BaseSettings):
     confidence_threshold: float = 0.7
 
     # Job Matching
-    max_distance_km: int = 50
+    max_distance_km: int = 70
     salary_tolerance_percent: int = 20
 
     # Optional: ffmpeg/probe overrides for Windows

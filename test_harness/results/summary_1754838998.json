@@ -1,0 +1,86 @@
+{
+  "entity_f1": {
+    "per_slot": {
+      "pincode": {
+        "tp": 3,
+        "fp": 1,
+        "fn": 1,
+        "f1": 0.75
+      },
+      "availability_date": {
+        "tp": 1,
+        "fp": 3,
+        "fn": 3,
+        "f1": 0.25
+      },
+      "preferred_shift": {
+        "tp": 2,
+        "fp": 2,
+        "fn": 2,
+        "f1": 0.5
+      },
+      "expected_salary": {
+        "tp": 4,
+        "fp": 1,
+        "fn": 1,
+        "f1": 0.8000000000000002
+      },
+      "languages": {
+        "tp": 4,
+        "fp": 0,
+        "fn": 0,
+        "f1": 1.0
+      },
+      "has_two_wheeler": {
+        "tp": 3,
+        "fp": 1,
+        "fn": 1,
+        "f1": 0.75
+      },
+      "total_experience_months": {
+        "tp": 3,
+        "fp": 0,
+        "fn": 0,
+        "f1": 1.0
+      },
+      "confirmation": {
+        "tp": 1,
+        "fp": 0,
+        "fn": 1,
+        "f1": 0.6666666666666666
+      }
+    },
+    "macro_f1": 0.7145833333333333,
+    "target_pass": false
+  },
+  "slot_completion": {
+    "per_persona": [
+      {
+        "persona": "English Man (Professional)",
+        "completion_rate": 1.0,
+        "turns_used": 6,
+        "pass": true
+      },
+      {
+        "persona": "Calm Hindi Speaker",
+        "completion_rate": 0.875,
+        "turns_used": 7,
+        "pass": true
+      },
+      {
+        "persona": "Energetic Hindi Speaker",
+        "completion_rate": 1.0,
+        "turns_used": 8,
+        "pass": true
+      },
+      {
+        "persona": "Expressive Hindi Speaker",
+        "completion_rate": 0.875,
+        "turns_used": 8,
+        "pass": true
+      }
+    ],
+    "overall_completion_rate": 0.9375,
+    "target_pass": true
+  }
+}

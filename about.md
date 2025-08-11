@@ -278,10 +278,9 @@ async def _generate_intelligent_response(self, user_text, confidence, candidate,
    - Real-time streaming capability
    - Automatic language detection
 
-2. **Hugging Face Whisper** (fallback)
-   - Offline processing capability
-   - No API dependency
+2. **Eleven Labs** (fallback)
    - Good general accuracy
+   - Slightly slower
 
 3. **SpeechRecognition Library** (last resort)
    - Basic functionality

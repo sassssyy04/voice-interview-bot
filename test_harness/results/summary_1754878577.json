@@ -1,0 +1,135 @@
+{
+  "entity_f1": {
+    "per_slot": {
+      "pincode": {
+        "tp": 0,
+        "fp": 4,
+        "fn": 4,
+        "f1": 0.0
+      },
+      "availability_date": {
+        "tp": 1,
+        "fp": 3,
+        "fn": 3,
+        "f1": 0.25
+      },
+      "preferred_shift": {
+        "tp": 1,
+        "fp": 3,
+        "fn": 3,
+        "f1": 0.25
+      },
+      "expected_salary": {
+        "tp": 2,
+        "fp": 3,
+        "fn": 3,
+        "f1": 0.4000000000000001
+      },
+      "languages": {
+        "tp": 1,
+        "fp": 2,
+        "fn": 3,
+        "f1": 0.28571428571428575
+      },
+      "has_two_wheeler": {
+        "tp": 3,
+        "fp": 1,
+        "fn": 1,
+        "f1": 0.75
+      },
+      "total_experience_months": {
+        "tp": 1,
+        "fp": 3,
+        "fn": 3,
+        "f1": 0.25
+      },
+      "confirmation": {
+        "tp": 2,
+        "fp": 0,
+        "fn": 1,
+        "f1": 0.8
+      }
+    },
+    "macro_f1": 0.3732142857142857,
+    "target_pass": false
+  },
+  "slot_completion": {
+    "per_persona": [
+      {
+        "persona": "English Man (Professional)",
+        "completion_rate": 0.875,
+        "turns_used": 8,
+        "pass": true
+      },
+      {
+        "persona": "Calm Hindi Speaker",
+        "completion_rate": 1.0,
+        "turns_used": 8,
+        "pass": true
+      },
+      {
+        "persona": "Energetic Hindi Speaker",
+        "completion_rate": 1.0,
+        "turns_used": 7,
+        "pass": true
+      },
+      {
+        "persona": "Expressive Hindi Speaker",
+        "completion_rate": 0.75,
+        "turns_used": 8,
+        "pass": false
+      }
+    ],
+    "overall_completion_rate": 0.90625,
+    "target_pass": true
+  },
+  "ranking": {
+    "per_persona": [
+      {
+        "persona": "English Man (Professional)",
+        "candidate_id": "93443e03-e665-4550-b275-8c84215a5f0e",
+        "available": true,
+        "num_matches": 3,
+        "gold_count": 3,
+        "precision": 0.0,
+        "recall": 0.0,
+        "precision_at_3": 0.0,
+        "recall_at_3": 0.0,
+        "ndcg_at_3": 0.0
+      },
+      {
+        "persona": "Calm Hindi Speaker",
+        "candidate_id": "a9ae4986-42e0-4548-a3b1-8dfeb897f051",
+        "available": true,
+        "num_matches": 0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "precision_at_3": 0.0,
+        "recall_at_3": 0.0,
+        "ndcg_at_3": 0.0
+      },
+      {
+        "persona": "Energetic Hindi Speaker",
+        "candidate_id": "889e654b-4a50-41ba-9d40-e74c6c7365e8",
+        "available": true,
+        "num_matches": 0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "precision_at_3": 0.0,
+        "recall_at_3": 0.0,
+        "ndcg_at_3": 0.0
+      },
+      {
+        "persona": "Expressive Hindi Speaker",
+        "candidate_id": "62ba3966-b61f-466c-ac09-5bcda5643b47",
+        "available": false,
+        "reason": "conversation_incomplete"
+      }
+    ],
+    "overall": {
+      "macro_precision_at_3": 0.0,
+      "macro_recall_at_3": 0.0,
+      "macro_ndcg_at_3": 0.0
+    }
+  }
+}

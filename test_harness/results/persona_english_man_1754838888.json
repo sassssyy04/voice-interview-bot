@@ -1,0 +1,226 @@
+{
+  "persona_name": "English Man (Professional)",
+  "voice_id": "LruHrtVF6PSyGItzMNHS",
+  "noise_levels": [
+    "clean",
+    "low"
+  ],
+  "candidate_id": "762ea5a3-9857-41b6-aaf5-c09e406d378a",
+  "start_time": "2025-08-10T23:14:12.818950",
+  "end_time": "2025-08-10T23:14:48.757637",
+  "turns": [
+    {
+      "turn_number": 0,
+      "step_name": "pincode",
+      "audio_file": "pin_diverse_001",
+      "asr_text": "मैं दिल्ली में रहता हूं, मेरा पिन कोड है।",
+      "asr_confidence": 0.504328191280365,
+      "bot_response": "Aapki expected salary 20000 rupees per month hai, sahi?",
+      "latency_ms": 3770.387649536133,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "pincode": "110001"
+      },
+      "current_field": "expected_salary",
+      "candidate_profile": {
+        "candidate_id": "762ea5a3-9857-41b6-aaf5-c09e406d378a",
+        "created_at": "2025-08-10T23:14:13.267313",
+        "pincode": "110001",
+        "locality": "Delhi",
+        "availability_date": null,
+        "preferred_shift": null,
+        "expected_salary": null,
+        "languages": [],
+        "other_languages": [],
+        "has_two_wheeler": null,
+        "total_experience_months": null,
+        "conversation_completed": false,
+        "turn_count": 2
+      },
+      "audio_variant": "noisy"
+    },
+    {
+      "turn_number": 0,
+      "step_name": "expected_salary",
+      "audio_file": "sal_diverse_001",
+      "asr_text": "भाई मैं 15000 पर मंथ एक्सपेक्ट करता हूं।",
+      "asr_confidence": 0.565009593963623,
+      "bot_response": "Aapke paas two wheeler True hai, right?",
+      "latency_ms": 1037.539005279541,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "expected_salary": 15000
+      },
+      "current_field": "has_two_wheeler",
+      "candidate_profile": {
+        "candidate_id": "762ea5a3-9857-41b6-aaf5-c09e406d378a",
+        "created_at": "2025-08-10T23:14:13.267313",
+        "pincode": "110001",
+        "locality": "Delhi",
+        "availability_date": null,
+        "preferred_shift": null,
+        "expected_salary": 15000,
+        "languages": [],
+        "other_languages": [],
+        "has_two_wheeler": null,
+        "total_experience_months": null,
+        "conversation_completed": false,
+        "turn_count": 3
+      },
+      "audio_variant": "noisy"
+    },
+    {
+      "turn_number": 0,
+      "step_name": "has_two_wheeler",
+      "audio_file": "vehicle_diverse_001",
+      "asr_text": "हां भाई मेरे पास बाइक है बजाज पल्सर।",
+      "asr_confidence": 0.6262210011482239,
+      "bot_response": "Aap  bol sakte hain, confirm hai?",
+      "latency_ms": 2069.8771476745605,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "has_two_wheeler": true
+      },
+      "current_field": "languages",
+      "candidate_profile": {
+        "candidate_id": "762ea5a3-9857-41b6-aaf5-c09e406d378a",
+        "created_at": "2025-08-10T23:14:13.267313",
+        "pincode": "110001",
+        "locality": "Delhi",
+        "availability_date": null,
+        "preferred_shift": null,
+        "expected_salary": 15000,
+        "languages": [],
+        "other_languages": [],
+        "has_two_wheeler": true,
+        "total_experience_months": null,
+        "conversation_completed": false,
+        "turn_count": 4
+      },
+      "audio_variant": "noisy"
+    },
+    {
+      "turn_number": 0,
+      "step_name": "languages",
+      "audio_file": "lang_diverse_001",
+      "asr_text": "मैं हिंदी और इंग्लिश दोनों को सकता हूं फ्लूएंटली!",
+      "asr_confidence": 0.5572012662887573,
+      "bot_response": "Toh aap soon se start kar sakte hain, correct?",
+      "latency_ms": 2835.1118564605713,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "languages": [
+          "hindi",
+          "english"
+        ]
+      },
+      "current_field": "availability_date",
+      "candidate_profile": {
+        "candidate_id": "762ea5a3-9857-41b6-aaf5-c09e406d378a",
+        "created_at": "2025-08-10T23:14:13.267313",
+        "pincode": "110001",
+        "locality": "Delhi",
+        "availability_date": null,
+        "preferred_shift": null,
+        "expected_salary": 15000,
+        "languages": [
+          "hindi",
+          "english"
+        ],
+        "other_languages": [],
+        "has_two_wheeler": true,
+        "total_experience_months": null,
+        "conversation_completed": false,
+        "turn_count": 5
+      },
+      "audio_variant": "noisy"
+    },
+    {
+      "turn_number": 0,
+      "step_name": "availability_date",
+      "audio_file": "avail_diverse_001",
+      "asr_text": "मैं इम्मीडिएटली स्टार्ट कर सकता हूं भाई आज से भी।",
+      "asr_confidence": 0.7929165959358215,
+      "bot_response": "Aap kaunse time pe kaam karna chahte hain? Morning, evening ya night?",
+      "latency_ms": 2941.046953201294,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "availability_date": "immediately"
+      },
+      "current_field": "preferred_shift",
+      "candidate_profile": {
+        "candidate_id": "762ea5a3-9857-41b6-aaf5-c09e406d378a",
+        "created_at": "2025-08-10T23:14:13.267313",
+        "pincode": "110001",
+        "locality": "Delhi",
+        "availability_date": "today",
+        "preferred_shift": null,
+        "expected_salary": 15000,
+        "languages": [
+          "hindi",
+          "english"
+        ],
+        "other_languages": [],
+        "has_two_wheeler": true,
+        "total_experience_months": 24,
+        "conversation_completed": false,
+        "turn_count": 6
+      },
+      "audio_variant": "noisy"
+    },
+    {
+      "turn_number": 0,
+      "step_name": "preferred_shift",
+      "audio_file": "shift_diverse_001",
+      "asr_text": "मैं मॉर्निंग शिफ्ट प्रेफर करता हूं। सुबह का टाइम अच्छा लगता है।",
+      "asr_confidence": 0.5241220593452454,
+      "bot_response": "Tumhara top 3 job matches hain: \n1. Delivery Executive @ QuickDeliver: Salary ₹15,000-₹22,000, subah aur shaam shift, 0.0km doori, 2-wheeler chahiye.\n2. Construction Helper @ BuildRight: Salary ₹16,000-₹24,000, subah shift, 0.0km doori, 2-wheeler nahi chahiye.\n3. Shop Assistant @ RetailMart: Salary ₹14,000-₹20,000, subah aur shaam shift, 0.1km doori, 2-wheeler nahi chahiye. Kaunsa job sunna pasand karoge?",
+      "latency_ms": 5340.607643127441,
+      "success": true,
+      "expected_question": "",
+      "extracted_entities": {
+        "preferred_shift": "morning"
+      },
+      "current_field": "preferred_shift",
+      "candidate_profile": {
+        "candidate_id": "762ea5a3-9857-41b6-aaf5-c09e406d378a",
+        "created_at": "2025-08-10T23:14:13.267313",
+        "pincode": "110001",
+        "locality": "Delhi",
+        "availability_date": "today",
+        "preferred_shift": "morning",
+        "expected_salary": 15000,
+        "languages": [
+          "hindi",
+          "english"
+        ],
+        "other_languages": [],
+        "has_two_wheeler": true,
+        "total_experience_months": 24,
+        "conversation_completed": true,
+        "turn_count": 8
+      },
+      "audio_variant": "noisy"
+    }
+  ],
+  "completed_steps": 6,
+  "total_steps": 8,
+  "reached_job_matching": true,
+  "final_bot_response": "Tumhara top 3 job matches hain: \n1. Delivery Executive @ QuickDeliver: Salary ₹15,000-₹22,000, subah aur shaam shift, 0.0km doori, 2-wheeler chahiye.\n2. Construction Helper @ BuildRight: Salary ₹16,000-₹24,000, subah shift, 0.0km doori, 2-wheeler nahi chahiye.\n3. Shop Assistant @ RetailMart: Salary ₹14,000-₹20,000, subah aur shaam shift, 0.1km doori, 2-wheeler nahi chahiye. Kaunsa job sunna pasand karoge?",
+  "conversation_completed": true,
+  "total_latency_ms": 17994.57025527954,
+  "avg_turn_latency_ms": 2999.0950425465903,
+  "avg_confidence": 0.594966451327006,
+  "confidence_range": [
+    0.504328191280365,
+    0.7929165959358215
+  ],
+  "asr_cost_usd": 0.020155274999999997,
+  "tts_cost_usd": 0.0104,
+  "total_cost_usd": 0.030555274999999996
+}
