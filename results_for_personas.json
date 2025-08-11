@@ -1,0 +1,33 @@
+
+🔍 ENTITY VALUES - Expressive Hindi Speaker
+============================================================
+pincode: expected=620001, derived=None ✗
+availability_date: expected=soon, derived=today ✓
+preferred_shift: expected=night, derived=morning ✗
+expected_salary: expected=10000, derived=10000 ✓
+languages: expected=['tamil'], derived=['tamil'] ✓
+has_two_wheeler: expected=True, derived=False ✗
+total_experience_months: expected=0, derived=0 ✓
+
+Macro F1: 0.571
+
+============================================================
+
+🔍 ENTITY VALUES - Energetic Hindi Speaker
+============================================================
+pincode: expected=600001, derived=600001 ✓
+availability_date: expected=next week, derived=today ✗
+preferred_shift: expected=flexible, derived=flexible ✓
+expected_salary: expected=50000, derived=50000 ✓
+languages: expected=['Tamil', 'English'], derived=['tamil', 'English'] ✓
+has_two_wheeler: expected=True, derived=True ✓
+total_experience_months: expected=24, derived=12 ✗
+
+Macro F1: 0.714
+============================================================
+
+🎯 JOB MATCHING - Energetic Hindi Speaker
+============================================================
+Matched jobs: ['GLD_EH_003', 'GLD_EH_002', 'GLD_EH_001']
+Precision: 1.000  Recall: 1.000  F1: 1.000
+============================================================

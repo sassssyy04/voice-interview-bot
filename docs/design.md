@@ -4,6 +4,8 @@
 This project implements a **multi-slot, speech-driven job matching pipeline** that interacts with users via voice prompts, extracts structured entities from their responses, and matches them to relevant jobs based on weighted criteria.
 
 Demo: https://drive.google.com/file/d/1g0ux-SUoIaGy9557SBGvYuTzfvRDUnwK/view?usp=sharing
+Final metrics summary for generated personas using audio files can be found at **results_for_personas.json**
+Generated audio files can be found at **test_harness\generated_audio**
 
 The system:
 1. Presents spoken prompts to the user.
@@ -13,6 +15,17 @@ The system:
 5. Matches the completed profile against a job database using a scoring formula.
 
 ---
+## how test files were generated
+- set seed example for jobs.json and generated using aws partyrock
+- for audio files, created utterances.yaml
+- Created **test audio** to validate the pipeline:
+    **4 personas**, each with:
+    **3 golden jobs** defined in `jobs.json` (ground truth matches).
+- Audio generated using **ElevenLabs**:
+  - 4 different **accents** and **voice IDs**.
+- **Noise simulation** for 2 personas:
+  - Added white noise at controlled SNR using:
+
 
 ## Architecture
 
@@ -68,16 +81,7 @@ Details for calculating each component are documented in **job_match.md**.
 
 ---
 
-## Test Data
 
-We created **test audio** to validate the pipeline:
-
-- **4 personas**, each with:
-  - **3 golden jobs** defined in `jobs.json` (ground truth matches).
-- Audio generated using **ElevenLabs**:
-  - 4 different **accents** and **voice IDs**.
-- **Noise simulation** for 2 personas:
-  - Added white noise at controlled SNR using:
 
 ```python
 import os

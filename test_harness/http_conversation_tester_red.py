@@ -346,7 +346,7 @@ class HTTPPersonaConversationTester:
                 if exp_int is not None and pred_int is not None:
                     if abs(exp_int - pred_int) <= 10:
                         return 1, 0, 0
-        else:
+                    else:
                         return 0, 1, 1
                 # Fallback to exact string comparison if not numeric
                 if str(exp).strip() == str(pred).strip():

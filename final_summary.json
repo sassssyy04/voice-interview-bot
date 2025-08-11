@@ -1,0 +1,335 @@
+{
+  "per_persona": {
+    "english_man": {
+      "persona_name": "English Man (Professional)",
+      "entities": {
+        "pincode": {
+          "expected": "110001",
+          "derived": null,
+          "tp": 0,
+          "fp": 1,
+          "fn": 1,
+          "f1": 0.0
+        },
+        "availability_date": {
+          "expected": null,
+          "derived": null,
+          "tp": 1,
+          "fp": 0,
+          "fn": 0,
+          "f1": 1.0
+        },
+        "preferred_shift": {
+          "expected": null,
+          "derived": null,
+          "tp": 1,
+          "fp": 0,
+          "fn": 0,
+          "f1": 1.0
+        },
+        "expected_salary": {
+          "expected": null,
+          "derived": null,
+          "tp": 1,
+          "fp": 0,
+          "fn": 0,
+          "f1": 1.0
+        },
+        "languages": {
+          "expected": null,
+          "derived": null,
+          "tp": 1,
+          "fp": 0,
+          "fn": 0,
+          "f1": 1.0
+        },
+        "has_two_wheeler": {
+          "expected": null,
+          "derived": null,
+          "tp": 1,
+          "fp": 0,
+          "fn": 0,
+          "f1": 1.0
+        },
+        "total_experience_months": {
+          "expected": null,
+          "derived": null,
+          "tp": 1,
+          "fp": 0,
+          "fn": 0,
+          "f1": 1.0
+        }
+      },
+      "macro_f1": 0.8571428571428571,
+      "micro_f1": 0.8571428571428571,
+      "job_matching": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "tp": 0,
+        "fp": 0,
+        "fn": 0
+      },
+      "matched_job_ids": [],
+      "completed": false
+    },
+    "calm_hindi": {
+      "persona_name": "Calm Hindi Speaker",
+      "entities": {
+        "pincode": {
+          "expected": "560001",
+          "derived": "560001",
+          "tp": 1,
+          "fp": 0,
+          "fn": 0,
+          "f1": 1.0
+        },
+        "availability_date": {
+          "expected": "tomorrow",
+          "derived": "tomorrow",
+          "tp": 1,
+          "fp": 0,
+          "fn": 0,
+          "f1": 1.0
+        },
+        "preferred_shift": {
+          "expected": "evening",
+          "derived": "evening",
+          "tp": 1,
+          "fp": 0,
+          "fn": 0,
+          "f1": 1.0
+        },
+        "expected_salary": {
+          "expected": 60000,
+          "derived": 46666,
+          "tp": 0,
+          "fp": 1,
+          "fn": 1,
+          "f1": 0.0
+        },
+        "languages": {
+          "expected": [
+            "English",
+            "Kannada",
+            "Tamil"
+          ],
+          "derived": [
+            "english",
+            "tamil",
+            "Tamil"
+          ],
+          "tp": 0,
+          "fp": 1,
+          "fn": 1,
+          "f1": 0.0
+        },
+        "has_two_wheeler": {
+          "expected": true,
+          "derived": false,
+          "tp": 0,
+          "fp": 1,
+          "fn": 1,
+          "f1": 0.0
+        },
+        "total_experience_months": {
+          "expected": 12,
+          "derived": 12,
+          "tp": 1,
+          "fp": 0,
+          "fn": 0,
+          "f1": 1.0
+        }
+      },
+      "macro_f1": 0.5714285714285714,
+      "micro_f1": 0.5714285714285714,
+      "job_matching": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "tp": 0,
+        "fp": 0,
+        "fn": 0
+      },
+      "matched_job_ids": [],
+      "completed": false
+    },
+    "energetic_hindi": {
+      "persona_name": "Energetic Hindi Speaker",
+      "entities": {
+        "pincode": {
+          "expected": "600001",
+          "derived": "600001",
+          "tp": 1,
+          "fp": 0,
+          "fn": 0,
+          "f1": 1.0
+        },
+        "availability_date": {
+          "expected": "next week",
+          "derived": "today",
+          "tp": 0,
+          "fp": 1,
+          "fn": 1,
+          "f1": 0.0
+        },
+        "preferred_shift": {
+          "expected": "flexible",
+          "derived": "flexible",
+          "tp": 1,
+          "fp": 0,
+          "fn": 0,
+          "f1": 1.0
+        },
+        "expected_salary": {
+          "expected": 50000,
+          "derived": 50000,
+          "tp": 1,
+          "fp": 0,
+          "fn": 0,
+          "f1": 1.0
+        },
+        "languages": {
+          "expected": [
+            "Tamil",
+            "English"
+          ],
+          "derived": [
+            "tamil",
+            "English"
+          ],
+          "tp": 1,
+          "fp": 0,
+          "fn": 0,
+          "f1": 1.0
+        },
+        "has_two_wheeler": {
+          "expected": true,
+          "derived": true,
+          "tp": 1,
+          "fp": 0,
+          "fn": 0,
+          "f1": 1.0
+        },
+        "total_experience_months": {
+          "expected": 24,
+          "derived": 12,
+          "tp": 0,
+          "fp": 1,
+          "fn": 1,
+          "f1": 0.0
+        }
+      },
+      "macro_f1": 0.7142857142857143,
+      "micro_f1": 0.7142857142857143,
+      "job_matching": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "tp": 3,
+        "fp": 0,
+        "fn": 0
+      },
+      "matched_job_ids": [
+        "GLD_EH_003",
+        "GLD_EH_002",
+        "GLD_EH_001"
+      ],
+      "completed": true
+    },
+    "expressive_hindi": {
+      "persona_name": "Expressive Hindi Speaker",
+      "entities": {
+        "pincode": {
+          "expected": "620001",
+          "derived": null,
+          "tp": 0,
+          "fp": 1,
+          "fn": 1,
+          "f1": 0.0
+        },
+        "availability_date": {
+          "expected": "soon",
+          "derived": "today",
+          "tp": 1,
+          "fp": 0,
+          "fn": 0,
+          "f1": 1.0
+        },
+        "preferred_shift": {
+          "expected": "night",
+          "derived": "morning",
+          "tp": 0,
+          "fp": 1,
+          "fn": 1,
+          "f1": 0.0
+        },
+        "expected_salary": {
+          "expected": 10000,
+          "derived": 10000,
+          "tp": 1,
+          "fp": 0,
+          "fn": 0,
+          "f1": 1.0
+        },
+        "languages": {
+          "expected": [
+            "tamil"
+          ],
+          "derived": [
+            "tamil"
+          ],
+          "tp": 1,
+          "fp": 0,
+          "fn": 0,
+          "f1": 1.0
+        },
+        "has_two_wheeler": {
+          "expected": true,
+          "derived": true,
+          "tp": 1,
+          "fp": 0,
+          "fn": 0,
+          "f1": 1.0
+        },
+        "total_experience_months": {
+          "expected": 0,
+          "derived": 0,
+          "tp": 1,
+          "fp": 0,
+          "fn": 0,
+          "f1": 1.0
+        }
+      },
+      "macro_f1": 0.7142857142857143,
+      "micro_f1": 0.7142857142857143,
+      "job_matching": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "tp": 0,
+        "fp": 0,
+        "fn": 0
+      },
+      "matched_job_ids": [],
+      "completed": false
+    }
+  },
+  "overall": {
+    "entity": {
+      "macro_f1_avg": 0.7142857142857143,
+      "micro_f1": 0.7142857142857143,
+      "tp": 20,
+      "fp": 8,
+      "fn": 8
+    },
+    "jobs": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "tp": 3,
+      "fp": 0,
+      "fn": 0
+    }
+  }
+}

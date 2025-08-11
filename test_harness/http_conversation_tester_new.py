@@ -44,6 +44,9 @@ class ConversationTurn:
     candidate_profile: Dict = field(default_factory=dict)
     audio_variant: str = "auto"
     tester_llm_entities: Dict = field(default_factory=dict)
+    # Ephemeral cost estimates (USD)
+    asr_cost_usd: float = 0.0
+    tts_cost_usd: float = 0.0
 
 
 @dataclass
@@ -60,6 +63,13 @@ class PersonaTestResult:
     step_completion_rate: float = 1.0
     completion_time_s: float = 0.0
     conversation_turns: List[ConversationTurn] = field(default_factory=list)
+    # Added job matching result fields
+    job_matching_metrics: Optional[Dict[str, float]] = None
+    matched_job_ids: List[str] = field(default_factory=list)
+    # Cost metrics
+    asr_cost_usd: float = 0.0
+    tts_cost_usd: float = 0.0
+    total_cost_usd: float = 0.0
 
 
 class HTTPPersonaConversationTester:
@@ -151,6 +161,126 @@ class HTTPPersonaConversationTester:
         }
         # Use first 3 jobs as target set per persona
         self.num_golden = 3
+
+    # ==== JSON summary helpers ====
+    def _build_summary(self, results: List[PersonaTestResult]) -> Dict[str, Any]:
+        """Build a JSON-serializable summary across personas.
+        
+        Args:
+            results (List[PersonaTestResult]): Persona results
+        Returns:
+            Dict[str, Any]: Summary with per-persona and overall metrics
+        """
+        per_persona: Dict[str, Any] = {}
+        overall_entity_tp = overall_entity_fp = overall_entity_fn = 0
+        overall_entity_macro_sum = 0.0
+        overall_entity_macro_count = 0
+        overall_job_tp = overall_job_fp = overall_job_fn = 0
+        # Cost aggregates (USD)
+        total_costs_usd: List[float] = []
+
+        for res in results:
+            persona_key = res.persona_key
+            persona_cfg = self.personas.get(persona_key, {})
+            persona_name = persona_cfg.get("name", persona_key)
+            ent = res.entity_extraction_metrics or {"per_slot": {}, "macro_f1": 0.0, "micro_f1": 0.0, "total_tp": 0, "total_fp": 0, "total_fn": 0}
+            per_slot_out: Dict[str, Any] = {}
+            for slot, m in (ent.get("per_slot", {}) or {}).items():
+                per_slot_out[slot] = {
+                    "expected": m.get("expected"),
+                    "derived": m.get("predicted"),
+                    "tp": m.get("tp", 0),
+                    "fp": m.get("fp", 0),
+                    "fn": m.get("fn", 0),
+                    "f1": m.get("f1", 0.0),
+                }
+            job_m = res.job_matching_metrics or {"precision": 0.0, "recall": 0.0, "f1": 0.0, "tp": 0, "fp": 0, "fn": 0}
+            # Costs per persona (USD)
+            cost_asr = getattr(res, "asr_cost_usd", 0.0)
+            cost_tts = getattr(res, "tts_cost_usd", 0.0)
+            cost_total = getattr(res, "total_cost_usd", (cost_asr + cost_tts))
+            total_costs_usd.append(cost_total)
+
+            per_persona[persona_key] = {
+                "persona_name": persona_name,
+                "entities": per_slot_out,
+                "macro_f1": ent.get("macro_f1", 0.0),
+                "micro_f1": ent.get("micro_f1", 0.0),
+                "job_matching": {
+                    "precision": job_m.get("precision", 0.0),
+                    "recall": job_m.get("recall", 0.0),
+                    "f1": job_m.get("f1", 0.0),
+                    "tp": job_m.get("tp", 0),
+                    "fp": job_m.get("fp", 0),
+                    "fn": job_m.get("fn", 0),
+                },
+                "matched_job_ids": res.matched_job_ids or [],
+                "completed": res.completed,
+                "costs": {
+                    "asr_usd": cost_asr,
+                    "tts_usd": cost_tts,
+                    "total_usd": cost_total,
+                },
+            }
+
+            # Accumulate overall
+            overall_entity_tp += ent.get("total_tp", 0)
+            overall_entity_fp += ent.get("total_fp", 0)
+            overall_entity_fn += ent.get("total_fn", 0)
+            overall_entity_macro_sum += ent.get("macro_f1", 0.0)
+            overall_entity_macro_count += 1
+            overall_job_tp += job_m.get("tp", 0)
+            overall_job_fp += job_m.get("fp", 0)
+            overall_job_fn += job_m.get("fn", 0)
+
+        # Overall entity metrics
+        overall_entity_macro_avg = (overall_entity_macro_sum / overall_entity_macro_count) if overall_entity_macro_count else 0.0
+        overall_entity_micro_f1 = self._compute_f1(overall_entity_tp, overall_entity_fp, overall_entity_fn)
+        # Overall job metrics
+        job_precision = overall_job_tp / (overall_job_tp + overall_job_fp) if (overall_job_tp + overall_job_fp) > 0 else 0.0
+        job_recall = overall_job_tp / (overall_job_tp + overall_job_fn) if (overall_job_tp + overall_job_fn) > 0 else 0.0
+        job_f1 = 0.0 if (job_precision + job_recall == 0) else (2 * job_precision * job_recall / (job_precision + job_recall))
+
+        return {
+            "per_persona": per_persona,
+            "overall": {
+                "entity": {
+                    "macro_f1_avg": overall_entity_macro_avg,
+                    "micro_f1": overall_entity_micro_f1,
+                    "tp": overall_entity_tp,
+                    "fp": overall_entity_fp,
+                    "fn": overall_entity_fn,
+                },
+                "jobs": {
+                    "precision": job_precision,
+                    "recall": job_recall,
+                    "f1": job_f1,
+                    "tp": overall_job_tp,
+                    "fp": overall_job_fp,
+                    "fn": overall_job_fn,
+                },
+                "costs": {
+                    "avg_usd_per_candidate": (sum(total_costs_usd) / len(total_costs_usd)) if total_costs_usd else 0.0,
+                    "total_usd_all_personas": sum(total_costs_usd),
+                },
+            },
+        }
+
+    def write_summary_json(self, results: List[PersonaTestResult]) -> Path:
+        """Write summary JSON to results directory.
+        
+        Args:
+            results (List[PersonaTestResult]): Persona results
+        Returns:
+            Path: Path to the written JSON file
+        """
+        summary = self._build_summary(results)
+        ts = int(time.time())
+        out_path = self.results_dir / f"summary_{ts}.json"
+        with open(out_path, "w", encoding="utf-8") as f:
+            _json.dump(summary, f, ensure_ascii=False, indent=2)
+        logger.info(f"📄 Summary written to {out_path}")
+        return out_path
 
     def _load_utterance_entities(self) -> Dict:
         """Load expected entities from utterances.yaml."""
@@ -524,6 +654,25 @@ class HTTPPersonaConversationTester:
             bot_response = data.get("text", "")
             current_field = data.get("metrics", {}).get("current_field", "")
             candidate_profile = data.get("metrics", {}).get("candidate_profile", {})
+
+            # Cost estimation
+            # ASR provider from raw data if present; otherwise assume google
+            raw_conf = (data.get("asr") or {}).get("raw_confidence_data", {})
+            asr_provider = str(raw_conf.get("asr_provider", "google")).lower()
+            # Estimate audio duration from bytes assuming 16kHz mono PCM equivalent
+            est_audio_seconds = max(0.1, len(audio_data) / 32000.0)
+            asr_rate_per_min = {
+                "google": 0.018,
+                "elevenlabs": 0.030,
+                "sarvam": 0.010,
+                "speech_recognition": 0.0,
+            }
+            asr_cost = (asr_rate_per_min.get(asr_provider, 0.018) / 60.0) * est_audio_seconds
+            # TTS cost from response text length
+            tts_provider = "elevenlabs" if os.getenv("ELEVENLABS_API_KEY") else "google"
+            tts_rate_per_char = {"google": 0.000016, "elevenlabs": 0.00003}
+            tts_chars = len(bot_response or "")
+            tts_cost = tts_rate_per_char.get(tts_provider, 0.000016) * tts_chars
             
             logger.info(f"✓ Turn completed in {latency_ms:.0f}ms")
             logger.info(f"  ASR: '{asr_text[:50]}...' (conf: {asr_confidence:.2f})")
@@ -542,7 +691,9 @@ class HTTPPersonaConversationTester:
                 extracted_entities=expected_entities,
                 current_field=current_field,
                 candidate_profile=candidate_profile,
-                audio_variant=variant
+                audio_variant=variant,
+                asr_cost_usd=asr_cost,
+                tts_cost_usd=tts_cost,
             )
             
         except Exception as e:
@@ -700,6 +851,13 @@ class HTTPPersonaConversationTester:
         if match_metrics:
             self._print_match_metrics(persona["name"], matched_job_ids, match_metrics)
         
+        # Aggregate cost
+        asr_cost_sum = sum(getattr(t, "asr_cost_usd", 0.0) for t in turns)
+        tts_cost_sum = sum(getattr(t, "tts_cost_usd", 0.0) for t in turns)
+
+        # Log per-persona costs
+        logger.info(f"Costs (USD) - ASR: ${asr_cost_sum:.4f}  TTS: ${tts_cost_sum:.4f}  Total: ${asr_cost_sum + tts_cost_sum:.4f}")
+
         return PersonaTestResult(
             persona_key=persona_key,
             completed=conversation_completed,
@@ -711,7 +869,12 @@ class HTTPPersonaConversationTester:
             success=True,
             step_completion_rate=1.0,
             completion_time_s=time.time() - start_time,
-            conversation_turns=turns
+            conversation_turns=turns,
+            asr_cost_usd=asr_cost_sum,
+            tts_cost_usd=tts_cost_sum,
+            total_cost_usd=(asr_cost_sum + tts_cost_sum),
+            job_matching_metrics=match_metrics,
+            matched_job_ids=matched_job_ids
         )
 
     def _extract_utterance_id(self, audio_path: str) -> Optional[str]:
@@ -883,11 +1046,15 @@ async def main():
         # Test single persona
         result = await tester.run_persona_test(args.persona)
         logger.info(f"Test completed: {result.persona_key} - Success: {result.success}")
+        tester.write_summary_json([result])
     else:
         # Test all personas
+        results: List[PersonaTestResult] = []
         for persona_key in tester.personas.keys():
             result = await tester.run_persona_test(persona_key)
             logger.info(f"Test completed: {result.persona_key} - Success: {result.success}")
+            results.append(result)
+        tester.write_summary_json(results)
 
 
 if __name__ == "__main__":
